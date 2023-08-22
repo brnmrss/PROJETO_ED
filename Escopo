@@ -1,0 +1,278 @@
+// CONSULTA E RESERVA DE ARMÁRIOS
+#include <iostream>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+#define ALUNO   20
+#define FUNCIONARIO 10
+#define ARMARIO 25
+#define CURSO 5
+using namespace std;
+
+
+typedef struct {
+    int dataInicio, dataFim, ano;
+} AlunoCurso;
+
+typedef struct {
+    char nome[], email[];
+    int matricula, fone, turmaSerie;
+} Aluno;
+
+typedef struct {
+    int codigo, dataRec, dataDev;
+} Reserva;
+
+typedef struct {
+    char nome[], usuario[], email[];
+    int matricula, senha, fone;
+} Funcionario;
+
+typedef struct {
+    char estado[], disponivel[];
+    int numero;
+} Armario;
+
+typedef struct {
+    char nome[];
+    int codigo;
+} Curso;
+
+int main(){
+    setlocale(LC_ALL, "Portuguese");
+
+    int opMenu, opFechar, count = 0, codigo = 0; // a variável count irá representar a quantidade de registros já armazenados
+    int opArm, numEdit, codigoDel;
+    int opAlu, alunoEdit, alunoDel;
+    int opFun, funEdit, funDel;
+
+    AlunoCurso AluCurso[ALUNO];
+    Aluno Alu[ALUNO];
+    Reserva Res[ARMARIO];
+    Funcionario Fun[FUNCIONARIO];
+    Armario Arm[ARMARIO];
+    Curso Crs[CURSO];
+
+// MENU PRINCIPAL
+    while(opFechar != 1){
+        system("cls");
+        cout << "\n*********************  CONSULTA E RESERVA DE ARMÁRIOS ************************ \n";
+        cout << "Informe qual campo deseja acessar, de acordo com o número: \n";
+        cout << "1 - ARMÁRIOS.\n";
+        cout << "2 - ALUNOS.\n";
+        cout << "3 - FUNCIONÁRIOS.\n";
+        cout << "4 - Fechar programa.\n\n";
+        cin >> opMenu;
+
+        switch(opMenu){
+// CONSULTA DE ARMÁRIOS E RESERVAS, RESERVAR ARMÁRIO, EDIT RESERVA, DELET RESERVA.
+            case 1:
+                    system("cls");
+                    cout << "\n*********************  ARMÁRIOS ************************ \n";
+                    cout << "Informe a opção desejada, de acordo com o número: \n";
+                    cout << "1 - Consultar armários.\n";
+                    cout << "2 - Reservar armário.\n";
+                    cout << "3 - Editar armário.\n";
+                    cout << "4 - Deletar reserva.\n";
+                    cout << "5 - Retornar.\n\n";
+                    cin >> opArm;
+
+                    switch(opArm){
+
+    // EXIBIR ARMÁRIOS/RESERVAS
+                        case 1:
+
+                           break;
+
+    // REALIZAR RESERVA DE ARMÁRIO
+                        case 2:
+
+                            break;
+
+    // SELECIONAR ARMÁRIO PARA EDITAR
+                        case 3:
+                            system("cls");
+                            cout << "\n*********************  EDITAR ARMÁRIO ************************ \n";
+                            cout << "Informe o número do armário que deseja editar.\n";
+                            cout << "\nNúmero: \n";
+                            cin >> numEdit;
+
+                            break;
+
+
+    // DELETAR RESERVA
+                        case 4:
+                            system("cls");
+                            cout << "\n*********************  DELETAR RESERVA ************************ \n";
+                            cout << "Informe o código da reserva que deseja deletar.\n";
+                            cout << "\nCódigo: \n";
+                            cin >> codigoDel;
+
+                            break;
+
+    // RETORNAR
+                        case 5:
+                            break;
+
+                        default:
+                                    cout << "\nOpção inválida, por favor tente novamente.\n";
+                                    system("pause");
+                    }
+                break;
+
+// CONSULTAR ALUNOS,CADASTRAR AL, EDIT DADOS AL, DELET AL
+            case 2:
+                    system("cls");
+                    cout << "\n*********************  ALUNOS ************************ \n";
+                    cout << "Informe a opção desejada, de acordo com o número: \n";
+                    cout << "1 - Consultar aluno.\n";
+                    cout << "2 - Cadastrar aluno.\n";
+                    cout << "3 - Editar dados de aluno.\n";
+                    cout << "4 - Deletar cadastro de aluno.\n";
+                    cout << "5 - Retornar.\n\n";
+                    cin >> opAlu;
+
+                    switch(opAlu){
+
+    // CONSULTAR ALUNO
+                        case 1:
+
+                           break;
+
+    // CADASTRAR ALUNO
+                        case 2:
+
+                            break;
+
+    // EDIT DADOS ALUNO
+                        case 3:
+                                system("cls");
+                                cout << "\n*********************  EDITAR DADOS DE ALUNO ************************ \n";
+                                cout << "Informe a matrícula do aluno que deseja editar.\n";
+                                cout << "\nMatrícula: \n";
+                                cin >> alunoEdit;
+
+                            break;
+
+    // DELETE ALUNO
+                        case 4:
+                                system("cls");
+                                cout << "\n*********************  DELETAR CADASTRO DE ALUNO ************************ \n";
+                                cout << "Informe a matrícula do aluno que deseja deletar.\n";
+                                cout << "\nMatrícula: \n";
+                                cin >> alunoDel;
+
+                            break;
+
+    //RETORNAR
+                        case 5:
+                            break;
+
+                        default:
+                            cout << "\nOpção inválida, por favor tente novamente.\n";
+                            system("pause");
+                    }
+                break;
+
+
+
+
+
+
+
+
+
+
+
+
+
+// CONSULTAR FUNCIONÁRIOS, CADASTRAR FUNCIONÁRIO, EDIT DADOS FUNCIONÁRIOS, DELET FUNCIONÁRIOS
+            case 3:
+                    system("cls");
+                    cout << "\n*********************  FUNCIONÁRIOS ************************ \n";
+                    cout << "Informe a opção desejada, de acordo com o número: \n";
+                    cout << "1 - Consultar funcionários.\n";
+                    cout << "2 - Cadastrar funcionário.\n";
+                    cout << "3 - Editar dados de funcionário.\n";
+                    cout << "4 - Deletar cadastro de funcionário.\n";
+                    cout << "5 - Retornar.\n\n";
+                    cin >> opFun;
+
+                    switch(opFun){
+
+    // CONSULTAR FUNCIONÁRIOS
+                        case 1:
+
+                            break;
+
+    // CADASTRAR FUNCIONÁRIO
+                        case 2:
+
+                            break;
+
+    // EDIT DADOS FUNCIONÁRIO
+                        case 3:
+                                system("cls");
+                                cout << "\n*********************  EDITAR DADOS DE FUNCIONÁRIO ************************ \n";
+                                cout << "Informe a matrícula do funcionário que deseja editar.\n";
+                                cout << "\nMatrícula: \n";
+                                cin >> funEdit;
+
+                            break;
+
+    // DELET FUNCIONÁRIO
+                        case 4:
+                                system("cls");
+                                cout << "\n*********************  DELETAR CADASTRO DE FUNCIONÁRIO ************************ \n";
+                                cout << "Informe a matrícula do funcionário que deseja deletar.\n";
+                                cout << "\nMatrícula: \n";
+                                cin >> funDel;
+
+                            break;
+
+    // RETORNAR
+                        case 5:
+                            break;
+
+                        default:
+                            cout << "\nOpção inválida, por favor tente novamente.\n";
+                            system("pause");
+                    }
+                break;
+
+// ENCERRAR
+            case 4:
+                    cout << "\n\nTem certeza que deseja fechar o programa?\n";
+                    cout << "[1] sim    [2] não";
+                    cout << "\nOpção: ";
+                    cin >> opFechar;
+
+                        switch(opFechar){
+
+                            case 1:
+                                    cout << "\nPrograma encerrado!\n";
+                                    getchar();
+                                break;
+
+                            case 2:
+                                break;
+
+                            default:
+                                    cout << "\nOpção inválida, por favor tente novamente.\n";
+                                    system("pause");
+                        }
+                break;
+
+
+            default:
+                cout << "\nOpção inválida, por favor tente novamente.\n";
+                system("pause");
+
+        }
+
+    }
+    cout << "\n\n";
+    system("pause");
+    return 0;
+}
