@@ -39,6 +39,46 @@ typedef struct {
     int codigo;
 } Curso;
 
+void termoCompromisso();
+
+void termoCompromisso(){
+   Aluno student;
+   Aluno courseStudent;
+   Reserva reserve;
+   Funcionario colaborador;
+   Armario locker;
+   Curso course;
+   reserve.codigo;
+   AlunoCurso studentCourse;
+    system("cls");
+    gotoxy(5,5);
+    cout << "-------------------------------------- TERMO DE COMPROMISSO ------------------------------------";
+    gotoxy(5,7);
+    cout << "Eu, " << student.nome << ", aluno da serie " << student.serie << " - " << student.turma << ",";
+    gotoxy(5,8);
+    cout << "matricula " << student.matricula << ", comprometo-me a fazer o uso responsavel do armario escolar.\n";
+    gotoxy(5,9);
+    cout << "de numero: " << locker.numero << ", entregue em bom estado. Com reserva feita pelo ";
+    gotoxy(5,10);
+    cout << "colaborador " << colaborador.nome << ", de matricula " << colaborador.matricula << ", com reserva de numero: " << reserve.codigo << ".";
+    gotoxy(5,11);
+    cout << "Declaro que recebi o armario em " << reserve.dataRec << " e me comprometo a devolve-lo ate " << reserve.dataDev << ".\n";
+    gotoxy(5,12);
+    cout << "Caso haja danos ao armario, me responsabilizo por arcar com os custos de reparo ou substituicao.\n";
+    gotoxy(5,13);
+    cout << "______________________\n";
+    gotoxy(5,14);
+    cout << "Assinatura Aluno\n";
+    gotoxy(40,13);
+    cout << "_______________________\n";
+    gotoxy(40,14);
+    cout << "Assinatura Funcionario\n";
+    gotoxy(5,15);
+    cout << "Data: ____/____/____\n";
+
+    return 0;
+}
+
 int main(){
     setlocale(LC_ALL, "Portuguese");
 
