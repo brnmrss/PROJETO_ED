@@ -1,0 +1,339 @@
+#include <iostream>
+#include <tchar.h>
+#include <windows.h>
+#include <stdlib.h>
+#define  TAMCONJ 3
+
+using namespace std;
+
+HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+COORD CursorPosition;
+void gotoxy(int x, int y)
+{
+    CursorPosition.X = x; // Locates column
+    CursorPosition.Y = y; // Locates Row
+    SetConsoleCursorPosition(console,CursorPosition); // Sets position for next thing to be printed
+}
+typedef struct
+{
+    char disciplina[30], situacao,aluno[30];
+    float notas[5];
+    int faltas,ano,id;
+    bool excluido;
+} HistoricoEscolar;
+HistoricoEscolar ficha[TAMCONJ];
+int posicao = 0,registro = 1;
+void Adicionar()
+{
+    system("cls");
+    int posicaoDisponivel = -1,i;
+    for (i = 0; i < TAMCONJ; i++)
+    {
+        if (ficha[i].excluido)
+        {
+            posicaoDisponivel = i;
+            break;
+        }
+    }
+    if (posicaoDisponivel == -1)
+    {
+        if (posicao >= TAMCONJ)
+        {
+            cout << "Limite máximo de alunos atingido!\n";
+            system("pause");
+            return;
+        }
+        posicaoDisponivel = posicao;
+    }
+    cout << "\nAluno: ";
+    cin.ignore();
+    cin.getline(ficha[posicaoDisponivel].aluno, 30);
+    cout << "\nAno: ";
+    cin >> ficha[posicaoDisponivel].ano;
+    cin.ignore();
+    cout << "\nDisciplina: ";
+    cin.getline(ficha[posicaoDisponivel].disciplina, 30);
+    cout << "\nNotas Bimestrais: ";
+    cout << "\n  -> Primeira: ";
+    cin >> ficha[posicaoDisponivel].notas[0];
+    cout << "\n  -> Segunda: ";
+    cin >> ficha[posicaoDisponivel].notas[1];
+    cout << "\n  -> Terceira: ";
+    cin >> ficha[posicaoDisponivel].notas[2];
+    cout << "\n  -> Quarta: ";
+    cin >> ficha[posicaoDisponivel].notas[3];
+    cout << "\nNumero de Faltas: ";
+    cin >> ficha[posicaoDisponivel].faltas;
+    for(i=0; i<TAMCONJ; i++)
+    {
+        ficha[i].notas[4]=(ficha[i].notas[0] + ficha[i].notas[1] + ficha[i].notas[2] + ficha[i].notas[3])/4;
+        if(ficha[i].notas[4]>=5 && ficha[posicao].faltas <= 5)
+        {
+            ficha[i].situacao ='A';
+        }
+        else
+        {
+            ficha[i].situacao ='R';
+        }
+    }
+    ficha[posicaoDisponivel].id = (ficha[posicaoDisponivel].ano * 100 + posicaoDisponivel) * 1000 + registro;
+    ficha[posicaoDisponivel].excluido = false;
+    system("cls");
+    cout << "\n\nAluno Adicionado com Sucesso: " << ficha[posicaoDisponivel].id;
+    cout << "\n\n";
+    system("pause");
+    if (posicaoDisponivel == posicao)
+    {
+        posicao++;
+    }
+    registro++;
+}
+void Vizualizar()
+{
+    int i, escolha;
+
+    system("cls");
+    bool possuiAlunos = false;
+
+    for (i = 0; i < posicao; i++)
+    {
+        if (!ficha[i].excluido)
+        {
+            possuiAlunos = true;
+            break;
+        }
+    }
+    if (!possuiAlunos)
+    {
+        cout << "\nNenhum aluno cadastrado.\n";
+        cin.ignore();
+        cin.get();
+        return;
+    }
+    cout << "\nFichas: \n";
+    int linha = 2;
+    for (int i = 0; i < posicao; i++)
+    {
+        if (!ficha[i].excluido)
+        {
+            gotoxy(1, linha);
+            cout << ficha[i].id << " | " << ficha[i].aluno;
+            linha++;
+        }
+    }
+    cout << "\n\nInforme o ID da Ficha que deseja Verificar: ";
+    cin >> escolha;
+    for (int i = 0; i < posicao; i++)
+    {
+        if (escolha == ficha[i].id)
+        {
+            system("cls");
+            gotoxy(1, 5);
+            cout << "***************************  HISTORICO ESCOLAR *****************************";
+            gotoxy(5, 7);
+            cout << "Aluno: " << ficha[i].aluno;
+            gotoxy(5, 8);
+            cout << "Ano:   " << ficha[i].ano;
+            gotoxy(5, 9);
+            cout << "ID:    " << ficha[i].id;
+            gotoxy(1, 11);
+            cout << "----------------------------------  Notas Bimestrais  -----------------------";
+            gotoxy(1, 12);
+            cout << " Disciplina";
+            gotoxy(30, 12);
+            cout << "1a    2a    3a    4a    Media   Situacao  Faltas";
+            gotoxy(1, 13);
+            cout << "-----------------------------------------------------------------------------";
+            gotoxy(2, 14);
+            cout << ficha[i].disciplina;
+            gotoxy(30, 14);
+            printf("%2.1f", ficha[i].notas[0]);
+            gotoxy(36, 14);
+            printf("%2.1f", ficha[i].notas[1]);
+            gotoxy(42, 14);
+            printf("%2.1f", ficha[i].notas[2]);
+            gotoxy(48, 14);
+            printf("%2.1f", ficha[i].notas[3]);
+            gotoxy(55, 14);
+            printf("%2.1f", ficha[i].notas[4]);
+            gotoxy(62, 14);
+            if (ficha[i].situacao == 'A')
+                cout << "Aprovado";
+            else
+                cout << "Reprovado";
+            gotoxy(74, 14);
+            cout << ficha[i].faltas;
+            cout << "\n\n";
+            system("pause");
+        }
+    }
+}
+void Atualizar()
+{
+    int idAtualizar,alterar;
+    system("cls");
+    if (posicao == 0)
+    {
+        cout << "\nNenhum aluno cadastrado.\n";
+        cin.ignore();
+        cin.get();
+        return;
+    }
+    cout << "\nFichas: \n";
+    for (int i = 0; i < posicao; i++)
+    {
+        cout << "\n" << ficha[i].id << " | " << ficha[i].aluno;
+    }
+    cout << "\n\nInforme o ID da Ficha que deseja Atualizar: ";
+    cin >> idAtualizar;
+    for(int i=0; i<posicao; i++)
+    {
+        if (idAtualizar == ficha[i].id)
+        {
+            system("cls");
+            cout << "\n1 - Aluno: " << ficha[i].aluno;
+            cout << "\n2 - Ano:   " << ficha[i].ano;
+            cout << "\n3 - Disciplina: " << ficha[i].disciplina;
+            for (int j=0; j<4; j++)
+            {
+                cout << "\n" << j+4 << " - Nova Nota " << j+1 << ": " <<ficha[i].notas[j];
+            }
+            cout << "\n8 - Numero de Faltas: "<< ficha[i].faltas;
+
+            cout << "\n\nInforme o campo que deseja alterar: ";
+            cin >> alterar;
+            switch (alterar)
+            {
+            case 1:
+                cout << "\nNovo Aluno: ";
+                cin.ignore();
+                cin.getline(ficha[i].aluno, 30);
+                break;
+            case 2:
+                cout << "\nNovo Ano: ";
+                cin >> ficha[i].ano;
+                break;
+            case 3:
+                cout << "\nNova Disciplina: ";
+                cin.ignore();
+                cin.getline(ficha[i].disciplina, 30);
+                break;
+            case 4:
+                cout << "\nNova Primeira Nota: ";
+                cin >> ficha[i].notas[0];
+                break;
+            case 5:
+                cout << "\nNova Segunda Nota: ";
+                cin >> ficha[i].notas[1];
+                break;
+            case 6:
+                cout << "\nNova Terceira Nota: ";
+                cin >> ficha[i].notas[2];
+                break;
+            case 7:
+                cout << "\nNova Quarta Nota: ";
+                cin >> ficha[i].notas[3];
+                break;
+            case 8:
+                cout << "\nNovo Numero de Faltas: ";
+                cin >> ficha[i].faltas;
+                break;
+            default:
+                cout << "\nOpção inválida.\n";
+                break;
+            }
+            cout << "\n\nAluno atualizado com sucesso!\n";
+            cin.ignore();
+            cin.get();
+            return;
+        }
+    }
+    cout << "\nID não encontrado.\n";
+    cin.ignore();
+    cin.get();
+}
+
+void Excluir()
+{
+    int idExcluir;
+    system("cls");
+    if (posicao == 0)
+    {
+        cout << "\nNenhum aluno cadastrado.\n";
+        cin.ignore();
+        cin.get();
+        return;
+    }
+    cout << "\nFichas: \n";
+    int alunosDisponiveis = 0;
+    for (int i = 0; i < posicao; i++)
+    {
+        if (!ficha[i].excluido)
+        {
+            cout << "\n" << ficha[i].id << " | " << ficha[i].aluno;
+            alunosDisponiveis++;
+        }
+    }
+    if (alunosDisponiveis == 0)
+    {
+        cout << "\nNenhum aluno disponível para exclusão.\n";
+        cin.ignore();
+        cin.get();
+        return;
+    }
+    cout << "\n\nInforme o ID do aluno que deseja excluir: ";
+    cin >> idExcluir;
+    for (int i = 0; i < posicao; i++)
+    {
+        if (idExcluir == ficha[i].id)
+        {
+            ficha[i].excluido = true;
+            cout << "\nAluno excluído com sucesso!\n";
+            cin.ignore();
+            cin.get();
+            return;
+        }
+    }
+    cout << "\nAluno com o ID informado não encontrado.\n";
+    cin.ignore();
+    cin.get();
+}
+int main()
+{
+    int escolha,menu=0;
+    setlocale(LC_ALL, "Portuguese");
+    while(menu==0)
+    {
+        system("cls");
+        cout << "*********** Historico Escolar ***********\n";
+        cout << "\n1 - Adicionar Aluno";
+        cout << "\n2 - Vizualizar Ficha";
+        cout << "\n3 - Atualizar dados";
+        cout << "\n4 - Excluir Ficha";
+        cout << "\n5 - Sair\n\n->";
+        cin >> escolha;
+        while (escolha < 1 || escolha > 5)
+        {
+            cout << "Opção inválida! Digite um número entre 1 e 5: ";
+            cin >> escolha;
+        }
+        switch(escolha)
+        {
+        case 1:
+            Adicionar();
+            break;
+        case 2:
+            Vizualizar();
+            break;
+        case 3:
+            Atualizar();
+            break;
+        case 4:
+            Excluir();
+            break;
+        case 5:
+            return 0;
+            break;
+        }
+    }
+}
