@@ -1,4 +1,4 @@
-// CONSULTA E RESERVA DE ARMÁRIOS
+// CONSULTA E RESERVA DE ARMÁRIOS ED
 #include <iostream>
 #include <string.h>
 #include <stdlib.h>
