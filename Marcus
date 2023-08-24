@@ -330,3 +330,81 @@ int main()
     return 0;
 }
 
+////////////////////////////////////////////////////////////////////////
+
+
+
+#include <stdio.h>
+#include "funcionario.h"
+
+int main() {
+    Funcionario Fun[10]; // Array de funcionários
+    int totalFuncionarios = 0;
+
+    while (1) {
+        printf("Bem-vindo!\n");
+        printf("1. Entrar\n");
+        printf("2. Cadastrar\n");
+        printf("3. Sair\n");
+        printf("Escolha uma opcao: ");
+
+        int opcao;
+        scanf("%d", &opcao);
+
+        if (opcao == 1) {
+            // Lógica de Entrar
+            login(Fun, totalFuncionarios);
+        } else if (opcao == 2) {
+            // Lógica de Cadastrar
+            cadastrar(Fun, &totalFuncionarios);
+        } else if (opcao == 3) {
+            printf("Saindo...\n");
+            break;
+        } else {
+            printf("Opcao invalida. Tente novamente.\n");
+        }
+    }
+
+    return 0;
+}
+///////////////////////////
+#include <stdio.h>
+#include <string.h>
+#include "funcionario.h"
+
+void login(Funcionario Fun[], int totalFuncionarios) {
+    char usuario[20];
+    int senha;
+
+    printf("Usuario: ");
+    scanf("%s", usuario);
+    printf("Senha: ");
+    scanf("%d", &senha);
+
+    int encontrado = 0;
+    for (int i = 0; i < totalFuncionarios; i++) {
+        if (strcmp(Fun[i].usuario, usuario) == 0 && Fun[i].senha == senha) {
+            printf("Bem-vindo, %s!\n", Fun[i].nome);
+            encontrado = 1;
+            break;
+        }
+    }
+
+    if (!encontrado) {
+        printf("Credenciais invalidas.\n");
+    }
+}
+
+void cadastrar(Funcionario Fun[], int *totalFuncionarios) {
+    if (*totalFuncionarios < 10) {
+        printf("Cadastro de Funcionario\n");
+        printf("Nome: ");
+        scanf("%s", Fun[*totalFuncionarios].nome);
+        // Continuar com a captura dos outros campos (usuario, email, matricula, senha, fone)
+        (*totalFuncionarios)++;
+        printf("Funcionario cadastrado com sucesso!\n");
+    } else {
+        printf("Limite de funcionarios atingido.\n");
+    }
+}
+///////////////////////////////
