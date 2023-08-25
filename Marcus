@@ -1,122 +1,244 @@
-// CONSULTA E RESERVA DE ARMÁRIOS
 #include <iostream>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <cstring>
+#include <string>
+#include <locale.h>
+#include <cstdlib> // Para usar o system("cls")
+#define FUNCIONARIOS 10
 
-#define ALUNO   20
-#define FUNCIONARIO 10
-#define ARMARIO 25
-#define CURSO 5
 using namespace std;
 
-
-typedef struct
-{
-    int dataInicio, dataFim, ano;
-} AlunoCurso;
-
-typedef struct
-{
-    char nome[], email[];
-    int matricula, fone, turmaSerie;
-} Aluno;
-
-typedef struct
-{
-    int codigo, dataRec, dataDev;
-} Reserva;
-
-typedef struct
-{
+typedef struct {
     char nome[50], usuario[50], email[50];
-    int matricula, senha, fone;
+    int matricula, senha, telefone;
 } Funcionario;
 
-typedef struct
-{
-    char estado[], disponivel[];
-    int numero;
-} Armario;
+Funcionario funcionariosCadastrados[FUNCIONARIOS]; // Array para armazenar os funcionários cadastrados
+int totalFuncionarios = 0; // Contador para controlar o total de funcionários cadastrados
 
-typedef struct
-{
-    char nome[];
-    int codigo;
-} Curso;
+void cadastrarFuncionario() {
+    Funcionario novoFuncionario;
 
-AlunoCurso AluCurso[ALUNO];
-Aluno Alu[ALUNO];
-Reserva Res[ARMARIO];
-Funcionario Fun[FUNCIONARIO];
-Armario Arm[ARMARIO];
-Curso Crs[CURSO];
+    system("cls"); // Limpa a tela
+    cout << "\nCadastro de Funcionário\n";
+    cout << "Nome: ";
+    cin.ignore(); // Limpa o buffer do teclado
+    cin.getline(novoFuncionario.nome, 50);
+    cout << "Usuário: ";
+    cin >> novoFuncionario.usuario;
+    cout << "Email: ";
+    cin >> novoFuncionario.email;
+    cout << "Matrícula: ";
+    cin >> novoFuncionario.matricula;
+    cout << "Senha: ";
+    cin >> novoFuncionario.senha;
+    cout << "Telefone: ";
+    cin >> novoFuncionario.telefone;
 
-int countFun=0;
+    // Adiciona o novo funcionário ao array e incrementa o contador
+    funcionariosCadastrados[totalFuncionarios] = novoFuncionario;
+    totalFuncionarios++;
 
-void cadastrarFuncionario(int &countFun) {
-    if (countFun < FUNCIONARIO) {
-        cout << "Cadastro de Funcionário:" << endl;
-        cout << "Nome: ";
-        cin >> Fun[countFun].nome;
-        cout << "Usuário: ";
-        cin >> Fun[countFun].usuario;
-        cout << "Email: ";
-        cin >> Fun[countFun].email;
-        cout << "Matrícula: ";
-        cin >> Fun[countFun].matricula;
-        cout << "Senha: ";
-        cin >> Fun[countFun].senha;
-        cout << "Telefone: ";
-        cin >> Fun[countFun].fone;
+    system("cls"); // Limpa a tela
+    cout << "\nFuncionário cadastrado com sucesso:\n";
 
-        cout << "Funcionário cadastrado com sucesso!" << endl;
-        countFun++;
-    } else {
-        cout << "Limite de funcionários atingido." << endl;
-    }
+
+    system("pause"); // Pausa a execução
 }
 
-int main()
-{
-    setlocale(LC_ALL, "Portuguese");
-    int opInicio,menuOp = 1;
-    int opMenu, opFechar, count = 0, codigo = 0; // a variável count irá representar a quantidade de registros já armazenados
-    int opArm, numEdit, codigoDel;
-    int opAlu, alunoEdit, alunoDel;
-    int opFun, funEdit, funDel;
+void editarFuncionario() {
+    system("cls"); // Limpa a tela
+    cout << "\nEditar Funcionário\n";
 
-    cout << "Bem-vindo! Escolha uma opcao:" << endl;
-    while (menuOp == 1) {
-        cout << "1. Entrar" << endl;
-        cout << "2. Cadastrar" << endl;
-        cout << "3. Sair" << endl;
-        cout << "-> ";
-        cin >> opInicio;
+    cout << "Lista de Funcionários:\n";
+    for (int i = 0; i < totalFuncionarios; i++) {
+        cout << "Matrícula: " << funcionariosCadastrados[i].matricula << " - Nome: " << funcionariosCadastrados[i].nome << endl;
+    }
 
-        switch (opInicio) {
+    int matriculaEscolhida;
+    cout << "\nDigite a Matrícula do funcionário que deseja editar: ";
+    cin >> matriculaEscolhida;
+
+    // Procurar o funcionário na lista pelo número da matrícula
+    for (int i = 0; i < totalFuncionarios; i++) {
+        if (funcionariosCadastrados[i].matricula == matriculaEscolhida) {
+            cout << "Funcionário escolhido: " << funcionariosCadastrados[i].nome << endl;
+
+            // Implemente as alterações desejadas aqui
+            cout << "Digite o novo nome: ";
+            cin.ignore(); // Limpa o buffer do teclado
+            cin.getline(funcionariosCadastrados[i].nome, 50);
+
+            cout << "Digite o novo usuário: ";
+            cin >> funcionariosCadastrados[i].usuario;
+
+            cout << "Digite o novo email: ";
+            cin >> funcionariosCadastrados[i].email;
+
+            cout << "Digite a nova matrícula: ";
+            cin >> funcionariosCadastrados[i].matricula;
+
+            cout << "Digite a nova senha: ";
+            cin >> funcionariosCadastrados[i].senha;
+
+            cout << "Digite o novo telefone: ";
+            cin >> funcionariosCadastrados[i].telefone;
+
+            cout << "Funcionário editado com sucesso!" << endl;
+            break; // Sair do loop ao encontrar o funcionário
+        }
+    }
+
+    system("pause"); // Pausa a execução
+}
+
+
+
+void visualizarFuncionarios() {
+    system("cls"); // Limpa a tela
+
+    cout << "\nFuncionários Cadastrados:\n";
+    for (int i = 0; i < totalFuncionarios; i++) {
+        cout << "Funcionário " << i + 1 << ":\n";
+        cout << "Nome: " << funcionariosCadastrados[i].nome << endl;
+        cout << "Usuário: " << funcionariosCadastrados[i].usuario << endl;
+        cout << "Email: " << funcionariosCadastrados[i].email << endl;
+        cout << "Matrícula: " << funcionariosCadastrados[i].matricula << endl;
+        cout << "Senha: " << funcionariosCadastrados[i].senha << endl;
+        cout << "Telefone: " << funcionariosCadastrados[i].telefone << endl;
+        cout << "-------------------------------\n";
+    }
+
+    system("pause"); // Pausa a execução
+}
+
+void menuFuncionarios() {
+    int opcaoFuncionarios;
+
+    do {
+        system("cls"); // Limpa a tela
+        cout << "\nMenu Funcionários\n";
+        cout << "Opções:\n";
+        cout << "1. Adicionar\n";
+        cout << "2. Editar\n";
+        cout << "3. Visualizar\n";
+        cout << "4. Excluir\n";
+        cout << "5. Voltar\n";
+        cout << "Escolha uma opção do menu: ";
+        cin >> opcaoFuncionarios;
+
+        switch (opcaoFuncionarios) {
             case 1:
-                system("cls");
-                cout << "Voce escolheu Entrar." << endl;
+                cadastrarFuncionario();
                 break;
             case 2:
-                system("cls");
-                cout << "Voce escolheu Cadastrar." << endl;
-                cadastrarFuncionario(countFun);
+                cout << "Opção Editar Funcionário selecionada." << endl;
+                editarFuncionario();
+                system("pause"); // Pausa a execução
                 break;
             case 3:
-                system("cls");
-                for (int i=0;i<FUNCIONARIO ;i++ ){
-                    cout << Fun[i].nome << Fun[i].matricula;
-                }
-
+                cout << "Opção Visualizar Funcionário selecionada." << endl;
+                visualizarFuncionarios();
+                system("pause"); // Pausa a execução
+                break;
+            case 4:
+                cout << "Opção Excluir Funcionário selecionada." << endl;
+                system("pause"); // Pausa a execução
+                break;
+            case 5:
+                cout << "Voltando ao Menu Principal." << endl;
                 break;
             default:
-                system("cls");
-                cout << "Opcao invalida. Escolha novamente." << endl;
+                cout << "Opção inválida. Por favor, escolha uma opção do menu." << endl;
+                system("pause"); // Pausa a execução
                 break;
         }
+    } while (opcaoFuncionarios != 5);
+}
+
+void menuPrincipal() {
+    int opcaoMenu;
+
+    do {
+        system("cls"); // Limpa a tela
+        cout << "\nMenu Principal\n";
+        cout << "Opções:\n";
+        cout << "1. Funcionários\n";
+        cout << "2. Alunos\n";
+        cout << "3. Armários\n";
+        cout << "4. Reservas\n";
+        cout << "5. Sair\n";
+        cout << "Escolha uma opção do menu: ";
+        cin >> opcaoMenu;
+
+        switch (opcaoMenu) {
+            case 1:
+                menuFuncionarios();
+                break;
+            case 2:
+                cout << "Opção Alunos selecionada." << endl;
+                system("pause"); // Pausa a execução
+                break;
+            case 3:
+                cout << "Opção Armários selecionada." << endl;
+                system("pause"); // Pausa a execução
+                break;
+            case 4:
+                cout << "Opção Reservas selecionada." << endl;
+                system("pause"); // Pausa a execução
+                break;
+            case 5:
+                cout << "Saindo do programa. Até logo!" << endl;
+                system("pause"); // Pausa a execução
+                break;
+            default:
+                cout << "Opção inválida. Por favor, escolha uma opção do menu." << endl;
+                system("pause"); // Pausa a execução
+                break;
+        }
+    } while (opcaoMenu != 5);
+}
+
+int main() {
+    setlocale(LC_ALL, "");
+
+    cout << "Tela Inicial\n";
+    cout << "Opções:\n";
+    cout << "1. Entrar\n";
+    cout << "2. Sair\n";
+
+    int opcao;
+    cout << "Escolha uma opção: ";
+    cin >> opcao;
+
+    switch (opcao) {
+        case 1: {
+            string nomeUsuario, senha;
+
+            cout << "Login\n";
+            cout << "Nome de Usuário: ";
+            cin >> nomeUsuario;
+            cout << "Senha: ";
+            cin >> senha;
+
+            if (nomeUsuario == "mestre" && senha == "senha123") {
+                cout << "Login bem-sucedido como mestre. Acesso concedido!" << endl;
+                system("pause"); // Pausa a execução
+                menuPrincipal();
+            } else {
+                cout << "Credenciais incorretas. Acesso negado!" << endl;
+                system("pause"); // Pausa a execução
+                            system("pause"); // Pausa a execução
+            }
+
+            break;
+        }
+        case 2:
+            cout << "Você escolheu sair. Até logo!" << endl;
+            system("pause"); // Pausa a execução
+            break;
+        default:
+            cout << "Opção inválida. Por favor, escolha 1 para Entrar ou 2 para Sair." << endl;
+            system("pause"); // Pausa a execução
+            break;
     }
 
     return 0;
