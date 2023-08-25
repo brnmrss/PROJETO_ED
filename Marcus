@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <cstring>
 
 #define ALUNO   20
 #define FUNCIONARIO 10
@@ -29,7 +30,7 @@ typedef struct
 
 typedef struct
 {
-    char nome[], usuario[], email[];
+    char nome[50], usuario[50], email[50];
     int matricula, senha, fone;
 } Funcionario;
 
@@ -52,39 +53,28 @@ Funcionario Fun[FUNCIONARIO];
 Armario Arm[ARMARIO];
 Curso Crs[CURSO];
 
-void login() {
-    char usuario[20];
-    int senha;
+int countFun=0;
 
-    cout << "Usuario: ";
-    cin >> usuario;
-    cout << "Senha: ";
-    cin >> senha;
+void cadastrarFuncionario(int &countFun) {
+    if (countFun < FUNCIONARIO) {
+        cout << "Cadastro de Funcionário:" << endl;
+        cout << "Nome: ";
+        cin >> Fun[countFun].nome;
+        cout << "Usuário: ";
+        cin >> Fun[countFun].usuario;
+        cout << "Email: ";
+        cin >> Fun[countFun].email;
+        cout << "Matrícula: ";
+        cin >> Fun[countFun].matricula;
+        cout << "Senha: ";
+        cin >> Fun[countFun].senha;
+        cout << "Telefone: ";
+        cin >> Fun[countFun].fone;
 
-    int encontrado = 0;
-    for (int i = 0; i < FUNCIONARIO; i++) {
-        if (strcmp(Fun[i].usuario, usuario) == 0 && Fun[i].senha == senha) {
-            cout << "Bem-vindo, " << Fun[i].nome << "!" << endl;
-            encontrado = 1;
-            break;
-        }
-    }
-
-    if (!encontrado) {
-        cout << "Credenciais invalidas." << endl;
-    }
-}
-
-void cadastrar(Funcionario Fun[], int *totalFuncionarios) {
-    if (*totalFuncionarios < 10) {
-        printf("Cadastro de Funcionario\n");
-        printf("Nome: ");
-        scanf("%s", Fun[*totalFuncionarios].nome);
-        // Continuar com a captura dos outros campos (usuario, email, matricula, senha, fone)
-        (*totalFuncionarios)++;
-        printf("Funcionario cadastrado com sucesso!\n");
+        cout << "Funcionário cadastrado com sucesso!" << endl;
+        countFun++;
     } else {
-        printf("Limite de funcionarios atingido.\n");
+        cout << "Limite de funcionários atingido." << endl;
     }
 }
 
@@ -95,8 +85,7 @@ int main()
     int opMenu, opFechar, count = 0, codigo = 0; // a variável count irá representar a quantidade de registros já armazenados
     int opArm, numEdit, codigoDel;
     int opAlu, alunoEdit, alunoDel;
-    int opFun, funEdit, funDel,countFun=1;
-
+    int opFun, funEdit, funDel;
 
     cout << "Bem-vindo! Escolha uma opcao:" << endl;
     while (menuOp == 1) {
@@ -110,16 +99,18 @@ int main()
             case 1:
                 system("cls");
                 cout << "Voce escolheu Entrar." << endl;
-                login();
                 break;
             case 2:
                 system("cls");
                 cout << "Voce escolheu Cadastrar." << endl;
+                cadastrarFuncionario(countFun);
                 break;
             case 3:
                 system("cls");
-                cout << "Ate logo!" << endl;
-                menuOp = 0;
+                for (int i=0;i<FUNCIONARIO ;i++ ){
+                    cout << Fun[i].nome << Fun[i].matricula;
+                }
+
                 break;
             default:
                 system("cls");
@@ -130,4 +121,3 @@ int main()
 
     return 0;
 }
-
