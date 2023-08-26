@@ -1,7 +1,7 @@
 system("cls");
                                 cout << "\n*********************  DELETAR CADASTRO DE ALUNO ************************ \n";
-                                cout << "Informe a matrícula do aluno que deseja deletar.\n";
-                                cout << "\nMatrícula: \n";
+                                cout << "Informe a matrÃ­cula do aluno que deseja deletar.\n";
+                                cout << "\nMatrÃ­cula: \n";
                                 cin >> alunoDel;
 
                                 for (int i = 0; i < count; i++){
@@ -11,3 +11,4 @@ system("cls");
                                         }
                                     }
                                 }
+                                count--;
