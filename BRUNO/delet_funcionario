@@ -1,0 +1,14 @@
+system("cls");
+                                cout << "\n*********************  DELETAR CADASTRO DE FUNCIONÁRIO ************************ \n";
+                                cout << "Informe a matrícula do funcionário que deseja deletar.\n";
+                                cout << "\nMatrícula: \n";
+                                cin >> funDel;
+                                
+                                for (int i = 0; i < count; i++){
+                                    if (funDel == Fun[i].matricula){
+                                        if((i+1) < count){
+                                        Fun[i] = Fun[i+1];
+                                        }
+                                    }
+                                }
+                                count--;
