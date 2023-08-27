@@ -1,0 +1,22 @@
+Funcionario novoFuncionario;
+
+                                system("cls"); // Limpa a tela
+                                cout << "\nCadastro de Funcionário\n";
+                                cout << "Nome: ";
+                                cin.ignore(); // Limpa o buffer do teclado
+                                cin.getline(novoFuncionario.nome, 50);
+                                cout << "Email: ";
+                                cin >> novoFuncionario.email;
+                                cout << "Matricula: ";
+                                cin >> novoFuncionario.matricula;
+                                cout << "Telefone: ";
+                                cin >> novoFuncionario.fone;
+                                
+
+                                // Adiciona o novo funcionário ao array e incrementa o contador
+                                funcionariosCadastrados[totalFuncionarios] = novoFuncionario;
+                                totalFuncionarios++;
+
+                                system("cls");
+                                cout << "\nFuncionário cadastrado com sucesso:\n";
+                                system("pause");
