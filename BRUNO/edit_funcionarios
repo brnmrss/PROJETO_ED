@@ -1,0 +1,44 @@
+system("cls");
+
+                                    cout << "\nFuncionários Cadastrados: "<< totalFuncionarios <<" \n";
+                                for (int i = 0; i < totalFuncionarios; i++) {
+                                    cout << "Aluno " << i + 1 << ":\n";
+                                    cout << "Nome: " << funcionariosCadastrados[i].nome << "\t";
+                                    cout << "Email: " << funcionariosCadastrados[i].email << "\t";
+                                    cout << "Matricula: " << funcionariosCadastrados[i].matricula << "\t";
+                                    cout << "Telefone: " << funcionariosCadastrados[i].fone << "\t";
+                                    
+
+                                    cout << "\n---------------------------------------------------------------\n";
+                                }
+                                
+                                system("cls");
+                                cout << "\n*********************  EDITAR DADOS DE FUNCIONÁRIO ************************ \n";
+                                cout << "Informe a matrícula do funcionário que deseja editar.\n";
+                                cout << "\nMatrícula: \n";
+                                cin >> funEdit;
+                                
+                                for (int i = 0; i < totalFuncionarios; i++) {
+                                    if (funcionariosCadastrados[i].matricula == funEdit) {
+                                        cout << "Funcionário escolhido: " << funcionariosCadastrados[i].nome << endl;
+
+                                        cout << "Digite o novo nome: ";
+                                        cin.ignore();
+                                        cin.getline(funcionariosCadastrados[i].nome, 50);
+
+                                        cout << "Digite o novo email: ";
+                                        cin >> funcionariosCadastrados[i].email;
+
+                                        cout << "Digite a nova matrícula: ";
+                                        cin >> funcionarioCadastrados[i].matricula;
+
+                                        cout << "Digite o novo telefone: ";
+                                        cin >> funcionarioCadastrados[i].fone;
+
+
+                                        cout << "Funcionário editado com sucesso!" << endl;
+                                        break; // Sair do loop ao encontrar o funcionário
+                                    }
+                                }
+
+                                system("pause");
