@@ -1,0 +1,103 @@
+// CONSULTA E RESERVA DE ARM RIOS
+#include <iostream>
+#include <tchar.h>
+#include <windows.h>
+#include <stdlib.h>
+#define ALUNO   20
+#define FUNCIONARIO 10
+#define ARMARIO 25
+#define CURSO 2
+using namespace std;
+
+
+HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+COORD CursorPosition;
+
+void gotoxy(int x, int y){
+  CursorPosition.X = x; // Locates column
+  CursorPosition.Y = y; // Locates Row
+  SetConsoleCursorPosition(console,CursorPosition); // Sets position for next thing to be printed
+}
+
+
+typedef struct {
+    int dataInicio, dataFim, ano;
+} AlunoCurso;
+
+typedef struct {
+    char nome[50], email[50];
+    int matricula, fone, turma, serie;
+} Aluno;
+
+typedef struct {
+    int codigo,matAluno, matFunc, dataRec, dataDev, numArmario;
+} Reserva;
+
+typedef struct {
+    char nome[20], usuario[20], email[20];
+    int matricula, senha, fone;
+} Funcionario;
+
+typedef struct {
+    char estado[20], disponivel[20];
+    int numero;
+} Armario;
+
+typedef struct {
+    char nome[20];
+    int codigo;
+} Curso;
+
+
+
+int main(){
+    Funcionario funcionario[CURSO]; //vetor de dados dos funcionarios
+    int i;
+
+    //coleta de dados para testes
+     for (i = 0; i < CURSO; i++) {
+        fflush(stdin);
+        cout << "Digite o nome do Funcionario: ";
+        gets(funcionario[i].nome);
+        cout << "Digite a Matricula do Funcionario: ";
+        cin >> funcionario[i].matricula;
+        fflush(stdin);
+        cout << "Digite o e-mail do Funcionario: ";
+        gets(funcionario[i].email);
+        cout << "Digite o numero de telefone do Funcionario: ";
+        cin >> funcionario[i].fone;
+        cout << "Digite a usuario: ";
+        cin >> funcionario[i].usuario;
+    }
+
+    system("cls");
+
+        //Impressção do cabeçalho da tabela
+        system("cls");
+        gotoxy(5,5);
+        cout << "Matricula";
+        gotoxy(20,5);
+        cout << "Nome";
+        gotoxy(55,5);
+        cout << "E-mail";
+        gotoxy(80,5);
+        cout << "Contato";
+        gotoxy(95,5);
+        cout << "Usuario";
+
+        // Impressão dos dados da teabela
+         for(i=0;i<CURSO; i++){
+            //atribuição dos dados de aluno, armario, funcionario à reserva
+
+             gotoxy(5,6+i);
+             cout<< funcionario[i].matricula;
+             gotoxy(20,6+i);
+             cout << funcionario[i].nome;
+             gotoxy(55,6+i);
+             cout << funcionario[i].email;
+             gotoxy(80,6+i);
+             cout << funcionario[i].fone;
+             gotoxy(95,6+i);
+             cout<< funcionario[i].usuario;
+         }
+}
