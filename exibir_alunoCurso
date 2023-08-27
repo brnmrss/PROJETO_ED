@@ -1,0 +1,110 @@
+// CONSULTA E RESERVA DE ARM RIOS
+#include <iostream>
+#include <tchar.h>
+#include <windows.h>
+#include <stdlib.h>
+#define ALUNO   20
+#define FUNCIONARIO 10
+#define ARMARIO 25
+#define CURSO 2
+using namespace std;
+
+
+HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+COORD CursorPosition;
+
+void gotoxy(int x, int y){
+  CursorPosition.X = x; // Locates column
+  CursorPosition.Y = y; // Locates Row
+  SetConsoleCursorPosition(console,CursorPosition); // Sets position for next thing to be printed
+}
+
+
+typedef struct {
+    int dataInicio, dataFim, ano, matAluno, codCurso; //Adicionei matALuno e CodCurso à struct
+} AlunoCurso;
+
+typedef struct {
+    char nome[50], email[50];
+    int matricula, fone, turma, serie;
+} Aluno;
+
+typedef struct {
+    int codigo,matAluno, matFunc, dataRec, dataDev, numArmario;
+} Reserva;
+
+typedef struct {
+    char nome[20], usuario[20], email[02];
+    int matricula, senha, fone;
+} Funcionario;
+
+typedef struct {
+    char estado[20], disponivel[20];
+    int numero;
+} Armario;
+
+typedef struct {
+    char nome[20];
+    int codigo;
+} Curso;
+
+
+
+int main(){
+    Aluno student[CURSO]; //vetor de dados do funcionarios
+    Curso curso[CURSO];
+    AlunoCurso alunoCurso[CURSO];
+    int i;
+
+    //coleta de dados para testes
+     for (i = 0; i < CURSO; i++) {
+        fflush(stdin);
+        cout << "Digite o nome do aluno: ";
+        gets(student[i].nome);
+        cout << "Digite a Matricula do Aluno: ";
+        cin >> student[i].matricula;
+        fflush(stdin);
+        cout << "Digite a turma: ";
+        cin >> student[i].turma;
+        cout << "Digite o codigo do Curso: ";
+        cin >> curso[i].codigo;
+        fflush(stdin);
+        cout << "Digite o nome do curso: ";
+        gets(curso[i].nome);
+        cout << "Data de inicio: ";
+        cin >> alunoCurso[i].dataInicio;
+        cout << "Data de encerramento: ";
+        cin  >> alunoCurso[i].dataFim;
+     }
+
+        //Impressção do cabeçalho da tabela
+        system("cls");
+        gotoxy(5,5);
+        cout << "Matricula";
+        gotoxy(20,5);
+        cout << "Codigo do Curso";
+        gotoxy(55,5);
+        cout << "Inicio";
+        gotoxy(80,5);
+        cout << "Encerramento";
+        gotoxy(95,5);
+        cout << "Ano";
+
+        // Impressão dos dados da teabela
+         for(i=0;i<CURSO; i++){
+            //Atribuir dados ao vetor do tipo AlunoCurso
+            alunoCurso[i].matAluno = student[i].matricula;
+            alunoCurso[i].codCurso = curso[i].codigo;
+            alunoCurso[i].ano= 2023; //Deixei como constante, não tinha certeza se era o ano atual
+             gotoxy(5,6+i);
+             cout<< alunoCurso[i].matAluno;
+             gotoxy(20,6+i);
+             cout << alunoCurso[i].codCurso;
+             gotoxy(55,6+i);
+             cout << alunoCurso[i].dataInicio;
+             gotoxy(80,6+i);
+             cout << alunoCurso[i].dataFim;
+             gotoxy(95,6+i);
+             cout<< alunoCurso[i].ano;
+         }
+}
