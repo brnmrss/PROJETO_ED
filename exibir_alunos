@@ -1,0 +1,102 @@
+// CONSULTA E RESERVA DE ARM RIOS
+#include <iostream>
+#include <tchar.h>
+#include <windows.h>
+#include <stdlib.h>
+#define ALUNO   20
+#define FUNCIONARIO 10
+#define ARMARIO 25
+#define CURSO 2
+using namespace std;
+
+
+HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+COORD CursorPosition;
+
+void gotoxy(int x, int y){
+  CursorPosition.X = x; // Locates column
+  CursorPosition.Y = y; // Locates Row
+  SetConsoleCursorPosition(console,CursorPosition); // Sets position for next thing to be printed
+}
+
+
+typedef struct {
+    int dataInicio, dataFim, ano;
+} AlunoCurso;
+
+typedef struct {
+    char nome[50], email[50];
+    int matricula, fone, turma, serie;
+} Aluno;
+
+typedef struct {
+    int codigo,matAluno, matFunc, dataRec, dataDev, numArmario;
+} Reserva;
+
+typedef struct {
+    char nome[20], usuario[20], email[20];
+    int matricula, senha, fone;
+} Funcionario;
+
+typedef struct {
+    char estado[20], disponivel[20];
+    int numero;
+} Armario;
+
+typedef struct {
+    char nome[20];
+    int codigo;
+} Curso;
+
+
+
+int main(){
+    Aluno student[CURSO]; //vetor de dados do aluno
+    int i;
+
+    //coleta de dados para testes
+     for (i = 0; i < CURSO; i++) {
+        fflush(stdin);
+        cout << "Digite o nome do aluno: ";
+        gets(student[i].nome);
+        cout << "Digite a Matricula do Aluno: ";
+        cin >> student[i].matricula;
+        fflush(stdin);
+        cout << "Digite o e-mail do aluno: ";
+        gets(student[i].email);
+        cout << "Digite o numero de telefone do aluno: ";
+        cin >> student[i].fone;
+        cout << "Digite a turma: ";
+        cin >> student[i].turma;
+    }
+
+    system("cls");
+
+        //Impressção do cabeçalho da tabela
+        system("cls");
+        gotoxy(5,5);
+        cout << "Matricula";
+        gotoxy(20,5);
+        cout << "Nome";
+        gotoxy(65,5);
+        cout << "E-mail";
+        gotoxy(95,5);
+        cout << "Contato";
+        gotoxy(115,5);
+        cout << "Turma";
+
+        // Impressão dos dados da teabela
+         for(i=0;i<CURSO; i++){
+
+             gotoxy(5,6+i);
+             cout<< student[i].matricula;
+             gotoxy(20,6+i);
+             cout << student[i].nome;
+             gotoxy(65,6+i);
+             cout << student[i].email;
+             gotoxy(95,6+i);
+             cout << student[i].fone;
+             gotoxy(115,6+i);
+             cout<< student[i].turma;
+         }
+}
