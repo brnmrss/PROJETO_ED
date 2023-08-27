@@ -1,0 +1,15 @@
+system("cls");
+
+                                cout << "\nFuncionários Cadastrados: "<< totalFuncionarios <<" \n";
+                                for (int i = 0; i < totalFuncionarios; i++) {
+                                    cout << "Aluno " << i + 1 << ":\n";
+                                    cout << "Nome: " << funcionariosCadastrados[i].nome << "\t";
+                                    cout << "Email: " << funcionariosCadastrados[i].email << "\t";
+                                    cout << "Matricula: " << funcionariosCadastrados[i].matricula << "\t";
+                                    cout << "Telefone: " << funcionariosCadastrados[i].fone << "\t";
+                                    
+
+                                    cout << "\n---------------------------------------------------------------\n";
+                                }
+
+                                system("pause");
