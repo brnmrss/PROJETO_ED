@@ -1,0 +1,40 @@
+system("cls");
+
+                                    cout << "\nFuncionários Cadastrados: "<< totalFuncionarios <<" \n";
+                                for (int i = 0; i < totalFuncionarios; i++) {
+                                    cout << "Aluno " << i + 1 << ":\n";
+                                    cout << "Nome: " << funcionariosCadastrados[i].nome << "\t";
+                                    cout << "Email: " << funcionariosCadastrados[i].email << "\t";
+                                    cout << "Matricula: " << funcionariosCadastrados[i].matricula << "\t";
+                                    cout << "Telefone: " << funcionariosCadastrados[i].fone << "\t";
+                                    
+
+                                    cout << "\n---------------------------------------------------------------\n";
+                                }
+                                
+                                cout << "\n*********************  DELETAR CADASTRO DE FUNCIONÁRIO ************************ \n";
+                                cout << "Informe a matrícula do funcionário que deseja deletar.\n";
+                                cout << "\nMatrícula: \n";
+                                cin >> funDel;
+                                
+                                int novoTotalFuncionarios = 0; // Armazena o total de funcionários após a exclusão
+
+                                    // Criar um novo array temporário
+                                    Funcionario novosFuncionariosCadastrados[FUNCIONARIO];
+
+                                    for (int i = 0; i < totalFuncionarios; i++) {
+                                        if (funDel != funcionariosCadastrados[i].matricula) {
+                                            novosFuncionariosCadastrados[novoTotalFuncionarios] = funcionariosCadastrados[i];
+                                            novoTotalFuncionarios++;
+                                        }
+                                    }
+
+                                    if (novoTotalFuncionarios < totalFuncionarios) {
+                                        // Exclusão bem-sucedida, atualizar o array principal
+                                        totalFuncionarios = novoTotalFuncionarios;
+                                        for (int i = 0; i < totalFuncionarios; i++) {
+                                            funcionariosCadastrados[i] = novosFuncionariosCadastrados[i];
+                                        }
+                                    } else {
+                                        cout << "Funcionário não encontrado para exclusão." << endl;
+                                    }
