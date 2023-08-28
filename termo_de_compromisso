@@ -1,0 +1,89 @@
+/// CONSULTA E RESERVA DE ARMÁRIOS
+#include <iostream>
+#include <tchar.h>
+#include <windows.h>
+#include <stdlib.h>
+#define ALUNO   20
+#define FUNCIONARIO 10
+#define ARMARIO 25
+#define CURSO 2
+using namespace std;
+
+
+HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+COORD CursorPosition;
+
+void gotoxy(int x, int y){
+  CursorPosition.X = x; // Locates column
+  CursorPosition.Y = y; // Locates Row
+  SetConsoleCursorPosition(console,CursorPosition); // Sets position for next thing to be printed
+}
+
+
+typedef struct {
+    int dataInicio, dataFim, ano;
+} AlunoCurso;
+
+typedef struct {
+    char nome[50], email[50];
+    int matricula, fone, turma, serie;
+} Aluno;
+
+typedef struct {
+    int codigo,matAluno, matFunc, dataRec, dataDev, numArmario, alunoSerie;
+} Reserva;
+
+typedef struct {
+    char nome[20], usuario[20], email[20];
+    int matricula, senha, fone;
+} Funcionario;
+
+typedef struct {
+    char estado[20], disponivel[20];
+    int numero;
+} Armario;
+
+typedef struct {
+    char nome[20];
+    int codigo;
+} Curso;
+
+int main() {
+    setlocale(LC_ALL, "Portuguese");
+    Aluno student[CURSO]; // dados do aluno
+    Armario locker[CURSO]; // dados do armario
+    Reserva reserva[CURSO]; // dados da reserva
+    //Inserção de dados para testes
+    for(int i = 0; i<CURSO; i++){
+
+        fflush(stdin);
+        cout << "Informe o nome do aluno: ";
+        gets(student[i].nome);
+
+        cout << "Informe a serie do aluno: ";
+        cin >> student[i].serie;
+
+        cout << "Informe a turma do aluno: ";
+        cin >> student[i].turma;
+
+        cout << "Informe a matrícula do aluno: ";
+        cin >> student[i].matricula;
+
+        cout << "Informe a data de empréstimo: ";
+        cin >> reserva[i].dataRec;
+
+        cout << "Informe a data de devolução: ";
+        cin >> reserva[i].dataDev;
+    }
+    system("cls");
+    for(int i = 0; i<CURSO; i++){
+        cout << "\n--- TERMO DE COMPROMISSO ---\n";
+        cout << "Eu, " << student[i].nome << ", aluno da série " << student[i].serie << " - " << student[i].turma << ", matrícula " << student[i].matricula << ", comprometo-me a fazer o uso responsável do armário escolar.\n";
+        cout << "Declaro que recebi o armário em " << reserva[i].dataRec << " e me comprometo a devolvê-lo até " << reserva[i].dataDev << ".\n";
+        cout << "Caso haja danos ao armário, me responsabilizo por arcar com os custos de reparo ou substituição.\n";
+        cout << "Assinatura: ____________________\n";
+        cout << "Data: ____/____/____\n";
+    }
+    return 0;
+}
+
