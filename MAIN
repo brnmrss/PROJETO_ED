@@ -42,15 +42,15 @@ typedef struct {
 int main(){
     setlocale(LC_ALL, "Portuguese");
 
-    int opMenu, opFechar, count = 0, codigo = 0; // a variável count irá representar a quantidade de registros já armazenados
+    int opMenu, opFechar, codigo = 0;
     int opArm, numEdit, codigoDel;
-    int opAlu, alunoEdit, alunoDel;
-    int opFun, funEdit, funDel;
+    int opAlu, alunoEdit, alunoDel, totalAlunos = 0;
+    int opFun, funEdit, funDel, totalFuncionarios = 0;
 
     AlunoCurso AluCurso[ALUNO];
-    Aluno Alu[ALUNO];
+    Aluno alunosCadastrados[ALUNO];
     Reserva Res[ARMARIO];
-    Funcionario Fun[FUNCIONARIO];
+    Funcionario funcionariosCadastrados[FUNCIONARIO];
     Armario Arm[ARMARIO];
     Curso Crs[CURSO];
 
