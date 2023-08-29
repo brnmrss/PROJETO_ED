@@ -16,7 +16,7 @@ typedef struct {
 } AlunoCurso;
 
 typedef struct {
-    char nome[], email[];
+    char nome[30], email[40];
     int matricula, fone, turmaSerie;
 } Aluno;
 
@@ -25,17 +25,17 @@ typedef struct {
 } Reserva;
 
 typedef struct {
-    char nome[], usuario[], email[];
+    char nome[30], usuario[10], email[40];
     int matricula, senha, fone;
 } Funcionario;
 
 typedef struct {
-    char estado[], disponivel[];
+    char estado[10], disponivel[5];
     int numero;
 } Armario;
 
 typedef struct {
-    char nome[];
+    char nome[25];
     int codigo;
 } Curso;
 
