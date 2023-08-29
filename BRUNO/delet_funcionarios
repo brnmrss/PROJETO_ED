@@ -17,7 +17,7 @@ system("cls");
                                 cout << "\nMatrícula: \n";
                                 cin >> funDel;
                                 
-                                int novoTotalFuncionarios = 0; // Armazena o total de funcionários após a exclusão
+                                int novoTotalFuncionarios; // Armazena o total de funcionários após a exclusão
 
                                     // Criar um novo array temporário
                                     Funcionario novosFuncionariosCadastrados[FUNCIONARIO];
