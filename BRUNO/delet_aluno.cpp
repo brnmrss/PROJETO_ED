@@ -1,22 +1,10 @@
-                                system("cls");
-                                 cout << "\nAlunos Cadastrados: "<< totalAlunos <<" \n";
-                                for (int i = 0; i < totalAlunos; i++) {
-                                    cout << "Aluno " << i + 1 << ":\n";
-                                    cout << "Nome: " << alunosCadastrados[i].nome << "\t";
-                                    cout << "Email: " << alunosCadastrados[i].email << "\t";
-                                    cout << "Matricula: " << alunosCadastrados[i].matricula << "\t";
-                                    cout << "Telefone: " << alunosCadastrados[i].fone << "\t";
-                                    cout << "Turma/Serie: " << alunosCadastrados[i].turmaSerie << "\t";
-
-                                    cout << "\n---------------------------------------------------------------\n";
-                                }
-
+system("cls");
                                 cout << "\n*********************  DELETAR CADASTRO DE ALUNO ************************ \n";
                                 cout << "Informe a matrícula do aluno que deseja deletar.\n";
-                                cout << "\nMatrícula: ";
+                                cout << "\nMatrícula: \n";
                                 cin >> alunoDel;
 
-                                int novoTotalAlunos = 0; // Armazena o total de alunos após a exclusão
+                                int novoTotalAlunos; // Armazena o total de alunos após a exclusão
 
                                     // Criar um novo array temporário
                                     Aluno novosAlunosCadastrados[ALUNO];
@@ -35,5 +23,5 @@
                                             alunosCadastrados[i] = novosAlunosCadastrados[i];
                                         }
                                     } else {
-                                        cout << "Aluno não encontrado para exclusão." << endl;
+                                        cout << "Aluno não encontrado para exclusão.";
                                     }
