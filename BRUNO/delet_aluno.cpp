@@ -22,6 +22,9 @@ system("cls");
                                         for (int i = 0; i < totalAlunos; i++) {
                                             alunosCadastrados[i] = novosAlunosCadastrados[i];
                                         }
+                                      system("cls");
+                                      cout << "exito";
+                                      system("pause");
                                     } else {
                                         cout << "Aluno não encontrado para exclusão.";
                                     }
