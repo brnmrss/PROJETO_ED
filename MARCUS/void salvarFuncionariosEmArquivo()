@@ -1,19 +1,17 @@
-void salvarFuncionariosEmArquivo() {
-    FILE* arquivo = fopen("funcionarios.txt", "w");
+void carregarFuncionariosDeArquivo()
+{
+    FILE* arquivo = fopen("funcionarios.txt", "r");
 
-    if (arquivo) {
-        for (int i = 0; i < totalFuncionarios; i++) {
-            fprintf(arquivo, "%s %s %s %d %d %d\n",
-                    funcionariosCadastrados[i].nome,
-                    funcionariosCadastrados[i].usuario,
-                    funcionariosCadastrados[i].email,
-                    funcionariosCadastrados[i].matricula,
-                    funcionariosCadastrados[i].senha,
-                    funcionariosCadastrados[i].telefone);
+        totalFuncionarios = 0;
+        while (fscanf(arquivo, "%s %d %s %d %s %d\n",
+                      funcionariosCadastrados[totalFuncionarios].nome,
+                      &funcionariosCadastrados[totalFuncionarios].matricula,
+                      funcionariosCadastrados[totalFuncionarios].email,
+                      &funcionariosCadastrados[totalFuncionarios].telefone,
+                      funcionariosCadastrados[totalFuncionarios].usuario,
+                      &funcionariosCadastrados[totalFuncionarios].senha) != EOF)
+        {
+            totalFuncionarios++;
         }
         fclose(arquivo);
-        cout << "Cadastros salvos em arquivo." << endl;
-    } else {
-        cout << "Não foi possível abrir o arquivo para escrita." << endl;
-    }
 }
