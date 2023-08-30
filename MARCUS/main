@@ -1,1 +1,482 @@
+#include <iostream>
+#include <string>
+#include <locale.h>
+#include <cstdlib>
+#define FUNCIONARIOS 10
+#define ALUNOS 10
+
+using namespace std;
+
+typedef struct
+{
+    char nome[50], usuario[50], email[50];
+    int matricula, senha, telefone;
+} Funcionario;
+
+typedef struct
+{
+    char nome[50], email[50];
+    int matricula, telefone, turmaSerie;
+} Aluno;
+
+Funcionario funcionariosCadastrados[FUNCIONARIOS];
+int totalFuncionarios = 0;
+
+Aluno alunosCadastrados[ALUNOS];
+int totalAlunos = 0;
+
+void salvarFuncionariosEmArquivo()
+{
+    FILE* arquivo = fopen("funcionarios.txt", "w");
+
+    if (arquivo)
+    {
+        for (int i = 0; i < totalFuncionarios; i++)
+        {
+            fprintf(arquivo, "%s %s %s %d %d %d\n",
+                    funcionariosCadastrados[i].nome,
+                    funcionariosCadastrados[i].usuario,
+                    funcionariosCadastrados[i].email,
+                    funcionariosCadastrados[i].matricula,
+                    funcionariosCadastrados[i].senha,
+                    funcionariosCadastrados[i].telefone);
+        }
+        fclose(arquivo);
+        cout << "Cadastros salvos em arquivo." << endl;
+    }
+    else
+    {
+        cout << "Não foi possível abrir o arquivo para escrita." << endl;
+    }
+}
+
+void carregarFuncionariosDeArquivo()
+{
+    FILE* arquivo = fopen("funcionarios.txt", "r");
+
+    if (arquivo)
+    {
+        totalFuncionarios = 0;
+        while (fscanf(arquivo, "%s %s %s %d %d %d\n",
+                      funcionariosCadastrados[totalFuncionarios].nome,
+                      funcionariosCadastrados[totalFuncionarios].usuario,
+                      funcionariosCadastrados[totalFuncionarios].email,
+                      &funcionariosCadastrados[totalFuncionarios].matricula,
+                      &funcionariosCadastrados[totalFuncionarios].senha,
+                      &funcionariosCadastrados[totalFuncionarios].telefone) != EOF)
+        {
+            totalFuncionarios++;
+        }
+        fclose(arquivo);
+        cout << "Cadastros carregados do arquivo." << endl;
+    }
+    else
+    {
+        cout << "Não foi possível abrir o arquivo para leitura." << endl;
+    }
+}
+
+void cadastrarFuncionario()
+{
+    Funcionario novoFuncionario;
+
+    system("cls");
+    cout << "\nCadastro de Funcionário\n";
+    cout << "Nome: ";
+    cin.ignore();
+    cin.getline(novoFuncionario.nome, 50);
+    cout << "Usuário: ";
+    cin >> novoFuncionario.usuario;
+    cout << "Email: ";
+    cin >> novoFuncionario.email;
+    cout << "Matrícula: ";
+    cin >> novoFuncionario.matricula;
+    cout << "Senha: ";
+    cin >> novoFuncionario.senha;
+    cout << "Telefone: ";
+    cin >> novoFuncionario.telefone;
+
+    funcionariosCadastrados[totalFuncionarios] = novoFuncionario;
+    totalFuncionarios++;
+
+    system("cls");
+    cout << "\nFuncionário cadastrado com sucesso:\n";
+    salvarFuncionariosEmArquivo();
+
+
+    system("pause");
+}
+
+void editarFuncionario()
+{
+    system("cls");
+    cout << "\nEditar Funcionário\n";
+
+    cout << "Lista de Funcionários:\n";
+    for (int i = 0; i < totalFuncionarios; i++)
+    {
+        cout << "Matrícula: " << funcionariosCadastrados[i].matricula << " - Nome: " << funcionariosCadastrados[i].nome << endl;
+    }
+
+    int matriculaEscolhida,opcao;
+    cout << "\nDigite a Matrícula do funcionário que deseja editar: ";
+    cin >> matriculaEscolhida;
+
+    for (int i = 0; i < totalFuncionarios; i++)
+    {
+        if (funcionariosCadastrados[i].matricula == matriculaEscolhida)
+        {
+            cout << "Funcionário escolhido: " << funcionariosCadastrados[i].nome << endl;
+
+            cout << "Digite o novo nome: ";
+            cin.ignore();
+            cin.getline(funcionariosCadastrados[i].nome, 50);
+
+            cout << "Digite o novo usuário: ";
+            cin >> funcionariosCadastrados[i].usuario;
+
+            cout << "Digite o novo email: ";
+            cin >> funcionariosCadastrados[i].email;
+
+            cout << "Digite a nova matrícula: ";
+            cin >> funcionariosCadastrados[i].matricula;
+
+            cout << "Digite a nova senha: ";
+            cin >> funcionariosCadastrados[i].senha;
+
+            cout << "Digite o novo telefone: ";
+            cin >> funcionariosCadastrados[i].telefone;
+
+            cout << "Funcionário editado com sucesso!" << endl;
+            break;
+        }
+    }
+
+    system("pause");
+}
+
+void visualizarFuncionarios()
+{
+    system("cls");
+
+    cout << "\nFuncionários Cadastrados:\n";
+    for (int i = 0; i < totalFuncionarios; i++)
+    {
+        cout << "Funcionário " << i + 1 << ":\n";
+        cout << "Nome: " << funcionariosCadastrados[i].nome << "\t";
+        cout << "Usuário: " << funcionariosCadastrados[i].usuario << "\t";
+        cout << "Email: " << funcionariosCadastrados[i].email << "\t";
+        cout << "Matrícula: " << funcionariosCadastrados[i].matricula << "\t";
+        cout << "Senha: " << funcionariosCadastrados[i].senha << "\t";
+        cout << "Telefone: " << funcionariosCadastrados[i].telefone << "\t";
+        cout << "\n------------------------------------------------------\n";
+    }
+
+    system("pause");
+}
+
+void menuFuncionarios()
+{
+    int opcaoFuncionarios;
+
+    do
+    {
+        system("cls");
+        cout << "\nMenu Funcionários\n";
+        cout << "Opções:\n";
+        cout << "1. Adicionar\n";
+        cout << "2. Editar\n";
+        cout << "3. Visualizar\n";
+        cout << "4. Excluir\n";
+        cout << "5. Voltar\n";
+        cout << "Escolha uma opção do menu: ";
+        cin >> opcaoFuncionarios;
+
+        switch (opcaoFuncionarios)
+        {
+        case 1:
+            cadastrarFuncionario();
+            break;
+        case 2:
+            cout << "Opção Editar Funcionário selecionada." << endl;
+            editarFuncionario();
+            break;
+        case 3:
+            cout << "Opção Visualizar Funcionário selecionada." << endl;
+            visualizarFuncionarios();
+            break;
+        case 4:
+            cout << "Opção Excluir Funcionário selecionada." << endl;
+            system("pause");
+            break;
+        case 5:
+            cout << "Voltando ao Menu Principal." << endl;
+            break;
+        default:
+            cout << "Opção inválida. Por favor, escolha uma opção do menu." << endl;
+            break;
+        }
+    }
+    while (opcaoFuncionarios != 5);
+}
+
+void cadastrarAluno()
+{
+    Aluno novoAluno;
+
+    system("cls");
+    cout << "\nCadastro de ALuno\n";
+    cout << "Nome: ";
+    cin.ignore(); // Limpa o buffer do teclado
+    cin.getline(novoAluno.nome, 50);
+    cout << "Email: ";
+    cin >> novoAluno.email;
+    cout << "Matricula: ";
+    cin >> novoAluno.matricula;
+    cout << "Telefone: ";
+    cin >> novoAluno.telefone;
+    cout << "Turma/Serie: ";
+    cin >> novoAluno.turmaSerie;
+
+    alunosCadastrados[totalAlunos] = novoAluno;
+    totalAlunos++;
+
+    system("cls");
+    cout << "\nAluno cadastrado com sucesso:\n";
+    system("pause");
+}
+
+void editarAlunos()
+{
+    system("cls");
+    cout << "\nEditar Alunos\n";
+
+    cout << "Lista de Alunos:\n";
+    for (int i = 0; i < totalAlunos; i++)
+    {
+        cout << "Matrícula: " << alunosCadastrados[i].matricula << "\tNome: " << alunosCadastrados[i].nome << endl;
+    }
+
+    int matriculaEscolhida;
+    cout << "\nDigite a Matrícula do funcionário que deseja editar: ";
+    cin >> matriculaEscolhida;
+
+    for (int i = 0; i < totalAlunos; i++)
+    {
+        if (alunosCadastrados[i].matricula == matriculaEscolhida)
+        {
+            cout << "Aluno escolhido: " << alunosCadastrados[i].nome << endl;
+
+            cout << "Digite o novo nome: ";
+            cin.ignore();
+            cin.getline(alunosCadastrados[i].nome, 50);
+
+            cout << "Digite o novo email: ";
+            cin >> alunosCadastrados[i].email;
+
+            cout << "Digite a nova matrícula: ";
+            cin >> alunosCadastrados[i].matricula;
+
+            cout << "Digite o novo telefone: ";
+            cin >> alunosCadastrados[i].telefone;
+
+            cout << "Digite a nova Turma/Serie: ";
+            cin >> alunosCadastrados[i].turmaSerie;
+
+            cout << "Aluno editado com sucesso!" << endl;
+            break;
+        }
+    }
+
+    system("pause");
+}
+
+void visualizarAlunos()
+{
+    system("cls");
+
+    cout << "\Alunos Cadastrados:\n";
+    for (int i = 0; i < totalAlunos; i++)
+    {
+        cout << "Aluno " << i + 1 << ":\n";
+        cout << "Nome: " << alunosCadastrados[i].nome << "\t";
+        cout << "Email: " << alunosCadastrados[i].email << "\t";
+        cout << "Matricula: " << alunosCadastrados[i].matricula << "\t";
+        cout << "Telefone: " << alunosCadastrados[i].telefone << "\t";
+        cout << "Turma/Serie: " << alunosCadastrados[i].turmaSerie << "\t";
+
+        cout << "\n---------------------------------------------------------------\n";
+    }
+
+    system("pause");
+}
+
+void menuAlunos()
+{
+    int opcaoAlunos;
+
+    do
+    {
+        system("cls");
+        cout << "\nMenu Alunos\n";
+        cout << "Opções:\n";
+        cout << "1. Adicionar\n";
+        cout << "2. Editar\n";
+        cout << "3. Visualizar\n";
+        cout << "4. Excluir\n";
+        cout << "5. Voltar\n";
+        cout << "Escolha uma opção do menu: ";
+        cin >> opcaoAlunos;
+
+        switch (opcaoAlunos)
+        {
+        case 1:
+            cadastrarAluno();
+            break;
+        case 2:
+            cout << "Opção Editar Funcionário selecionada." << endl;
+            editarAlunos();
+            break;
+        case 3:
+            cout << "Opção Visualizar Funcionário selecionada." << endl;
+            visualizarAlunos();
+            break;
+        case 4:
+            cout << "Opção Excluir Funcionário selecionada." << endl;
+            break;
+        case 5:
+            cout << "Voltando ao Menu Principal." << endl;
+            break;
+        default:
+            cout << "Opção inválida. Por favor, escolha uma opção do menu." << endl;
+            break;
+        }
+    }
+    while (opcaoAlunos != 5);
+}
+
+void menuPrincipal()
+{
+    int opcaoMenu;
+
+    do
+    {
+        system("cls");
+        cout << "\nMenu Principal\n";
+        cout << "Opções:\n";
+        cout << "1. Funcionários\n";
+        cout << "2. Alunos\n";
+        cout << "3. Armários\n";
+        cout << "4. Reservas\n";
+        cout << "5. Sair\n";
+        cout << "Escolha uma opção do menu: ";
+        cin >> opcaoMenu;
+
+        switch (opcaoMenu)
+        {
+        case 1:
+            menuFuncionarios();
+            break;
+        case 2:
+            cout << "Opção Alunos selecionada." << endl;
+            menuAlunos();
+            break;
+        case 3:
+            cout << "Opção Armários selecionada." << endl;
+            system("pause");
+            break;
+        case 4:
+            cout << "Opção Reservas selecionada." << endl;
+            system("pause");
+            break;
+        case 5:
+            cout << "Saindo do programa. Até logo!" << endl;
+            system("pause");
+            break;
+        default:
+            cout << "Opção inválida. Por favor, escolha uma opção do menu." << endl;
+            system("pause");
+            break;
+        }
+    }
+    while (opcaoMenu != 5);
+}
+
+void fazerLogin()
+{
+    string nomeUsuario, senha;
+
+    cout << "Login\n";
+    cout << "Nome de Usuário: ";
+    cin >> nomeUsuario;
+    cout << "Senha: ";
+    cin >> senha;
+
+    bool loginValido = false;
+
+    for (int i = 0; i < totalFuncionarios; i++)
+    {
+        if (nomeUsuario == funcionariosCadastrados[i].usuario && senha == to_string(funcionariosCadastrados[i].senha))
+        {
+            loginValido = true;
+            cout << "Login bem-sucedido como " << funcionariosCadastrados[i].nome << ". Acesso concedido!" << endl;
+            system("pause");
+            menuPrincipal();
+            break;
+        }
+    }
+
+    if (!loginValido)
+    {
+        cout << "Credenciais incorretas. Acesso negado!" << endl;
+        system("pause");
+    }
+}
+
+
+
+int main()
+{
+    setlocale(LC_ALL, "Portuguese");
+    carregarFuncionariosDeArquivo();
+    system("cls");
+    int opcao;
+    cout << "Tela Inicial\n";
+    cout << "Opções:\n";
+
+    do
+    {
+        cout << "[1] Entrar\n";
+        cout << "[2] Cadastrar\n";
+        cout << "[3] Sair\n";
+        cout << "Escolha uma opção: ";
+        cin >> opcao;
+
+        switch (opcao)
+        {
+        case 1:
+        {
+            system("cls");
+            fazerLogin();
+            break;
+        }
+        case 2:
+            cadastrarFuncionario();
+            return main();
+            break;
+        case 3:
+            cout << "Até logo.\n";
+            break;
+        default:
+            system("cls");
+            cout << "Opção inválida. Por favor, escolha 1 para Entrar ou 2 para Sair." << endl;
+
+            break;
+        }
+        system("cls");
+    }
+    while(opcao!=2);
+
+    return 0;
+}
 
