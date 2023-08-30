@@ -16,7 +16,7 @@ typedef struct {
 } AlunoCurso;
 
 typedef struct {
-    char nome[], email[];
+    char nome[30], email[40];
     int matricula, fone, turmaSerie;
 } Aluno;
 
@@ -25,17 +25,17 @@ typedef struct {
 } Reserva;
 
 typedef struct {
-    char nome[], usuario[], email[];
+    char nome[30], usuario[10], email[40];
     int matricula, senha, fone;
 } Funcionario;
 
 typedef struct {
-    char estado[], disponivel[];
+    char estado[10], disponivel[5];
     int numero;
 } Armario;
 
 typedef struct {
-    char nome[];
+    char nome[25];
     int codigo;
 } Curso;
 
@@ -44,7 +44,7 @@ int main(){
 
     int opMenu, opFechar, codigo = 0;
     int opArm, numEdit, codigoDel;
-    int opAlu, alunoEdit, alunoDel, totalAlunos = 0;
+    int opAlu, alunoEdit, alunoDel, totalAlunos = 0, novoTotalAlunos = 0;
     int opFun, funEdit, funDel, totalFuncionarios = 0;
 
     AlunoCurso AluCurso[ALUNO];
@@ -57,25 +57,25 @@ int main(){
 // MENU PRINCIPAL
     while(opFechar != 1){
         system("cls");
-        cout << "\n*********************  CONSULTA E RESERVA DE ARMÁRIOS ************************ \n";
-        cout << "Informe qual campo deseja acessar, de acordo com o número: \n";
+        cout << "\n*********************  CONSULTA E RESERVA DE ARMÁRIOS ************************ \n\n";
         cout << "1 - ARMÁRIOS.\n";
         cout << "2 - ALUNOS.\n";
         cout << "3 - FUNCIONÁRIOS.\n";
         cout << "4 - Fechar programa.\n\n";
+        cout << "Informe qual campo deseja acessar, de acordo com o número: ";
         cin >> opMenu;
 
         switch(opMenu){
 // CONSULTA DE ARMÁRIOS E RESERVAS, RESERVAR ARMÁRIO, EDIT RESERVA, DELET RESERVA.
             case 1:
                     system("cls");
-                    cout << "\n*********************  ARMÁRIOS ************************ \n";
-                    cout << "Informe a opção desejada, de acordo com o número: \n";
+                    cout << "\n*********************  ARMÁRIOS ************************ \n\n";
                     cout << "1 - Consultar armários.\n";
                     cout << "2 - Reservar armário.\n";
                     cout << "3 - Editar armário.\n";
                     cout << "4 - Deletar reserva.\n";
                     cout << "5 - Retornar.\n\n";
+                    cout << "Informe a opção desejada, de acordo com o número: ";
                     cin >> opArm;
 
                     switch(opArm){
@@ -95,7 +95,7 @@ int main(){
                             system("cls");
                             cout << "\n*********************  EDITAR ARMÁRIO ************************ \n";
                             cout << "Informe o número do armário que deseja editar.\n";
-                            cout << "\nNúmero: \n";
+                            cout << "\nNúmero: ";
                             cin >> numEdit;
 
                             break;
@@ -106,7 +106,7 @@ int main(){
                             system("cls");
                             cout << "\n*********************  DELETAR RESERVA ************************ \n";
                             cout << "Informe o código da reserva que deseja deletar.\n";
-                            cout << "\nCódigo: \n";
+                            cout << "\nCódigo: ";
                             cin >> codigoDel;
 
                             break;
@@ -124,40 +124,173 @@ int main(){
 // CONSULTAR ALUNOS,CADASTRAR AL, EDIT DADOS AL, DELET AL
             case 2:
                     system("cls");
-                    cout << "\n*********************  ALUNOS ************************ \n";
-                    cout << "Informe a opção desejada, de acordo com o número: \n";
+                    cout << "\n*********************  ALUNOS ************************ \n\n";
                     cout << "1 - Consultar aluno.\n";
                     cout << "2 - Cadastrar aluno.\n";
                     cout << "3 - Editar dados de aluno.\n";
                     cout << "4 - Deletar cadastro de aluno.\n";
                     cout << "5 - Retornar.\n\n";
+                    cout << "Informe a opção desejada, de acordo com o número: ";
                     cin >> opAlu;
 
                     switch(opAlu){
 
     // CONSULTAR ALUNO
                         case 1:
+                                system("cls");
+
+                                cout << "\nAlunos Cadastrados: "<< totalAlunos <<" \n\n";
+                                for (int i = 0; i < totalAlunos; i++) {
+                                    cout << "Aluno " << i + 1 << ":\n";
+                                    cout << "Nome: " << alunosCadastrados[i].nome << "\t";
+                                    cout << "Email: " << alunosCadastrados[i].email << "\t";
+                                    cout << "Matrícula: " << alunosCadastrados[i].matricula << "\t";
+                                    cout << "Telefone: " << alunosCadastrados[i].fone << "\t";
+                                    cout << "Turma/Série: " << alunosCadastrados[i].turmaSerie << "\t";
+
+                                    cout << "\n---------------------------------------------------------------\n";
+                                }
+
+                                system("pause");
+
 
                            break;
 
     // CADASTRAR ALUNO
                         case 2:
+                                Aluno novoAluno;
+
+                                system("cls"); // Limpa a tela
+                                cout << "\nCadastro de Aluno\n";
+                                cout << "Nome: ";
+                                cin.ignore(); // Limpa o buffer do teclado
+                                cin.getline(novoAluno.nome, 50);
+                                cout << "Email: ";
+                                cin >> novoAluno.email;
+                                cout << "Matrícula: ";
+                                cin >> novoAluno.matricula;
+                                cout << "Telefone: ";
+                                cin >> novoAluno.fone;
+                                cout << "Turma/Série: ";
+                                cin >> novoAluno.turmaSerie;
+
+                                // Adiciona o novo funcionário ao array e incrementa o contador
+                                alunosCadastrados[totalAlunos] = novoAluno;
+                                totalAlunos++;
+
+                                system("cls");
+                                cout << "\nAluno cadastrado com sucesso:\n";
+                                system("pause");
+
 
                             break;
 
     // EDIT DADOS ALUNO
                         case 3:
-                                system("cls");
+
+
+                                    system("cls");
+
+                                cout << "\nAlunos Cadastrados: "<< totalAlunos <<" \n\n";
+                                for (int i = 0; i < totalAlunos; i++) {
+                                    cout << "Aluno " << i + 1 << ":\n";
+                                    cout << "Nome: " << alunosCadastrados[i].nome << "\t";
+                                    cout << "Email: " << alunosCadastrados[i].email << "\t";
+                                    cout << "Matrícula: " << alunosCadastrados[i].matricula << "\t";
+                                    cout << "Telefone: " << alunosCadastrados[i].fone << "\t";
+                                    cout << "Turma/Série: " << alunosCadastrados[i].turmaSerie << "\t";
+
+                                    cout << "\n---------------------------------------------------------------\n";
+                                }
+
+
+
+
                                 cout << "\n*********************  EDITAR DADOS DE ALUNO ************************ \n";
                                 cout << "Informe a matrícula do aluno que deseja editar.\n";
-                                cout << "\nMatrícula: \n";
+                                cout << "\nMatrícula: ";
                                 cin >> alunoEdit;
+
+
+
+                                for (int i = 0; i < totalAlunos; i++) {
+                                    if (alunosCadastrados[i].matricula == alunoEdit) {
+                                        cout << "Aluno escolhido: " << alunosCadastrados[i].nome << endl;
+
+                                        cout << "Digite o novo nome: ";
+                                        cin.ignore();
+                                        cin.getline(alunosCadastrados[i].nome, 50);
+
+                                        cout << "Digite o novo email: ";
+                                        cin >> alunosCadastrados[i].email;
+
+                                        cout << "Digite a nova matrícula: ";
+                                        cin >> alunosCadastrados[i].matricula;
+
+                                        cout << "Digite o novo telefone: ";
+                                        cin >> alunosCadastrados[i].fone;
+
+                                        cout << "Digite a nova Turma/Serie: ";
+                                        cin >> alunosCadastrados[i].turmaSerie;
+
+                                        cout << "Aluno editado com sucesso!" << endl;
+                                        break; // Sair do loop ao encontrar o funcionário
+                                    }
+                                }
+
+                                system("pause");
 
                             break;
 
     // DELETE ALUNO
                         case 4:
-                                
+                                system("cls");
+
+                                cout << "\nAlunos Cadastrados: "<< totalAlunos <<" \n\n";
+                                for (int i = 0; i < totalAlunos; i++) {
+                                    cout << "Aluno " << i + 1 << ":\n";
+                                    cout << "Nome: " << alunosCadastrados[i].nome << "\t";
+                                    cout << "Email: " << alunosCadastrados[i].email << "\t";
+                                    cout << "Matrícula: " << alunosCadastrados[i].matricula << "\t";
+                                    cout << "Telefone: " << alunosCadastrados[i].fone << "\t";
+                                    cout << "Turma/Série: " << alunosCadastrados[i].turmaSerie << "\t";
+
+                                    cout << "\n---------------------------------------------------------------\n";
+                                }
+
+
+
+                                cout << "\n*********************  DELETAR CADASTRO DE ALUNO ************************ \n";
+                                cout << "Informe a matrícula do aluno que deseja deletar.\n";
+                                cout << "\nMatrícula: ";
+                                cin >> alunoDel;
+
+
+
+                                    // Criar um novo array temporário
+                                    Aluno novosAlunosCadastrados[ALUNO];
+
+                                    for (int i = 0; i < totalAlunos; i++) {
+                                        if (alunoDel != alunosCadastrados[i].matricula) {
+                                            novosAlunosCadastrados[novoTotalAlunos] = alunosCadastrados[i];
+                                            novoTotalAlunos++;
+                                        }
+                                    }
+
+                                    if (novoTotalAlunos < totalAlunos) {
+                                        // Exclusão bem-sucedida, atualizar o array principal
+                                        totalAlunos = novoTotalAlunos;
+                                        for (int i = 0; i < totalAlunos; i++) {
+                                            alunosCadastrados[i] = novosAlunosCadastrados[i];
+                                        }
+
+                                    } else {
+                                        system("cls");
+                                        cout << "\nAluno não encontrado para exclusão.\n";
+                                        system("pause");
+                                    }
+
+
                             break;
 
     //RETORNAR
