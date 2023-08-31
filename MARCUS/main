@@ -103,8 +103,25 @@ void cadastrarFuncionario()
     cout << "Informe o nome do funcionário: ";
     cin.ignore();
     cin.getline(novoFuncionario.nome, 50);
-    cout << "Matrícula: ";
-    cin >> novoFuncionario.matricula;
+    bool matriculaExistente;
+
+    do {
+        cout << "Matrícula: ";
+        cin >> novoFuncionario.matricula;
+
+        matriculaExistente = false;
+
+        for (int i = 0; i < totalFuncionarios; i++) {
+            if (novoFuncionario.matricula == funcionariosCadastrados[i].matricula) {
+                matriculaExistente = true;
+                cout << "Matrícula já está em uso. Escolha outra matrícula." << endl;
+                break;
+            }
+        }
+
+    } while (matriculaExistente);
+
+
     cout << "Email: ";
     cin >> novoFuncionario.email;
     cout << "Telefone: ";
