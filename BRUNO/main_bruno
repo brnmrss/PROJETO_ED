@@ -38,18 +38,276 @@ typedef struct {
     int codigo;
 } Curso;
 
+Funcionario funcionariosCadastrados[FUNCIONARIO];
+int totalFuncionarios = 0;
+Aluno alunosCadastrados[ALUNO];
+int totalAlunos = 0;
+
+void cadastrarFuncionario();
+void cadastrarFuncionario(){
+    Funcionario novoFuncionario;
+    system("cls"); // Limpa a tela
+    cout << "\n*********** CADASTRO DE FUNCIONÁRIO ***********\n\n";
+    cout << "Nome: ";
+    cin.ignore(); // Limpa o buffer do teclado
+    cin.getline(novoFuncionario.nome, 50);
+    cout << "Email: ";
+    cin >> novoFuncionario.email;
+    cout << "Matrícula: ";
+    cin >> novoFuncionario.matricula;
+    cout << "Telefone: ";
+    cin >> novoFuncionario.fone;
+
+    funcionariosCadastrados[totalFuncionarios] = novoFuncionario;   // Adiciona o novo funcionário ao array e incrementa o contador
+    totalFuncionarios++;
+
+    system("cls");
+    cout << "\nFuncionário cadastrado com sucesso.\n";
+    system("pause");
+}
+
+void cadastrarAluno();
+void cadastrarAluno(){
+    Aluno novoAluno;
+
+    system("cls"); // Limpa a tela
+    cin.ignore(); // Limpa o buffer do teclado
+    cout << "\n*********** CADASTRO DE ALUNO ***********\n\n";
+    cout << "Nome: ";
+    cin.getline(novoAluno.nome, 50);
+    cout << "Email: ";
+    cin >> novoAluno.email;
+    cout << "Matrícula: ";
+    cin >> novoAluno.matricula;
+    cout << "Telefone: ";
+    cin >> novoAluno.fone;
+    cout << "Turma/Série: ";
+    cin >> novoAluno.turmaSerie;
+
+        // Adiciona o novo aluno ao array e incrementa o contador
+    alunosCadastrados[totalAlunos] = novoAluno;
+    totalAlunos++;
+
+    system("cls");
+    cout << "\nAluno cadastrado com sucesso.\n";
+    system("pause");
+
+}
+
+void mostrarFuncionarios();
+void mostrarFuncionarios(){
+    system("cls");
+    cout << "\nFuncionáios Cadastrados: "<< totalFuncionarios <<" \n\n";
+    for (int i = 0; i < totalFuncionarios; i++) {
+        cout << "Funcionário " << i + 1 << ":\n";
+        cout << "Nome: " << funcionariosCadastrados[i].nome << "\t";
+        cout << "Email: " << funcionariosCadastrados[i].email << "\t";
+        cout << "Matrícula: " << funcionariosCadastrados[i].matricula << "\t";
+        cout << "Telefone: " << funcionariosCadastrados[i].fone << "\t";
+        cout << "\n---------------------------------------------------------------\n";
+    }
+    system("pause");
+}
+
+void mostrarAlunos();
+void mostrarAlunos(){
+    system("cls");
+    cout << "\nAlunos Cadastrados: "<< totalAlunos <<" \n\n";
+    for (int i = 0; i < totalAlunos; i++) {
+        cout << "Aluno " << i + 1 << ":\n";
+        cout << "Nome: " << alunosCadastrados[i].nome << "\t";
+        cout << "Email: " << alunosCadastrados[i].email << "\t";
+        cout << "Matrícula: " << alunosCadastrados[i].matricula << "\t";
+        cout << "Telefone: " << alunosCadastrados[i].fone << "\t";
+        cout << "Turma/Série: " << alunosCadastrados[i].turmaSerie << "\t";
+        cout << "\n---------------------------------------------------------------\n";
+    }
+    system("pause");
+}
+
+void deletFuncionario();
+void deletFuncionario(){
+    int funDel, novoTotalFuncionarios = 0;
+
+    system("cls");
+    cout << "\nFuncionáios Cadastrados: "<< totalFuncionarios <<" \n\n";
+    for (int i = 0; i < totalFuncionarios; i++) {
+        cout << "Funcionário " << i + 1 << ":\n";
+        cout << "Nome: " << funcionariosCadastrados[i].nome << "\t";
+        cout << "Email: " << funcionariosCadastrados[i].email << "\t";
+        cout << "Matrícula: " << funcionariosCadastrados[i].matricula << "\t";
+        cout << "Telefone: " << funcionariosCadastrados[i].fone << "\t";
+        cout << "\n---------------------------------------------------------------\n";
+    }
+
+    cout << "\n*********************  DELETAR CADASTRO DE FUNCIONÁRIO ************************ \n";
+    cout << "Informe a matrícula do funcionário que deseja deletar.\n";
+    cout << "\nMatrícula: ";
+    cin >> funDel;
+
+    // Criar um novo array temporário
+    Funcionario novosFuncionariosCadastrados[FUNCIONARIO];
+    for (int i = 0; i < totalFuncionarios; i++) {
+        if (funDel != funcionariosCadastrados[i].matricula) {
+            novosFuncionariosCadastrados[novoTotalFuncionarios] = funcionariosCadastrados[i];
+            novoTotalFuncionarios++;
+        }
+    }
+    if (novoTotalFuncionarios < totalFuncionarios) {
+        totalFuncionarios = novoTotalFuncionarios;      // Exclusão bem-sucedida, atualizar o array principal
+        for (int i = 0; i < totalFuncionarios; i++) {
+            funcionariosCadastrados[i] = novosFuncionariosCadastrados[i];
+        }
+        system("cls");
+        cout << "\nCadastro deletado.\n";
+        system("pause");
+    } else {
+        system("cls");
+        cout << "\nFuncionário não encontrado para exclusão.\n";
+        system("pause");
+    }
+}
+
+void deletAluno();
+void deletAluno(){
+    int alunoDel, novoTotalAlunos = 0;
+
+    system("cls");
+    cout << "\nAlunos Cadastrados: "<< totalAlunos <<" \n\n";
+    for (int i = 0; i < totalAlunos; i++) {
+        cout << "Aluno " << i + 1 << ":\n";
+        cout << "Nome: " << alunosCadastrados[i].nome << "\t";
+        cout << "Email: " << alunosCadastrados[i].email << "\t";
+        cout << "Matrícula: " << alunosCadastrados[i].matricula << "\t";
+        cout << "Telefone: " << alunosCadastrados[i].fone << "\t";
+        cout << "Turma/Série: " << alunosCadastrados[i].turmaSerie << "\t";
+        cout << "\n---------------------------------------------------------------\n";
+    }
+
+    cout << "\n*********************  DELETAR CADASTRO DE ALUNO ************************ \n";
+    cout << "Informe a matrícula do aluno que deseja deletar.\n";
+    cout << "\nMatrícula: ";
+    cin >> alunoDel;
+
+    // Criar um novo array temporário
+    Aluno novosAlunosCadastrados[ALUNO];
+    for (int i = 0; i < totalAlunos; i++) {
+        if (alunoDel != alunosCadastrados[i].matricula) {
+            novosAlunosCadastrados[novoTotalAlunos] = alunosCadastrados[i];
+            novoTotalAlunos++;
+        }
+    }
+
+    if (novoTotalAlunos < totalAlunos) {
+        totalAlunos = novoTotalAlunos;              // Exclusão bem-sucedida, atualizar o array principal
+        for (int i = 0; i < totalAlunos; i++) {
+            alunosCadastrados[i] = novosAlunosCadastrados[i];
+        }
+        system("cls");
+        cout << "\nCadastro deletado.\n";
+        system("pause");
+    } else {
+        system("cls");
+        cout << "\nAluno não encontrado para exclusão.\n";
+        system("pause");
+    }
+}
+
+void editFuncionario();
+void editFuncionario(){
+    int funEdit;
+
+    system("cls");
+    cout << "\nFuncionáios Cadastrados: "<< totalFuncionarios <<" \n\n";
+    for (int i = 0; i < totalFuncionarios; i++) {
+        cout << "Funcionário " << i + 1 << ":\n";
+        cout << "Nome: " << funcionariosCadastrados[i].nome << "\t";
+        cout << "Email: " << funcionariosCadastrados[i].email << "\t";
+        cout << "Matrícula: " << funcionariosCadastrados[i].matricula << "\t";
+        cout << "Telefone: " << funcionariosCadastrados[i].fone << "\t";
+        cout << "\n---------------------------------------------------------------\n";
+    }
+
+    cout << "\n*********************  EDITAR DADOS DE FUNCIONÁRIO ************************ \n";
+    cout << "Informe a matrícula do funcionário que deseja editar.\n";
+    cout << "\nMatrícula: ";
+    cin >> funEdit;
+
+    for (int i = 0; i < totalFuncionarios; i++) {
+        if (funcionariosCadastrados[i].matricula == funEdit) {
+        cout << "Funcionário escolhido: " << funcionariosCadastrados[i].nome << endl;
+
+        cout << "Digite o novo nome: ";
+        cin.ignore();
+        cin.getline(funcionariosCadastrados[i].nome, 50);
+        cout << "Digite o novo email: ";
+        cin >> funcionariosCadastrados[i].email;
+        cout << "Digite a nova matrícula: ";
+        cin >> funcionariosCadastrados[i].matricula;
+        cout << "Digite o novo telefone: ";
+        cin >> funcionariosCadastrados[i].fone;
+
+        cout << "Funcionário editado com sucesso!" << endl;
+        break; // Sair do loop ao encontrar o funcionário
+        }
+    }
+    system("pause");
+}
+
+void editAluno();
+void editAluno(){
+    int alunoEdit;
+
+    system("cls");
+    cout << "\nAlunos Cadastrados: "<< totalAlunos <<" \n\n";
+    for (int i = 0; i < totalAlunos; i++) {
+        cout << "Aluno " << i + 1 << ":\n";
+        cout << "Nome: " << alunosCadastrados[i].nome << "\t";
+        cout << "Email: " << alunosCadastrados[i].email << "\t";
+        cout << "Matrícula: " << alunosCadastrados[i].matricula << "\t";
+        cout << "Telefone: " << alunosCadastrados[i].fone << "\t";
+        cout << "Turma/Série: " << alunosCadastrados[i].turmaSerie << "\t";
+        cout << "\n---------------------------------------------------------------\n";
+    }
+
+    cout << "\n*********************  EDITAR DADOS DE ALUNO ************************ \n";
+    cout << "Informe a matrícula do aluno que deseja editar.\n";
+    cout << "\nMatrícula: ";
+    cin >> alunoEdit;
+
+    for (int i = 0; i < totalAlunos; i++) {
+        if (alunosCadastrados[i].matricula == alunoEdit) {
+        cout << "Aluno escolhido: " << alunosCadastrados[i].nome << endl;
+
+        cout << "Digite o novo nome: ";
+        cin.ignore();
+        cin.getline(alunosCadastrados[i].nome, 50);
+        cout << "Digite o novo email: ";
+        cin >> alunosCadastrados[i].email;
+        cout << "Digite a nova matrícula: ";
+        cin >> alunosCadastrados[i].matricula;
+        cout << "Digite o novo telefone: ";
+        cin >> alunosCadastrados[i].fone;
+        cout << "Digite a nova Turma/Serie: ";
+        cin >> alunosCadastrados[i].turmaSerie;
+
+        cout << "Aluno editado com sucesso!" << endl;
+        break; // Sair do loop ao encontrar o funcionário
+        }
+    }
+    system("pause");
+}
+
 int main(){
     setlocale(LC_ALL, "Portuguese");
 
     int opMenu, opFechar, codigo = 0;
     int opArm, numEdit, codigoDel;
-    int opAlu, alunoEdit, alunoDel, totalAlunos = 0, novoTotalAlunos = 0;
-    int opFun, funEdit, funDel, totalFuncionarios = 0, novoTotalFuncionarios = 0;
+    int opAlu;
+    int opFun;
 
     AlunoCurso AluCurso[ALUNO];
-    Aluno alunosCadastrados[ALUNO];
     Reserva Res[ARMARIO];
-    Funcionario funcionariosCadastrados[FUNCIONARIO];
     Armario Arm[ARMARIO];
     Curso Crs[CURSO];
 
@@ -65,7 +323,7 @@ int main(){
         cin >> opMenu;
 
         switch(opMenu){
-// CONSULTA DE ARMÁRIOS E RESERVAS, RESERVAR ARMÁRIO, EDIT RESERVA, DELET RESERVA.
+// CONSULTA DE ARMÁRIOS E RESERVAS, EDIT RESERVA, DELET RESERVA.
             case 1:
                     system("cls");
                     cout << "\n*********************  ARMÁRIOS ************************ \n\n";
@@ -128,132 +386,26 @@ int main(){
 
     // CONSULTAR ALUNO
                         case 1:
-                            system("cls");
-                            cout << "\nAlunos Cadastrados: "<< totalAlunos <<" \n\n";
-                            for (int i = 0; i < totalAlunos; i++) {
-                                cout << "Aluno " << i + 1 << ":\n";
-                                cout << "Nome: " << alunosCadastrados[i].nome << "\t";
-                                cout << "Email: " << alunosCadastrados[i].email << "\t";
-                                cout << "Matrícula: " << alunosCadastrados[i].matricula << "\t";
-                                cout << "Telefone: " << alunosCadastrados[i].fone << "\t";
-                                cout << "Turma/Série: " << alunosCadastrados[i].turmaSerie << "\t";
-                                cout << "\n---------------------------------------------------------------\n";
-                            }
-                            system("pause");
+                            mostrarAlunos();
 
-                        break;
+                            break;
 
     // CADASTRAR ALUNO
                         case 2:
-                                Aluno novoAluno;
+                            cadastrarAluno();
 
-                                system("cls"); // Limpa a tela
-                                cin.ignore(); // Limpa o buffer do teclado
-                                cout << "\n*********** CADASTRO DE ALUNO ***********\n\n";
-                                cout << "Nome: ";
-                                cin.getline(novoAluno.nome, 50);
-                                cout << "Email: ";
-                                cin >> novoAluno.email;
-                                cout << "Matrícula: ";
-                                cin >> novoAluno.matricula;
-                                cout << "Telefone: ";
-                                cin >> novoAluno.fone;
-                                cout << "Turma/Série: ";
-                                cin >> novoAluno.turmaSerie;
-
-                                // Adiciona o novo funcionário ao array e incrementa o contador
-                                alunosCadastrados[totalAlunos] = novoAluno;
-                                totalAlunos++;
-
-                                system("cls");
-                                cout << "\nAluno cadastrado com sucesso.\n";
-                                system("pause");
                             break;
 
     // EDIT DADOS ALUNO
                         case 3:
-                            system("cls");
-                            cout << "\nAlunos Cadastrados: "<< totalAlunos <<" \n\n";
-                            for (int i = 0; i < totalAlunos; i++) {
-                                cout << "Aluno " << i + 1 << ":\n";
-                                cout << "Nome: " << alunosCadastrados[i].nome << "\t";
-                                cout << "Email: " << alunosCadastrados[i].email << "\t";
-                                cout << "Matrícula: " << alunosCadastrados[i].matricula << "\t";
-                                cout << "Telefone: " << alunosCadastrados[i].fone << "\t";
-                                cout << "Turma/Série: " << alunosCadastrados[i].turmaSerie << "\t";
-                                cout << "\n---------------------------------------------------------------\n";
-                            }
-
-                            cout << "\n*********************  EDITAR DADOS DE ALUNO ************************ \n";
-                            cout << "Informe a matrícula do aluno que deseja editar.\n";
-                            cout << "\nMatrícula: ";
-                            cin >> alunoEdit;
-
-                            for (int i = 0; i < totalAlunos; i++) {
-                                if (alunosCadastrados[i].matricula == alunoEdit) {
-                                    cout << "Aluno escolhido: " << alunosCadastrados[i].nome << endl;
-
-                                    cout << "Digite o novo nome: ";
-                                    cin.ignore();
-                                    cin.getline(alunosCadastrados[i].nome, 50);
-                                    cout << "Digite o novo email: ";
-                                    cin >> alunosCadastrados[i].email;
-                                    cout << "Digite a nova matrícula: ";
-                                    cin >> alunosCadastrados[i].matricula;
-                                    cout << "Digite o novo telefone: ";
-                                    cin >> alunosCadastrados[i].fone;
-                                    cout << "Digite a nova Turma/Serie: ";
-                                    cin >> alunosCadastrados[i].turmaSerie;
-
-                                    cout << "Aluno editado com sucesso!" << endl;
-                                    break; // Sair do loop ao encontrar o funcionário
-                                }
-                            }
-                            system("pause");
+                            editAluno();
 
                             break;
 
     // DELETE ALUNO
                         case 4:
-                            system("cls");
-                            cout << "\nAlunos Cadastrados: "<< totalAlunos <<" \n\n";
-                            for (int i = 0; i < totalAlunos; i++) {
-                                cout << "Aluno " << i + 1 << ":\n";
-                                cout << "Nome: " << alunosCadastrados[i].nome << "\t";
-                                cout << "Email: " << alunosCadastrados[i].email << "\t";
-                                cout << "Matrícula: " << alunosCadastrados[i].matricula << "\t";
-                                cout << "Telefone: " << alunosCadastrados[i].fone << "\t";
-                                cout << "Turma/Série: " << alunosCadastrados[i].turmaSerie << "\t";
-                                cout << "\n---------------------------------------------------------------\n";
-                            }
+                            deletAluno();
 
-                            cout << "\n*********************  DELETAR CADASTRO DE ALUNO ************************ \n";
-                            cout << "Informe a matrícula do aluno que deseja deletar.\n";
-                            cout << "\nMatrícula: ";
-                            cin >> alunoDel;
-
-                            // Criar um novo array temporário
-                            Aluno novosAlunosCadastrados[ALUNO];
-                            for (int i = 0; i < totalAlunos; i++) {
-                                if (alunoDel != alunosCadastrados[i].matricula) {
-                                    novosAlunosCadastrados[novoTotalAlunos] = alunosCadastrados[i];
-                                    novoTotalAlunos++;
-                                }
-                            }
-
-                            if (novoTotalAlunos < totalAlunos) {
-                                totalAlunos = novoTotalAlunos;              // Exclusão bem-sucedida, atualizar o array principal
-                                for (int i = 0; i < totalAlunos; i++) {
-                                    alunosCadastrados[i] = novosAlunosCadastrados[i];
-                                }
-                                system("cls");
-                                cout << "\nCadastro deletado.\n";
-                                system("pause");
-                            } else {
-                                system("cls");
-                                cout << "\nAluno não encontrado para exclusão.\n";
-                                system("pause");
-                            }
                             break;
 
     //RETORNAR
@@ -266,148 +418,42 @@ int main(){
                     }
                 break;
 
-
-
-
-
-
-
-
-
-
-
-
-
 // CONSULTAR FUNCIONÁRIOS, CADASTRAR FUNCIONÁRIO, EDIT DADOS FUNCIONÁRIOS, DELET FUNCIONÁRIOS
             case 3:
                     system("cls");
                     cout << "\n*********************  FUNCIONÁRIOS ************************ \n";
-                    cout << "Informe a opção desejada, de acordo com o número: \n";
                     cout << "1 - Consultar funcionários.\n";
                     cout << "2 - Cadastrar funcionário.\n";
                     cout << "3 - Editar dados de funcionário.\n";
                     cout << "4 - Deletar cadastro de funcionário.\n";
-                    cout << "5 - Retornar.\n\n";
+                    cout << "5 - Retornar.\n";
+                    cout << "Informe a opção desejada, de acordo com o número: ";
                     cin >> opFun;
 
                     switch(opFun){
 
     // CONSULTAR FUNCIONÁRIOS
                         case 1:
-                            system("cls");
-                            cout << "\nFuncionáios Cadastrados: "<< totalFuncionarios <<" \n\n";
-                            for (int i = 0; i < totalFuncionarios; i++) {
-                                cout << "Funcionário " << i + 1 << ":\n";
-                                cout << "Nome: " << alunosCadastrados[i].nome << "\t";
-                                cout << "Email: " << alunosCadastrados[i].email << "\t";
-                                cout << "Matrícula: " << alunosCadastrados[i].matricula << "\t";
-                                cout << "Telefone: " << alunosCadastrados[i].fone << "\t";
-                                cout << "\n---------------------------------------------------------------\n";
-                            }
-                            system("pause");
+                            mostrarFuncionarios();
+
                             break;
 
     // CADASTRAR FUNCIONÁRIO
                         case 2:
-                            Funcionario novoFuncionario;
-                            system("cls"); // Limpa a tela
-                            cout << "\n*********** CADASTRO DE FUNCIONÁRIO ***********\n\n";
-                            cout << "Nome: ";
-                            cin.ignore(); // Limpa o buffer do teclado
-                            cin.getline(novoFuncionario.nome, 50);
-                            cout << "Email: ";
-                            cin >> novoFuncionario.email;
-                            cout << "Matrícula: ";
-                            cin >> novoFuncionario.matricula;
-                            cout << "Telefone: ";
-                            cin >> novoFuncionario.fone;
+                            cadastrarFuncionario();
 
-                            funcionariosCadastrados[totalFuncionarios] = novoFuncionario;   // Adiciona o novo funcionário ao array e incrementa o contador
-                            totalFuncionarios++;
-
-                            system("cls");
-                            cout << "\nAluno cadastrado com sucesso.\n";
-                            system("pause");
                             break;
 
     // EDIT DADOS FUNCIONÁRIO
                         case 3:
-                            system("cls");
-                            cout << "\nFuncionáios Cadastrados: "<< totalFuncionarios <<" \n\n";
-                            for (int i = 0; i < totalFuncionarios; i++) {
-                                cout << "Funcionário " << i + 1 << ":\n";
-                                cout << "Nome: " << alunosCadastrados[i].nome << "\t";
-                                cout << "Email: " << alunosCadastrados[i].email << "\t";
-                                cout << "Matrícula: " << alunosCadastrados[i].matricula << "\t";
-                                cout << "Telefone: " << alunosCadastrados[i].fone << "\t";
-                                cout << "\n---------------------------------------------------------------\n";
-                            }
+                            editFuncionario();
 
-                            cout << "\n*********************  EDITAR DADOS DE FUNCIONÁRIO ************************ \n";
-                            cout << "Informe a matrícula do funcionário que deseja editar.\n";
-                            cout << "\nMatrícula: ";
-                            cin >> funEdit;
-
-                            for (int i = 0; i < totalFuncionarios; i++) {
-                                if (funcionariosCadastrados[i].matricula == funEdit) {
-                                    cout << "Funcionário escolhido: " << funcionariosCadastrados[i].nome << endl;
-
-                                    cout << "Digite o novo nome: ";
-                                    cin.ignore();
-                                    cin.getline(funcionariosCadastrados[i].nome, 50);
-                                    cout << "Digite o novo email: ";
-                                    cin >> funcionariosCadastrados[i].email;
-                                    cout << "Digite a nova matrícula: ";
-                                    cin >> funcionariosCadastrados[i].matricula;
-                                    cout << "Digite o novo telefone: ";
-                                    cin >> funcionariosCadastrados[i].fone;
-
-                                    cout << "Funcionário editado com sucesso!" << endl;
-                                    break; // Sair do loop ao encontrar o funcionário
-                                    }
-                                }
-                            system("pause");
                             break;
 
     // DELET FUNCIONÁRIO
                         case 4:
-                            system("cls");
-                            cout << "\nFuncionáios Cadastrados: "<< totalFuncionarios <<" \n\n";
-                            for (int i = 0; i < totalFuncionarios; i++) {
-                                cout << "Funcionário " << i + 1 << ":\n";
-                                cout << "Nome: " << alunosCadastrados[i].nome << "\t";
-                                cout << "Email: " << alunosCadastrados[i].email << "\t";
-                                cout << "Matrícula: " << alunosCadastrados[i].matricula << "\t";
-                                cout << "Telefone: " << alunosCadastrados[i].fone << "\t";
-                                cout << "\n---------------------------------------------------------------\n";
-                            }
+                            deletFuncionario();
 
-                            cout << "\n*********************  DELETAR CADASTRO DE FUNCIONÁRIO ************************ \n";
-                            cout << "Informe a matrícula do funcionário que deseja deletar.\n";
-                            cout << "\nMatrícula: ";
-                            cin >> funDel;
-
-                            // Criar um novo array temporário
-                            Funcionario novosFuncionariosCadastrados[FUNCIONARIO];
-                            for (int i = 0; i < totalFuncionarios; i++) {
-                                if (funDel != funcionariosCadastrados[i].matricula) {
-                                novosFuncionariosCadastrados[novoTotalFuncionarios] = funcionariosCadastrados[i];
-                                novoTotalFuncionarios++;
-                                }
-                            }
-                            if (novoTotalFuncionarios < totalFuncionarios) {
-                                totalFuncionarios = novoTotalFuncionarios;      // Exclusão bem-sucedida, atualizar o array principal
-                                for (int i = 0; i < totalFuncionarios; i++) {
-                                    funcionariosCadastrados[i] = novosFuncionariosCadastrados[i];
-                                }
-                                system("cls");
-                                cout << "\nCadastro deletado.\n";
-                                system("pause");
-                            } else {
-                                system("cls");
-                                cout << "\nFuncionário não encontrado para exclusão.\n";
-                                system("pause");
-                            }
                             break;
     // RETORNAR
                         case 5:
