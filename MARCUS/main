@@ -32,34 +32,34 @@ void salvarFuncionariosEmArquivo()
 
     FILE* arquivo = fopen("funcionarios.txt", "w");
 
-        for (int i = 0; i < totalFuncionarios; i++)
-        {
-            fprintf(arquivo, "%s %d %s %d %s %d\n",
-                    funcionariosCadastrados[i].nome,
-                    funcionariosCadastrados[i].matricula,
-                    funcionariosCadastrados[i].email,
-                    funcionariosCadastrados[i].telefone,
-                    funcionariosCadastrados[i].usuario,
-                    funcionariosCadastrados[i].senha);
-        }
-        fclose(arquivo);
+    for (int i = 0; i < totalFuncionarios; i++)
+    {
+        fprintf(arquivo, "%s %d %s %d %s %d\n",
+                funcionariosCadastrados[i].nome,
+                funcionariosCadastrados[i].matricula,
+                funcionariosCadastrados[i].email,
+                funcionariosCadastrados[i].telefone,
+                funcionariosCadastrados[i].usuario,
+                funcionariosCadastrados[i].senha);
+    }
+    fclose(arquivo);
 }
 void carregarFuncionariosDeArquivo()
 {
     FILE* arquivo = fopen("funcionarios.txt", "r");
 
-        totalFuncionarios = 0;
-        while (fscanf(arquivo, "%s %d %s %d %s %d\n",
-                      funcionariosCadastrados[totalFuncionarios].nome,
-                      &funcionariosCadastrados[totalFuncionarios].matricula,
-                      funcionariosCadastrados[totalFuncionarios].email,
-                      &funcionariosCadastrados[totalFuncionarios].telefone,
-                      funcionariosCadastrados[totalFuncionarios].usuario,
-                      &funcionariosCadastrados[totalFuncionarios].senha) != EOF)
-        {
-            totalFuncionarios++;
-        }
-        fclose(arquivo);
+    totalFuncionarios = 0;
+    while (fscanf(arquivo, "%s %d %s %d %s %d\n",
+                  funcionariosCadastrados[totalFuncionarios].nome,
+                  &funcionariosCadastrados[totalFuncionarios].matricula,
+                  funcionariosCadastrados[totalFuncionarios].email,
+                  &funcionariosCadastrados[totalFuncionarios].telefone,
+                  funcionariosCadastrados[totalFuncionarios].usuario,
+                  &funcionariosCadastrados[totalFuncionarios].senha) != EOF)
+    {
+        totalFuncionarios++;
+    }
+    fclose(arquivo);
 }
 
 void cadastrarFuncionario()
@@ -73,21 +73,25 @@ void cadastrarFuncionario()
     cin.getline(novoFuncionario.nome, 50);
     bool matriculaExistente;
 
-    do {
+    do
+    {
         cout << "Matrícula: ";
         cin >> novoFuncionario.matricula;
 
         matriculaExistente = false;
 
-        for (int i = 0; i < totalFuncionarios; i++) {
-            if (novoFuncionario.matricula == funcionariosCadastrados[i].matricula) {
+        for (int i = 0; i < totalFuncionarios; i++)
+        {
+            if (novoFuncionario.matricula == funcionariosCadastrados[i].matricula)
+            {
                 matriculaExistente = true;
                 cout << "Matrícula já está em uso. Escolha outra matrícula." << endl;
                 break;
             }
         }
 
-    } while (matriculaExistente);
+    }
+    while (matriculaExistente);
 
 
     cout << "Email: ";
@@ -97,21 +101,25 @@ void cadastrarFuncionario()
 
 
     bool usuarioExistente;
-    do {
+    do
+    {
         cout << "Usuário: ";
         cin >> novoFuncionario.usuario;
 
         usuarioExistente = false;
 
-        for (int i = 0; i < totalFuncionarios; i++) {
-            if (strcmp(novoFuncionario.usuario, funcionariosCadastrados[i].usuario) == 0) {
+        for (int i = 0; i < totalFuncionarios; i++)
+        {
+            if (strcmp(novoFuncionario.usuario, funcionariosCadastrados[i].usuario) == 0)
+            {
                 usuarioExistente = true;
                 cout << "Usuário já está em uso. Escolha outro usuário." << endl;
                 break;
             }
         }
 
-    } while (usuarioExistente);
+    }
+    while (usuarioExistente);
 
     cout << "Senha: ";
     cin >> novoFuncionario.senha;
@@ -124,6 +132,110 @@ void cadastrarFuncionario()
     system("pause");
     system("cls");
     salvarFuncionariosEmArquivo();
+}
+
+void editarFuncionario()
+{
+    system("cls");
+    cout << "\nEditar Funcionário\n";
+
+    cout << "Lista de Funcionários:\n";
+    for (int i = 0; i < totalFuncionarios; i++)
+    {
+        cout << "Matrícula: " << funcionariosCadastrados[i].matricula << " - Nome: " << funcionariosCadastrados[i].nome << endl;
+    }
+
+    int matriculaEscolhida,opcao;
+    cout << "\nDigite a Matrícula do funcionário que deseja editar: ";
+    cin >> matriculaEscolhida;
+
+    for (int i = 0; i < totalFuncionarios; i++)
+    {
+        if (funcionariosCadastrados[i].matricula == matriculaEscolhida)
+        {
+            cout << "Funcionário escolhido: " << funcionariosCadastrados[i].nome << endl;
+
+            cout << "Digite o novo nome: ";
+            cin.ignore();
+            cin.getline(funcionariosCadastrados[i].nome, 50);
+
+            bool matriculaExistente = false;
+
+            do
+            {
+                cout << "Digite a nova matrícula: ";
+                cin >> funcionariosCadastrados[i].matricula;
+
+                matriculaExistente = false;
+
+                for (int j = 0; j < totalFuncionarios; j++)
+                {
+                    if (funcionariosCadastrados[i].matricula == funcionariosCadastrados[j].matricula && i != j)
+                    {
+                        matriculaExistente = true;
+                        cout << "Matrícula já está em uso. Escolha outra matrícula." << endl;
+                        break;
+                    }
+                }
+
+            }while (matriculaExistente);
+
+            cout << "Digite o novo email: ";
+            cin >> funcionariosCadastrados[i].email;
+
+            cout << "Digite o novo telefone: ";
+            cin >> funcionariosCadastrados[i].telefone;
+
+            bool usuarioExistente = false;
+
+            do
+            {
+                cout << "Digite um novo usuário: ";
+                cin >> funcionariosCadastrados[i].matricula;
+
+                usuarioExistente = false;
+
+                for (int j = 0; j < totalFuncionarios; j++)
+                {
+                    if (funcionariosCadastrados[i].usuario == funcionariosCadastrados[j].usuario && i != j)
+                    {
+                        usuarioExistente = true;
+                        cout << "Usuário já está em uso. Escolha outro usuário." << endl;
+                        break;
+                    }
+                }
+            }while (usuarioExistente);
+
+            cout << "Digite a nova senha: ";
+            cin >> funcionariosCadastrados[i].senha;
+
+
+
+            cout << "Funcionário editado com sucesso!" << endl;
+            break;
+        }
+    }
+
+    system("pause");
+}
+
+void visualizarFuncionarios()
+{
+    system("cls");
+
+    cout << "\nFuncionários Cadastrados:\n";
+    for (int i = 0; i < totalFuncionarios; i++)
+    {
+        cout << "Nome: " << funcionariosCadastrados[i].nome << "\t";
+        cout << "Matrícula: " << funcionariosCadastrados[i].matricula << "\t";
+        cout << "Email: " << funcionariosCadastrados[i].email << "\t";
+        cout << "Telefone: " << funcionariosCadastrados[i].telefone << "\t";
+        cout << "Usuário: " << funcionariosCadastrados[i].usuario << "\t";
+        cout << "Senha: " << funcionariosCadastrados[i].senha << "\t";
+        cout << "\n------------------------------------------------------\n";
+    }
+
+    system("pause");
 }
 
 void menuFuncionarios()
@@ -150,11 +262,11 @@ void menuFuncionarios()
             break;
         case 2:
             cout << "Opção Editar Funcionário selecionada." << endl;
-            //editarFuncionario();
+            editarFuncionario();
             break;
         case 3:
             cout << "Opção Visualizar Funcionário selecionada." << endl;
-            //visualizarFuncionarios();
+            visualizarFuncionarios();
             break;
         case 4:
             cout << "Opção Excluir Funcionário selecionada." << endl;
