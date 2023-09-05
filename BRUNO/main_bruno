@@ -1,8 +1,10 @@
 // CONSULTA E RESERVA DE ARMÁRIOS
 #include <iostream>
 #include <string.h>
+#include <cstring>
 #include <stdlib.h>
 #include <stdio.h>
+#include <cstdlib>
 
 #define ALUNO   20
 #define FUNCIONARIO 10
@@ -43,6 +45,70 @@ int totalFuncionarios = 0;
 Aluno alunosCadastrados[ALUNO];
 int totalAlunos = 0;
 
+void salvarFuncionariosEmArquivo();
+void salvarFuncionariosEmArquivo(){
+    FILE* arquivo = fopen("funcionarios.txt", "w");
+
+    for (int i = 0; i < totalFuncionarios; i++){
+        fprintf(arquivo, "%s %d %s %d %s %d \n",
+            funcionariosCadastrados[i].nome,
+            funcionariosCadastrados[i].matricula,
+            funcionariosCadastrados[i].email,
+            funcionariosCadastrados[i].fone,
+            funcionariosCadastrados[i].usuario,
+            funcionariosCadastrados[i].senha);
+    }
+    fclose(arquivo);
+}
+
+void carregarFuncionariosDeArquivo();
+void carregarFuncionariosDeArquivo(){
+    FILE* arquivo = fopen("funcionarios.txt", "r");
+    totalFuncionarios = 0;
+
+    while (fscanf(arquivo, "%s %d %s %d %s %d\n",
+                  funcionariosCadastrados[totalFuncionarios].nome,
+                  &funcionariosCadastrados[totalFuncionarios].matricula,
+                  funcionariosCadastrados[totalFuncionarios].email,
+                  &funcionariosCadastrados[totalFuncionarios].fone,
+                  funcionariosCadastrados[totalFuncionarios].usuario,
+                  &funcionariosCadastrados[totalFuncionarios].senha) != EOF)
+    {
+    totalFuncionarios++;
+    }
+    fclose(arquivo);
+}
+
+void salvarAlunosEmArquivo();
+void salvarAlunosEmArquivo(){
+    FILE* arquivo = fopen("alunos.txt", "w");
+
+    for (int i = 0; i < totalAlunos; i++){
+        fprintf(arquivo, "%s %d %s %d\n",
+            alunosCadastrados[i].nome,
+            alunosCadastrados[i].matricula,
+            alunosCadastrados[i].email,
+            alunosCadastrados[i].fone);
+    }
+    fclose(arquivo);
+}
+
+void carregarAlunosDeArquivo();
+void carregarAlunosDeArquivo(){
+    FILE* arquivo = fopen("alunos.txt", "r");
+    totalAlunos = 0;
+
+    while (fscanf(arquivo, "%s %d %s %d\n",
+                  alunosCadastrados[totalAlunos].nome,
+                  &alunosCadastrados[totalAlunos].matricula,
+                  alunosCadastrados[totalAlunos].email,
+                  &alunosCadastrados[totalAlunos].fone) != EOF)
+    {
+    totalAlunos++;
+    }
+    fclose(arquivo);
+}
+
 void cadastrarFuncionario();
 void cadastrarFuncionario(){
     Funcionario novoFuncionario;
@@ -51,12 +117,46 @@ void cadastrarFuncionario(){
     cout << "Nome: ";
     cin.ignore(); // Limpa o buffer do teclado
     cin.getline(novoFuncionario.nome, 50);
+
+    bool matriculaExistente;
+    do{
+        cout << "Matrícula: ";
+        cin >> novoFuncionario.matricula;
+        matriculaExistente = false;
+
+        for (int i = 0; i < totalFuncionarios; i++){
+            if (novoFuncionario.matricula == funcionariosCadastrados[i].matricula){
+                matriculaExistente = true;
+                cout << "Matrícula já está em uso. Escolha outra matrícula." << endl;
+            break;
+            }
+        }
+    }
+    while (matriculaExistente);
+
     cout << "Email: ";
     cin >> novoFuncionario.email;
-    cout << "Matrícula: ";
-    cin >> novoFuncionario.matricula;
     cout << "Telefone: ";
     cin >> novoFuncionario.fone;
+
+    bool usuarioExistente;
+    do{
+        cout << "Usuário: ";
+        cin >> novoFuncionario.usuario;
+        usuarioExistente = false;
+
+        for (int i = 0; i < totalFuncionarios; i++){
+            if (strcmp(novoFuncionario.usuario, funcionariosCadastrados[i].usuario) == 0){
+                usuarioExistente = true;
+                cout << "Usuário já está em uso. Escolha outro usuário." << endl;
+            break;
+            }
+        }
+    }
+    while (usuarioExistente);
+
+    cout << "Senha: ";
+    cin >> novoFuncionario.senha;
 
     funcionariosCadastrados[totalFuncionarios] = novoFuncionario;   // Adiciona o novo funcionário ao array e incrementa o contador
     totalFuncionarios++;
@@ -64,6 +164,7 @@ void cadastrarFuncionario(){
     system("cls");
     cout << "\nFuncionário cadastrado com sucesso.\n";
     system("pause");
+    salvarFuncionariosEmArquivo();
 }
 
 void cadastrarAluno();
@@ -75,29 +176,44 @@ void cadastrarAluno(){
     cout << "\n*********** CADASTRO DE ALUNO ***********\n\n";
     cout << "Nome: ";
     cin.getline(novoAluno.nome, 50);
+
+    bool matriculaExistenteAluno;
+    do{
+        cout << "Matrícula: ";
+        cin >> novoAluno.matricula;
+        matriculaExistenteAluno = false;
+
+        for (int i = 0; i < totalAlunos; i++){
+            if (novoAluno.matricula == alunosCadastrados[i].matricula){
+                matriculaExistenteAluno = true;
+                cout << "Matrícula já está em uso. Escolha outra matrícula." << endl;
+            break;
+            }
+        }
+    }
+    while (matriculaExistenteAluno);
+
     cout << "Email: ";
     cin >> novoAluno.email;
-    cout << "Matrícula: ";
-    cin >> novoAluno.matricula;
     cout << "Telefone: ";
     cin >> novoAluno.fone;
     cout << "Turma/Série: ";
     cin >> novoAluno.turmaSerie;
 
-        // Adiciona o novo aluno ao array e incrementa o contador
+                                                    // Adiciona o novo aluno ao array e incrementa o contador
     alunosCadastrados[totalAlunos] = novoAluno;
     totalAlunos++;
 
     system("cls");
     cout << "\nAluno cadastrado com sucesso.\n";
     system("pause");
-
+    salvarAlunosEmArquivo();
 }
 
 void mostrarFuncionarios();
 void mostrarFuncionarios(){
     system("cls");
-    cout << "\nFuncionáios Cadastrados: "<< totalFuncionarios <<" \n\n";
+    cout << "\nFuncionários Cadastrados: "<< totalFuncionarios <<" \n\n";
     for (int i = 0; i < totalFuncionarios; i++) {
         cout << "Funcionário " << i + 1 << ":\n";
         cout << "Nome: " << funcionariosCadastrados[i].nome << "\t";
@@ -129,16 +245,7 @@ void deletFuncionario();
 void deletFuncionario(){
     int funDel, novoTotalFuncionarios = 0;
 
-    system("cls");
-    cout << "\nFuncionáios Cadastrados: "<< totalFuncionarios <<" \n\n";
-    for (int i = 0; i < totalFuncionarios; i++) {
-        cout << "Funcionário " << i + 1 << ":\n";
-        cout << "Nome: " << funcionariosCadastrados[i].nome << "\t";
-        cout << "Email: " << funcionariosCadastrados[i].email << "\t";
-        cout << "Matrícula: " << funcionariosCadastrados[i].matricula << "\t";
-        cout << "Telefone: " << funcionariosCadastrados[i].fone << "\t";
-        cout << "\n---------------------------------------------------------------\n";
-    }
+    mostrarFuncionarios();
 
     cout << "\n*********************  DELETAR CADASTRO DE FUNCIONÁRIO ************************ \n";
     cout << "Informe a matrícula do funcionário que deseja deletar.\n";
@@ -172,17 +279,7 @@ void deletAluno();
 void deletAluno(){
     int alunoDel, novoTotalAlunos = 0;
 
-    system("cls");
-    cout << "\nAlunos Cadastrados: "<< totalAlunos <<" \n\n";
-    for (int i = 0; i < totalAlunos; i++) {
-        cout << "Aluno " << i + 1 << ":\n";
-        cout << "Nome: " << alunosCadastrados[i].nome << "\t";
-        cout << "Email: " << alunosCadastrados[i].email << "\t";
-        cout << "Matrícula: " << alunosCadastrados[i].matricula << "\t";
-        cout << "Telefone: " << alunosCadastrados[i].fone << "\t";
-        cout << "Turma/Série: " << alunosCadastrados[i].turmaSerie << "\t";
-        cout << "\n---------------------------------------------------------------\n";
-    }
+    mostrarAlunos();
 
     cout << "\n*********************  DELETAR CADASTRO DE ALUNO ************************ \n";
     cout << "Informe a matrícula do aluno que deseja deletar.\n";
@@ -217,16 +314,7 @@ void editFuncionario();
 void editFuncionario(){
     int funEdit;
 
-    system("cls");
-    cout << "\nFuncionáios Cadastrados: "<< totalFuncionarios <<" \n\n";
-    for (int i = 0; i < totalFuncionarios; i++) {
-        cout << "Funcionário " << i + 1 << ":\n";
-        cout << "Nome: " << funcionariosCadastrados[i].nome << "\t";
-        cout << "Email: " << funcionariosCadastrados[i].email << "\t";
-        cout << "Matrícula: " << funcionariosCadastrados[i].matricula << "\t";
-        cout << "Telefone: " << funcionariosCadastrados[i].fone << "\t";
-        cout << "\n---------------------------------------------------------------\n";
-    }
+    mostrarFuncionarios();
 
     cout << "\n*********************  EDITAR DADOS DE FUNCIONÁRIO ************************ \n";
     cout << "Informe a matrícula do funcionário que deseja editar.\n";
@@ -258,17 +346,7 @@ void editAluno();
 void editAluno(){
     int alunoEdit;
 
-    system("cls");
-    cout << "\nAlunos Cadastrados: "<< totalAlunos <<" \n\n";
-    for (int i = 0; i < totalAlunos; i++) {
-        cout << "Aluno " << i + 1 << ":\n";
-        cout << "Nome: " << alunosCadastrados[i].nome << "\t";
-        cout << "Email: " << alunosCadastrados[i].email << "\t";
-        cout << "Matrícula: " << alunosCadastrados[i].matricula << "\t";
-        cout << "Telefone: " << alunosCadastrados[i].fone << "\t";
-        cout << "Turma/Série: " << alunosCadastrados[i].turmaSerie << "\t";
-        cout << "\n---------------------------------------------------------------\n";
-    }
+    mostrarAlunos();
 
     cout << "\n*********************  EDITAR DADOS DE ALUNO ************************ \n";
     cout << "Informe a matrícula do aluno que deseja editar.\n";
@@ -288,11 +366,11 @@ void editAluno(){
         cin >> alunosCadastrados[i].matricula;
         cout << "Digite o novo telefone: ";
         cin >> alunosCadastrados[i].fone;
-        cout << "Digite a nova Turma/Serie: ";
+        cout << "Digite a nova Turma/Série: ";
         cin >> alunosCadastrados[i].turmaSerie;
 
         cout << "Aluno editado com sucesso!" << endl;
-        break; // Sair do loop ao encontrar o funcionário
+        break;
         }
     }
     system("pause");
@@ -313,6 +391,8 @@ int main(){
 
 // MENU PRINCIPAL
     while(opFechar != 1){
+        carregarFuncionariosDeArquivo();
+        carregarAlunosDeArquivo();
         system("cls");
         cout << "\n*********************  CONSULTA E RESERVA DE ARMÁRIOS ************************ \n\n";
         cout << "1 - ARMÁRIOS.\n";
@@ -328,10 +408,9 @@ int main(){
                     system("cls");
                     cout << "\n*********************  ARMÁRIOS ************************ \n\n";
                     cout << "1 - Consultar armários.\n";
-                    cout << "2 - Reservar armário.\n";
-                    cout << "3 - Editar armário.\n";
-                    cout << "4 - Deletar reserva.\n";
-                    cout << "5 - Retornar.\n\n";
+                    cout << "2 - Editar armário.\n";
+                    cout << "3 - Deletar reserva.\n";
+                    cout << "4 - Retornar.\n\n";
                     cout << "Informe a opção desejada, de acordo com o número: ";
                     cin >> opArm;
 
@@ -500,3 +579,4 @@ int main(){
     system("pause");
     return 0;
 }
+
