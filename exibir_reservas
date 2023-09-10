@@ -1,14 +1,17 @@
-// CONSULTA E RESERVA DE ARM RIOS
 #include <iostream>
+#include <string.h>
+#include <cstring>
+#include <stdlib.h>
+#include <stdio.h>
+#include <cstdlib>
 #include <tchar.h>
 #include <windows.h>
-#include <stdlib.h>
+
 #define ALUNO   20
 #define FUNCIONARIO 10
 #define ARMARIO 25
-#define CURSO 2
+#define CURSO 5
 using namespace std;
-
 
 HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
 COORD CursorPosition;
@@ -18,100 +21,55 @@ void gotoxy(int x, int y){
   CursorPosition.Y = y; // Locates Row
   SetConsoleCursorPosition(console,CursorPosition); // Sets position for next thing to be printed
 }
-
-
 typedef struct {
-    int dataInicio, dataFim, ano;
-} AlunoCurso;
-
-typedef struct {
-    string nome[50], email[50];
-    int matricula, fone, turma, serie;
-} Aluno;
-
-typedef struct {
-    int codigo,matAluno, matFunc, dataRec, dataDev, numArmario;
+    int codigo, matAluno, matFunc, numArmario, dataRec, dataDev;
 } Reserva;
-
-typedef struct {
-    char nome[20], usuario[20], email[02];
-    int matricula, senha, fone;
-} Funcionario;
-
-typedef struct {
-    char estado[20], disponivel[20];
-    int numero;
-} Armario;
-
-typedef struct {
-    char nome[20];
-    int codigo;
-} Curso;
-
-
-
-int main(){
-    Aluno student[CURSO]; //vetor de dados do aluno
-    Armario locker[CURSO]; //vetor de dados do armario
-    Reserva reserva[CURSO]; // vetor de dados da reserva de armarios
-    Funcionario colab[CURSO]; //vetor de dados dos funcionarios
-
-    int i;
-
-    //coleta de dados para testes
-    for(i=0;i<CURSO; i++){
-
-        cout << "Digite a Matricula do Aluno: ";
-        cin >> student[i].matricula;
-        cout << "Digite numero do armario: ";
-        cin >> locker[i].numero;
-        cout << "Funcionrio, digite sua matricula: ";
-        cin >> colab[i].matricula;
-        cout<< "Digite a data de reserva: ";
-        cin >> reserva[i].dataRec;
-        cout<< "Digite a data de devolucao: ";
-        cin >> reserva[i].dataDev;
+void exibirReservas();
+void exibirReservas(){
+//    carregarReservasDoArquivo(); // Carregar funcionários apenas uma vez no início.
+    system("cls");
+    gotoxy(1, 1);
+    cout << "-----------------------------------------------------------------------------------------------------------------";
+    gotoxy(1, 2);
+    cout << "================================================RESERVAS=========================================================";
+    gotoxy(1, 3);
+    cout << "-----------------------------------------------------------------------------------------------------------------";
+    gotoxy(1, 4);
+    cout << "Codigo";
+    gotoxy(15, 4);
+    cout << "Matricula Aluno";
+    gotoxy(40, 4);
+    cout << "Matricula Funcionario";
+    gotoxy(65, 4);
+    cout << "Numero do Armario";
+    gotoxy(87, 4);
+    cout << "Reserva em:\t";
+    gotoxy(135, 4 );
+    cout << "Devolucao";
+    gotoxy(1, 5);
+    cout << "-----------------------------------------------------------------------------------------------------------------";
 
 
-        }
+    for (int i = 0; i < totalArmarios; i++) {
+        gotoxy(1, 6 + i);
+        printf("%d", armariosCadastrados[i].codigo);
+        gotoxy(15, 6 + i);
+        printf("%d", armariosCadastrados[i].matAulno);
+        gotoxy(40, 6 + i);
+        printf("%d", armariosCadastrados[i].matFunc);
+        gotoxy(75, 6 + i);
+        printf("%d", armariosCadastrados[i].numArmario);
+        gotoxy(87, 6 + i);
+        printf("%d", armariosCadastrados[i].dataRec);
+        gotoxy(135, 6 + i);
+        printf("\t\t%d", armariosCadastrados[i].dataDev);
 
-
-        //Impressção do cabeçalho da tabela
-        system("cls");
-        gotoxy(5,5);
-        cout << "Codigo";
-        gotoxy(20,5);
-        cout << "Armario";
-        gotoxy(35,5);
-        cout << "Matricula do Aluno";
-        gotoxy(55,5);
-        cout << "Matricula do Funcionario";
-        gotoxy(85,5);
-        cout << "Reserva";
-        gotoxy(95,5);
-        cout << "Devolucao";
-        // Impressão dos dados da teabela
-         for(i=0;i<CURSO; i++){
-            //atribuição dos dados de aluno, armario, funcionario à reserva
-             reserva[i].matAluno = student[i].matricula;
-             reserva[i].numArmario = locker[i].numero;
-             reserva[i].matFunc = colab[i].matricula;
-             reserva[i].codigo= i;
-
-             gotoxy(5,6+i);
-             cout<< reserva[i].codigo;
-             gotoxy(20,6+i);
-             cout << reserva[i].numArmario;
-             gotoxy(35,6+i);
-             cout << reserva[i].matAluno;
-             gotoxy(55,6+i);
-             cout<< reserva[i].matFunc;
-             gotoxy(85,6+i);
-             cout<< reserva[i].dataRec;
-             gotoxy(95,6+i);
-             cout << reserva[i].dataDev;
-
-         }
+    }
+    cout << "\n";
+    cout << "==================================================================================================================\n";
+    system("pause");
 }
-
+int main(){
+    exibirReservas();
+    }
 
