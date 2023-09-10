@@ -1,0 +1,55 @@
+#include <iostream>
+#include <string.h>
+#include <cstring>
+#include <stdlib.h>
+#include <stdio.h>
+#include <cstdlib>
+#include <tchar.h>
+#include <windows.h>
+using namespace std;
+
+HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+COORD CursorPosition;
+
+void gotoxy(int x, int y){
+  CursorPosition.X = x; // Locates column
+  CursorPosition.Y = y; // Locates Row
+  SetConsoleCursorPosition(console,CursorPosition); // Sets position for next thing to be printed
+}
+void exibirTodosArmarios();
+void exibirTodosArmarios(){
+    carregarArmariosDeArquivos(); //AGARDANDO IMPLEMENTAÇÃO DE SALVAR ARMARIOS EM ARQUIVO
+    system("cls");
+    gotoxy(1, 1);
+    cout << "-------------------------------------------------------";
+    gotoxy(1, 2);
+    cout << "=========================ARMARIOS======================";
+    gotoxy(1, 3);
+    cout << "-------------------------------------------------------";
+    gotoxy(3, 4);
+    cout << "Numero";
+    gotoxy(20, 4);
+    cout << "Estado";
+    gotoxy(40, 4);
+    cout << "Disponibilidade";
+    cout << "\n";
+    cout << "--------------------------------------------------------";
+
+    for (int i = 0; i < totalArmarios; i++) {
+        gotoxy(3, 6 + i);
+        printf("%d", armariosCadastrados[i].numero);
+        gotoxy(20, 6 + i);
+        printf("%s", armariosCadastrados[i].estado);
+        gotoxy(40, 6 + i);
+        printf("%s", armariosCadastrados[i].disponivel);
+
+
+    }
+    cout << "\n";
+    cout << "========================================================\n";
+    system("pause");
+    }
+int main(){
+    exibirTodosArmarios();
+
+}
