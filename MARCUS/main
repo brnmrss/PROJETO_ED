@@ -5,8 +5,25 @@
 #include <cstdlib>
 #define FUNCIONARIOS 10
 #define ALUNOS 10
+#define ARMARIOS 5
+#define RESERVAS 100
 
 using namespace std;
+
+typedef struct {
+    int numero;
+    bool disponivel;
+    bool estado;
+}Armario;
+
+typedef struct {
+    int codigo;
+    int matriculaAluno;
+    int matriculaFuncionario;
+    int numeroArmario;
+    char dataRecebimento[11];
+    char dataDevolucao[11];
+} Reserva;
 
 typedef struct
 {
@@ -16,7 +33,7 @@ typedef struct
 
 typedef struct
 {
-    char nome[50], email[50],telefone[11];
+    char nome[50], email[50],fone[11];
     int matricula, turmaSerie;
 } Aluno;
 
@@ -26,6 +43,120 @@ int totalFuncionarios = 0;
 
 Aluno alunosCadastrados[ALUNOS];
 int totalAlunos = 0;
+
+Reserva reservas[RESERVAS];
+int totalReservas = 0;
+
+Armario armarios[ARMARIOS];
+
+void salvarReservasEmArquivo() {
+    FILE* arquivo = fopen("reservas.txt", "w");
+
+    if (arquivo != NULL) {
+        for (int i = 0; i < totalReservas; i++) {
+            fprintf(arquivo, "%d %d %s %s\n",
+                    reservas[i].matriculaAluno,
+                    reservas[i].numeroArmario,
+                    reservas[i].dataRecebimento,
+                    reservas[i].dataDevolucao);
+        }
+        fclose(arquivo);
+    } else {
+        cout << "Erro ao abrir o arquivo de reservas." << endl;
+    }
+}
+
+void salvarArmariosEmArquivo() {
+    FILE* arquivo = fopen("armarios.txt", "w");
+
+    if (arquivo != NULL) {
+        for (int i = 0; i < ARMARIOS; i++) {
+            fprintf(arquivo, "%d %d %d\n",
+                    armarios[i].numero,
+                    armarios[i].disponivel,
+                    armarios[i].estado);
+        }
+        fclose(arquivo);
+    } else {
+        cout << "Erro ao abrir o arquivo de armários." << endl;
+    }
+}
+
+void carregarArmariosDeArquivo() {
+    FILE* arquivo = fopen("armarios.txt", "w");
+
+    if (arquivo != NULL) {
+        for (int i = 0; i < ARMARIOS; i++) {
+            fprintf(arquivo, "%d %d %d\n",
+                    armarios[i].numero,
+                    armarios[i].disponivel,
+                    armarios[i].estado);
+        }
+        fclose(arquivo);
+    } else {
+        cout << "Erro ao abrir o arquivo de armários." << endl;
+    }
+}
+
+void inicializarArmarios() {
+    FILE* arquivo = fopen("armarios.txt", "r");
+
+    if (arquivo == NULL) {
+        // Arquivo não existe, então inicialize os armários
+        for (int i = 0; i < ARMARIOS; i++) {
+            armarios[i].numero = i + 1; // Número do armário
+            armarios[i].disponivel = true; // Armário inicialmente disponível
+            armarios[i].estado = false; // Estado inicial do armário
+        }
+
+        // Salve as informações dos armários em um arquivo
+        salvarArmariosEmArquivo();
+    } else {
+        // Arquivo existe, então carregue as informações dos armários
+        for (int i = 0; i < ARMARIOS; i++) {
+            if (fscanf(arquivo, "%d %d %d\n",
+                        &armarios[i].numero,
+                        &armarios[i].disponivel,
+                        &armarios[i].estado) == EOF) {
+                break;
+            }
+        }
+        fclose(arquivo);
+    }
+}
+
+
+void salvarAlunosEmArquivo() {
+
+    FILE* arquivo = fopen("alunos.txt", "w");
+
+    for (int i = 0; i < totalAlunos; i++)
+    {
+        fprintf(arquivo, "%s %d %s %s %d\n",
+                alunosCadastrados[i].nome,
+                alunosCadastrados[i].matricula,
+                alunosCadastrados[i].email,
+                alunosCadastrados[i].fone,
+                alunosCadastrados[i].turmaSerie);
+    }
+    fclose(arquivo);
+}
+
+void carregarAlunosDeArquivo() {
+    FILE* arquivo = fopen("alunos.txt", "r");
+
+    totalAlunos = 0;
+    while (fscanf(arquivo, "%s %d %s %s %d\n",
+                  alunosCadastrados[totalAlunos].nome,
+                  &alunosCadastrados[totalAlunos].matricula,
+                  alunosCadastrados[totalAlunos].email,
+                  &alunosCadastrados[totalAlunos].fone,
+                  &alunosCadastrados[totalAlunos].turmaSerie) != EOF)
+    {
+        totalAlunos++;
+    }
+    fclose(arquivo);
+}
 
 void salvarFuncionariosEmArquivo()
 {
@@ -44,6 +175,7 @@ void salvarFuncionariosEmArquivo()
     }
     fclose(arquivo);
 }
+
 void carregarFuncionariosDeArquivo()
 {
     FILE* arquivo = fopen("funcionarios.txt", "r");
@@ -60,6 +192,92 @@ void carregarFuncionariosDeArquivo()
         totalFuncionarios++;
     }
     fclose(arquivo);
+}
+
+void reservarArmario(int matriculaAluno, int numeroArmario, const char* dataRecebimento, const char* dataDevolucao) {
+    // Verifique se há espaço para adicionar uma reserva
+    if (totalReservas < RESERVAS) {
+        Reserva novaReserva;
+        novaReserva.matriculaAluno = matriculaAluno;
+        novaReserva.numeroArmario = numeroArmario;
+        strncpy(novaReserva.dataRecebimento, dataRecebimento, sizeof(novaReserva.dataRecebimento) - 1);
+        strncpy(novaReserva.dataDevolucao, dataDevolucao, sizeof(novaReserva.dataDevolucao) - 1);
+
+        // Adicione a nova reserva à lista de reservas
+        reservas[totalReservas] = novaReserva;
+        totalReservas++;
+
+        salvarReservasEmArquivo();
+
+        cout << "Armário reservado com sucesso para o aluno de matrícula " << matriculaAluno << "." << endl;
+    } else {
+        cout << "Não é possível fazer mais reservas. Limite de reservas atingido." << endl;
+    }
+}
+
+void cadastrarAluno() {
+    Aluno novoAluno;
+
+    system("cls");
+    cout << "\nCadastro de Aluno\n";
+    cout << "Nome: ";
+    cin.ignore();
+    cin.getline(novoAluno.nome, 50);
+
+    bool matriculaExistente = false;
+
+    do {
+        cout << "Matrícula: ";
+        cin >> novoAluno.matricula;
+
+        matriculaExistente = false;
+
+        for (int i = 0; i < totalAlunos; i++) {
+            if (novoAluno.matricula == alunosCadastrados[i].matricula) {
+                matriculaExistente = true;
+                cout << "Matrícula já está em uso. Escolha outra matrícula." << endl;
+                break;
+            }
+        }
+
+    } while (matriculaExistente);
+
+        cout << "Email: ";
+        cin >> novoAluno.email;
+
+        cout << "Telefone: ";
+        cin >> novoAluno.fone;
+
+        cout << "Turma: ";
+        cin >> novoAluno.turmaSerie;
+
+    alunosCadastrados[totalAlunos] = novoAluno;
+    totalAlunos++;
+    salvarAlunosEmArquivo();
+
+     int armarioDisponivel = -1;
+    for (int i = 0; i < ARMARIOS; i++) {
+        if (armarios[i].disponivel) {
+            armarioDisponivel = i;
+            armarios[i].disponivel = false; // Marcar o armário como ocupado
+            break;
+        }
+    }
+
+    if (armarioDisponivel != -1) {
+        alunosCadastrados[totalAlunos] = novoAluno;
+        totalAlunos++;
+        salvarAlunosEmArquivo();
+        cout << "Aluno cadastrado com sucesso. Armário atribuído: " << armarios[armarioDisponivel].numero << endl;
+
+        // Agora, vamos chamar a função para reservar o armário
+       // Após a parte do código que atribui um armário ao aluno, chame a função para reservar o armário
+reservarArmario(novoAluno.matricula, armarios[armarioDisponivel].numero, "data_recebimento", "data_devolucao");
+
+    } else {
+        cout << "Não há armários disponíveis. O aluno não pode ser cadastrado." << endl;
+    }
+    system("pause");
 }
 
 void cadastrarFuncionario()
@@ -238,6 +456,49 @@ void visualizarFuncionarios()
     system("pause");
 }
 
+void menuAlunos()
+{
+    system("cls");
+    int opcaoAlunos;
+
+    do
+    {
+        system("cls");
+        cout << "\nMenu Alunos\n";
+        cout << "Opções:\n";
+        cout << "[1] Adicionar\n";
+        cout << "[2] Editar\n";
+        cout << "[3] Visualizar\n";
+        cout << "[4] Excluir\n";
+        cout << "[5] Voltar\n";
+        cout << "Escolha uma opção do menu: ";
+        cin >> opcaoAlunos;
+
+        switch (opcaoAlunos)
+        {
+        case 1:
+            cadastrarAluno();
+            break;
+        case 2:
+
+            break;
+        case 3:
+
+            break;
+        case 4:
+
+            break;
+        case 5:
+            system("cls");
+            break;
+        default:
+            cout << "Opção inválida. Por favor, escolha uma opção do menu." << endl;
+            break;
+        }
+    }
+    while (opcaoAlunos != 5);
+}
+
 void menuFuncionarios()
 {
     int opcaoFuncionarios;
@@ -305,7 +566,7 @@ void menuPrincipal()
             break;
         case 2:
             cout << "Opção Alunos selecionada." << endl;
-            //menuAlunos();
+            menuAlunos();
             break;
         case 3:
             cout << "Opção Armários selecionada." << endl;
@@ -364,7 +625,10 @@ void fazerLogin()
 int main()
 {
     setlocale(LC_ALL, "Portuguese");
+    inicializarArmarios();
+    carregarArmariosDeArquivo();
     carregarFuncionariosDeArquivo();
+    carregarAlunosDeArquivo();
     int opcao;
 
     do
