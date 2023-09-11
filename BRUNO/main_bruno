@@ -47,10 +47,10 @@ int totalAlunos = 0;
 
 void salvarFuncionariosEmArquivo();
 void salvarFuncionariosEmArquivo(){
-    FILE* arquivo = fopen("funcionarios.txt", "w");
+    FILE* arquivoFuncionario = fopen("funcionarios.txt", "w");
 
     for (int i = 0; i < totalFuncionarios; i++){
-        fprintf(arquivo, "%s %d %s %d %s %d \n",
+        fprintf(arquivoFuncionario, "%s %d %s %d %s %d \n",
             funcionariosCadastrados[i].nome,
             funcionariosCadastrados[i].matricula,
             funcionariosCadastrados[i].email,
@@ -58,15 +58,19 @@ void salvarFuncionariosEmArquivo(){
             funcionariosCadastrados[i].usuario,
             funcionariosCadastrados[i].senha);
     }
-    fclose(arquivo);
+    fclose(arquivoFuncionario);
 }
 
 void carregarFuncionariosDeArquivo();
 void carregarFuncionariosDeArquivo(){
-    FILE* arquivo = fopen("funcionarios.txt", "r");
+    FILE* arquivoFuncionario = fopen("funcionarios.txt", "r");
     totalFuncionarios = 0;
 
-    while (fscanf(arquivo, "%s %d %s %d %s %d\n",
+    if (arquivoFuncionario == NULL){
+        cout << "\nNada para ser lido.\n";
+        system("pause");
+    }
+    while (fscanf(arquivoFuncionario, "%s %d %s %d %s %d\n",
                   funcionariosCadastrados[totalFuncionarios].nome,
                   &funcionariosCadastrados[totalFuncionarios].matricula,
                   funcionariosCadastrados[totalFuncionarios].email,
@@ -76,37 +80,43 @@ void carregarFuncionariosDeArquivo(){
     {
     totalFuncionarios++;
     }
-    fclose(arquivo);
+    fclose(arquivoFuncionario);
 }
 
 void salvarAlunosEmArquivo();
 void salvarAlunosEmArquivo(){
-    FILE* arquivo = fopen("alunos.txt", "w");
+    FILE* arquivoAluno = fopen("alunos.txt", "w");
 
     for (int i = 0; i < totalAlunos; i++){
-        fprintf(arquivo, "%s %d %s %d\n",
+        fprintf(arquivoAluno, "%s %d %s %d %d \n",
             alunosCadastrados[i].nome,
             alunosCadastrados[i].matricula,
             alunosCadastrados[i].email,
-            alunosCadastrados[i].fone);
+            alunosCadastrados[i].fone,
+            alunosCadastrados[i].turmaSerie);
     }
-    fclose(arquivo);
+    fclose(arquivoAluno);
 }
 
 void carregarAlunosDeArquivo();
 void carregarAlunosDeArquivo(){
-    FILE* arquivo = fopen("alunos.txt", "r");
+    FILE* arquivoAluno = fopen("alunos.txt", "r");
     totalAlunos = 0;
 
-    while (fscanf(arquivo, "%s %d %s %d\n",
+    if (arquivoAluno == NULL){
+        cout << "\nNada para ser lido.\n";
+        system("pause");
+    }
+    while (fscanf(arquivoAluno, "%s %d %s %d %d\n",
                   alunosCadastrados[totalAlunos].nome,
                   &alunosCadastrados[totalAlunos].matricula,
                   alunosCadastrados[totalAlunos].email,
-                  &alunosCadastrados[totalAlunos].fone) != EOF)
+                  &alunosCadastrados[totalAlunos].fone,
+                  &alunosCadastrados[totalAlunos].turmaSerie) != EOF)
     {
     totalAlunos++;
     }
-    fclose(arquivo);
+    fclose(arquivoAluno);
 }
 
 void cadastrarFuncionario();
@@ -176,6 +186,7 @@ void cadastrarAluno(){
     cout << "\n*********** CADASTRO DE ALUNO ***********\n\n";
     cout << "Nome: ";
     cin.getline(novoAluno.nome, 50);
+
 
     bool matriculaExistenteAluno;
     do{
@@ -266,6 +277,7 @@ void deletFuncionario(){
             funcionariosCadastrados[i] = novosFuncionariosCadastrados[i];
         }
         system("cls");
+        salvarFuncionariosEmArquivo();
         cout << "\nCadastro deletado.\n";
         system("pause");
     } else {
@@ -301,6 +313,7 @@ void deletAluno(){
             alunosCadastrados[i] = novosAlunosCadastrados[i];
         }
         system("cls");
+        salvarAlunosEmArquivo();
         cout << "\nCadastro deletado.\n";
         system("pause");
     } else {
@@ -340,6 +353,7 @@ void editFuncionario(){
         }
     }
     system("pause");
+salvarFuncionariosEmArquivo();
 }
 
 void editAluno();
@@ -374,6 +388,7 @@ void editAluno(){
         }
     }
     system("pause");
+salvarAlunosEmArquivo();
 }
 
 int main(){
@@ -391,8 +406,6 @@ int main(){
 
 // MENU PRINCIPAL
     while(opFechar != 1){
-        carregarFuncionariosDeArquivo();
-        carregarAlunosDeArquivo();
         system("cls");
         cout << "\n*********************  CONSULTA E RESERVA DE ARMÁRIOS ************************ \n\n";
         cout << "1 - ARMÁRIOS.\n";
@@ -465,8 +478,8 @@ int main(){
 
     // CONSULTAR ALUNO
                         case 1:
+                            carregarAlunosDeArquivo();
                             mostrarAlunos();
-
                             break;
 
     // CADASTRAR ALUNO
@@ -477,12 +490,14 @@ int main(){
 
     // EDIT DADOS ALUNO
                         case 3:
+                            carregarAlunosDeArquivo();
                             editAluno();
 
                             break;
 
     // DELETE ALUNO
                         case 4:
+                            carregarAlunosDeArquivo();
                             deletAluno();
 
                             break;
@@ -513,6 +528,7 @@ int main(){
 
     // CONSULTAR FUNCIONÁRIOS
                         case 1:
+                            carregarFuncionariosDeArquivo();
                             mostrarFuncionarios();
 
                             break;
@@ -525,12 +541,14 @@ int main(){
 
     // EDIT DADOS FUNCIONÁRIO
                         case 3:
+                            carregarFuncionariosDeArquivo();
                             editFuncionario();
 
                             break;
 
     // DELET FUNCIONÁRIO
                         case 4:
+                            carregarFuncionariosDeArquivo();
                             deletFuncionario();
 
                             break;
