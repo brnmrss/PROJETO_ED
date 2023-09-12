@@ -87,6 +87,7 @@ void salvarFilaEsperaEmArquivo() {
     }
 }
 
+
 void carregarFilaEsperaDeArquivo() {
     FILE* arquivo = fopen("fila_espera.txt", "r");
 
@@ -100,6 +101,8 @@ void carregarFilaEsperaDeArquivo() {
         cout << "Erro ao abrir o arquivo da fila de espera." << endl;
     }
 }
+
+
 
 void salvarReservasEmArquivo() {
     FILE* arquivo = fopen("reservas.txt", "w");
@@ -153,16 +156,18 @@ void salvarArmariosEmArquivo() {
 
     if (arquivo != NULL) {
         for (int i = 0; i < ARMARIOS; i++) {
-            fprintf(arquivo, "%d %d %d\n",
+            fprintf(arquivo, "%d %d %d %d\n",
                     armarios[i].numero,
                     armarios[i].disponivel,
-                    armarios[i].estado);
+                    armarios[i].estado,
+                    armarios[i].matriculaAlunoAtual);
         }
         fclose(arquivo);
     } else {
         cout << "Erro ao abrir o arquivo de armários." << endl;
     }
 }
+
 
 void carregarArmariosDeArquivo() {
     FILE* arquivo = fopen("armarios.txt", "r");
@@ -378,6 +383,7 @@ void cadastrarAluno() {
             alunosEspera[totalAlunosEspera] = novoAluno;
             totalAlunosEspera++;
             cout << "Não há armários disponíveis. O aluno foi adicionado à lista de espera." << endl;
+            salvarFilaEsperaEmArquivo();
         } else {
             cout << "Não há armários disponíveis e a lista de espera está cheia. Não é possível adicionar mais alunos em espera." << endl;
         }
@@ -819,6 +825,7 @@ void editarArmario() {
                         totalAlunosEspera--;
 
                         cout << "Armário tornou-se disponível e foi atribuído a um aluno da fila de espera." << endl;
+                        salvarArmariosEmArquivo();
                     } else {
                         cout << "Armário tornou-se disponível." << endl;
                     }
@@ -962,6 +969,7 @@ int main()
     carregarArmariosDeArquivo();
     carregarFuncionariosDeArquivo();
     carregarAlunosDeArquivo();
+    carregarFilaEsperaDeArquivo();
     int opcao;
 
     do
