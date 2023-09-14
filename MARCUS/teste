@@ -1,0 +1,159 @@
+#include <iostream>
+#include <string>
+#include <locale.h>
+
+using namespace std;
+
+// Definição da estrutura funcionario
+struct Funcionario {
+    string nome;
+    string matricula;
+    string email;
+    string telefone;
+};
+
+const int MAX_FUNCIONARIOS = 100;
+Funcionario funcionariosCadastrados[MAX_FUNCIONARIOS];
+int numFuncionarios = 0;
+
+// Função para cadastrar um novo funcionário
+void cadastrarFuncionario() {
+    if (numFuncionarios < MAX_FUNCIONARIOS) {
+        Funcionario novoFuncionario;
+        cin.ignore(); // Limpar o buffer de entrada
+
+        cout << "Digite o nome do funcionário: ";
+        getline(cin, novoFuncionario.nome);
+
+        cout << "Digite a matrícula do funcionário: ";
+        getline(cin, novoFuncionario.matricula);
+
+        cout << "Digite o email do funcionário: ";
+        getline(cin, novoFuncionario.email);
+
+        cout << "Digite o telefone do funcionário: ";
+        getline(cin, novoFuncionario.telefone);
+
+        funcionariosCadastrados[numFuncionarios] = novoFuncionario;
+        numFuncionarios++;
+        cout << "Funcionário cadastrado com sucesso!\n";
+    } else {
+        cout << "Limite máximo de funcionários alcançado. Não é possível cadastrar mais funcionários.\n";
+    }
+}
+
+// Função para listar todos os funcionários
+void listarFuncionarios() {
+    cout << "\nLista de Funcionários:\n";
+    for (int i = 0; i < numFuncionarios; i++) {
+        cout << "Funcionário " << i + 1 << ":\n";
+        cout << "Nome: " << funcionariosCadastrados[i].nome << endl;
+        cout << "Matrícula: " << funcionariosCadastrados[i].matricula << endl;
+        cout << "Email: " << funcionariosCadastrados[i].email << endl;
+        cout << "Telefone: " << funcionariosCadastrados[i].telefone << endl;
+        cout << "------------------------\n";
+    }
+}
+
+// Função para atualizar os dados de um funcionário
+void atualizarFuncionario() {
+    if (numFuncionarios == 0) {
+        cout << "Nenhum funcionário cadastrado para atualizar.\n";
+        return;
+    }
+
+    cout << "Digite o número do funcionário que deseja atualizar (1 a " << numFuncionarios << "): ";
+    int numeroFuncionario;
+    cin >> numeroFuncionario;
+
+    if (numeroFuncionario >= 1 && numeroFuncionario <= numFuncionarios) {
+        Funcionario& funcionario = funcionariosCadastrados[numeroFuncionario - 1];
+
+        cin.ignore(); // Limpar o buffer de entrada
+
+        cout << "Digite o novo nome do funcionário: ";
+        getline(cin, funcionario.nome);
+
+        cout << "Digite a nova matrícula do funcionário: ";
+        getline(cin, funcionario.matricula);
+
+        cout << "Digite o novo email do funcionário: ";
+        getline(cin, funcionario.email);
+
+        cout << "Digite o novo telefone do funcionário: ";
+        getline(cin, funcionario.telefone);
+
+        cout << "Dados do funcionário atualizados com sucesso!\n";
+    } else {
+        cout << "Número de funcionário inválido. Tente novamente.\n";
+    }
+}
+
+// Função para excluir um funcionário
+void excluirFuncionario() {
+    if (numFuncionarios == 0) {
+        cout << "Nenhum funcionário cadastrado para excluir.\n";
+        return; // Se não há funcionários cadastrados, não há nada para excluir
+    }
+
+    // Solicita ao usuário que digite o número do funcionário a ser excluído
+    cout << "Digite o número do funcionário que deseja excluir (1 a " << numFuncionarios << "): ";
+    int numeroFuncionario;
+    cin >> numeroFuncionario;
+
+    if (numeroFuncionario >= 1 && numeroFuncionario <= numFuncionarios) {
+        // Se o número do funcionário é válido (dentro do intervalo 1 a numFuncionarios)
+        // Percorre o array a partir da posição do funcionário a ser excluído até o final
+        for (int i = numeroFuncionario - 1; i < numFuncionarios - 1; i++) {
+            // Move os funcionários subsequentes uma posição para trás para preencher o espaço
+            funcionariosCadastrados[i] = funcionariosCadastrados[i + 1];
+        }
+        // Reduz o número de funcionários, já que um foi excluído
+        numFuncionarios--;
+        cout << "Funcionário excluído com sucesso!\n";
+    } else {
+        // Caso o número do funcionário seja inválido
+        cout << "Número de funcionário inválido. Tente novamente.\n";
+    }
+}
+
+
+int main() {
+    setlocale(LC_ALL, "Portuguese");
+
+    int escolha;
+
+    do {
+        cout << "Menu:\n";
+        cout << "1. Cadastrar funcionário\n";
+        cout << "2. Listar funcionários\n";
+        cout << "3. Atualizar funcionário\n";
+        cout << "4. Excluir funcionário\n";
+        cout << "5. Sair\n";
+        cout << "Escolha uma opção: ";
+        cin >> escolha;
+
+        switch (escolha) {
+            case 1:
+                cadastrarFuncionario();
+                break;
+            case 2:
+                listarFuncionarios();
+                break;
+            case 3:
+                atualizarFuncionario();
+                break;
+            case 4:
+                excluirFuncionario();
+                break;
+            case 5:
+                cout << "Saindo do programa.\n";
+                break;
+            default:
+                cout << "Opção inválida. Tente novamente.\n";
+        }
+    } while (escolha != 5);
+
+    return 0;
+}
+ 
