@@ -252,7 +252,7 @@ void salvarFuncionariosEmArquivo()
 
     for (int i = 0; i < totalFuncionarios; i++)
     {
-        fprintf(arquivo, "%s %d %s %d %s %d\n",
+        fprintf(arquivo, "%s %d %s %s %s %d\n",
                 funcionariosCadastrados[i].nome,
                 funcionariosCadastrados[i].matricula,
                 funcionariosCadastrados[i].email,
@@ -544,9 +544,42 @@ void editarFuncionario()
             break;
         }
     }
-
+    salvarFuncionariosEmArquivo();
     system("pause");
 }
+
+void deletFuncionario(){
+    int funDel, novoTotalFuncionarios = 0;
+
+    cout << "\n*********************  DELETAR CADASTRO DE FUNCIONÁRIO ************************ \n";
+    cout << "Informe a matrícula do funcionário que deseja deletar.\n";
+    cout << "\nMatrícula: ";
+    cin >> funDel;
+
+    // Criar um novo array temporário
+    Funcionario novosFuncionariosCadastrados[FUNCIONARIOS];
+    for (int i = 0; i < totalFuncionarios; i++) {
+        if (funDel != funcionariosCadastrados[i].matricula) {
+            novosFuncionariosCadastrados[novoTotalFuncionarios] = funcionariosCadastrados[i];
+            novoTotalFuncionarios++;
+        }
+    }
+    if (novoTotalFuncionarios < totalFuncionarios) {
+        totalFuncionarios = novoTotalFuncionarios;      // Exclusão bem-sucedida, atualizar o array principal
+        for (int i = 0; i < totalFuncionarios; i++) {
+            funcionariosCadastrados[i] = novosFuncionariosCadastrados[i];
+        }
+        system("cls");
+        salvarFuncionariosEmArquivo();
+        cout << "\nCadastro deletado.\n";
+        system("pause");
+    } else {
+        system("cls");
+        cout << "\nFuncionário não encontrado para exclusão.\n";
+        system("pause");
+    }
+}
+
 
 void visualizarFuncionarios()
 {
@@ -666,6 +699,7 @@ void menuFuncionarios()
             break;
         case 4:
             cout << "Opção Excluir Funcionário selecionada." << endl;
+            deletFuncionario();
             system("pause");
             break;
         case 5:
