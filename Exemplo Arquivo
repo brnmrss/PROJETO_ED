@@ -1,0 +1,159 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_NAME_LENGTH 100
+
+struct Person {
+    char name[MAX_NAME_LENGTH];
+    int age;
+};
+
+// Função para exibir uma lista de pessoas
+void displayPeople(struct Person* people, int count) {
+    printf("Lista de Pessoas:\n");
+    for (int i = 0; i < count; i++) {
+        printf("Nome: %s\n", people[i].name);
+        printf("Idade: %d\n", people[i].age);
+        printf("------------\n");
+    }
+}
+
+// Função para adicionar uma pessoa à lista
+void createPerson(struct Person* people, int* count) {
+    char name[MAX_NAME_LENGTH];
+    int age;
+
+    printf("Digite o nome completo da pessoa: ");
+    getchar(); // Limpar o buffer de entrada
+    fgets(name, MAX_NAME_LENGTH, stdin);
+    name[strcspn(name, "\n")] = '\0'; // Remover o caractere de nova linha
+
+    printf("Digite a idade da pessoa: ");
+    scanf("%d", &age);
+
+    strcpy(people[*count].name, name);
+    people[*count].age = age;
+    (*count)++;
+    printf("Pessoa adicionada com sucesso!\n");
+}
+
+// Função para atualizar os dados de uma pessoa
+void updatePerson(struct Person* people, int count) {
+    char name[MAX_NAME_LENGTH];
+    int newAge;
+
+    printf("Digite o nome completo da pessoa que deseja atualizar: ");
+    getchar(); // Limpar o buffer de entrada
+    fgets(name, MAX_NAME_LENGTH, stdin);
+    name[strcspn(name, "\n")] = '\0'; // Remover o caractere de nova linha
+
+    for (int i = 0; i < count; i++) {
+        if (strcmp(people[i].name, name) == 0) {
+            printf("Digite a nova idade para %s: ", people[i].name);
+            scanf("%d", &newAge);
+            people[i].age = newAge;
+            printf("Dados atualizados com sucesso!\n");
+            return;
+        }
+    }
+
+    printf("Pessoa não encontrada.\n");
+}
+
+// Função para excluir uma pessoa da lista
+void deletePerson(struct Person* people, int* count) {
+    char name[MAX_NAME_LENGTH];
+
+    printf("Digite o nome completo da pessoa que deseja excluir: ");
+    getchar(); // Limpar o buffer de entrada
+    fgets(name, MAX_NAME_LENGTH, stdin);
+    name[strcspn(name, "\n")] = '\0'; // Remover o caractere de nova linha
+
+    for (int i = 0; i < *count; i++) {
+        if (strcmp(people[i].name, name) == 0) {
+            // Mover todos os elementos subsequentes uma posição para trás
+            for (int j = i; j < *count - 1; j++) {
+                strcpy(people[j].name, people[j + 1].name);
+                people[j].age = people[j + 1].age;
+            }
+            (*count)--;
+            printf("Pessoa excluída com sucesso!\n");
+            return;
+        }
+    }
+
+    printf("Pessoa não encontrada.\n");
+}
+
+// Função para salvar a lista de pessoas em um arquivo de texto
+void saveToFile(struct Person* people, int count, const char* filename) {
+    FILE* file = fopen(filename, "w");
+    if (file != NULL) {
+        for (int i = 0; i < count; i++) {
+            fprintf(file, "%s\n%d\n", people[i].name, people[i].age);
+            if (i < count - 1) {
+                fprintf(file, "--------\n"); // Separador entre os blocos de dados
+            }
+        }
+        fclose(file);
+        printf("Dados salvos em %s com sucesso!\n", filename);
+    } else {
+        fprintf(stderr, "Erro ao abrir o arquivo %s para escrita.\n", filename);
+    }
+}
+
+int main() {
+    struct Person people[100];  // Suponha um máximo de 100 pessoas
+    int count = 0;
+
+    // Carregar dados do arquivo (se existir)
+    FILE* file = fopen("pessoas.txt", "r");
+    if (file != NULL) {
+        char line[MAX_NAME_LENGTH];
+        char ageStr[10]; // String temporária para a idade
+        while (fgets(line, sizeof(line), file) != NULL) {
+            if (line[0] == '-') { // Identifica o separador entre os blocos de dados
+                continue;
+            }
+            strncpy(people[count].name, line, sizeof(people[count].name));
+            fgets(ageStr, sizeof(ageStr), file); // Lê a idade como uma string
+            sscanf(ageStr, "%d", &people[count].age); // Converte a string em um inteiro
+            count++;
+        }
+        fclose(file);
+    }
+
+    while (1) {
+        printf("Escolha uma operação:\n");
+        printf("1. Exibir Pessoas\n");
+        printf("2. Adicionar Pessoa\n");
+        printf("3. Atualizar Pessoa\n");
+        printf("4. Excluir Pessoa\n");
+        printf("5. Sair\n");
+        int choice;
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                displayPeople(people, count);
+                break;
+            case 2:
+                createPerson(people, &count);
+                break;
+            case 3:
+                updatePerson(people, count);
+                break;
+            case 4:
+                deletePerson(people, &count);
+                break;
+            case 5:
+                saveToFile(people, count, "pessoas.txt");
+                return 0;
+            default:
+                printf("Escolha inválida. Tente novamente.\n");
+        }
+    }
+
+    return 0;
+}
