@@ -6,12 +6,22 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <cstdlib>
+#include <windows.h>
+
 
 #define ALUNO   20
 #define FUNCIONARIO 10
 #define ARMARIOS 5
 #define CURSO 5
 using namespace std;
+HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+COORD CursorPosition;
+
+void gotoxy(int x, int y){
+  CursorPosition.X = x; // Locates column
+  CursorPosition.Y = y; // Locates Row
+  SetConsoleCursorPosition(console,CursorPosition); // Sets position for next thing to be printed
+}
 
 typedef struct {
     int dataInicio, dataFim, ano;
@@ -86,6 +96,7 @@ void inicializarArmarios(){
         // Salve as informações dos armários em um arquivo
         salvarArmariosEmArquivo();
     } else {
+
         // Arquivo existe, então carregue as informações dos armários
         for (int i = 0; i < ARMARIOS; i++) {
             if (fscanf(arquivo, "%d %d %d\n",
@@ -101,6 +112,8 @@ void inicializarArmarios(){
 
 void carregarArmariosDeArquivo();
 void carregarArmariosDeArquivo(){
+
+
     FILE* arquivo = fopen("armarios.txt", "r");
 
     if (arquivo != NULL) {
@@ -300,59 +313,11 @@ void cadastrarAluno(){
 
 
 
-void mostrarArmarios();
-void mostrarArmarios(){
-   system("cls");
-    cout << "\nArmários Cadastrados: "<< ARMARIOS <<"\n\n";
-    cout << "[1] = Bom/Disponível\n";
-    cout << "[0] = Mau/Indisponível\n\n";
-    for (int i = 0; i < ARMARIOS; i++) {
-        cout << "Número: " << i + 1 << "\n";
-        cout << "Estado: " << armarios[i].estado << "\t";
-        cout << "Disponível: " << armarios[i].disponivel << "\t";
-        cout << "\n---------------------------------------------------------------\n";
-    }
-    system("pause");
-}
-
-void mostrarFuncionarios();
-void mostrarFuncionarios(){
-    system("cls");
-    cout << "\nFuncionários Cadastrados: "<< totalFuncionarios <<" \n\n";
-    for (int i = 0; i < totalFuncionarios; i++) {
-        cout << "Funcionário " << i + 1 << ":\n";
-        cout << "Nome: " << funcionariosCadastrados[i].nome << "\t";
-        cout << "Email: " << funcionariosCadastrados[i].email << "\t";
-        cout << "Matrícula: " << funcionariosCadastrados[i].matricula << "\t";
-        cout << "Telefone: " << funcionariosCadastrados[i].fone << "\t";
-        cout << "\n---------------------------------------------------------------\n";
-    }
-    system("pause");
-}
-
-void mostrarAlunos();
-void mostrarAlunos(){
-    system("cls");
-    cout << "\nAlunos Cadastrados: "<< totalAlunos <<" \n\n";
-    for (int i = 0; i < totalAlunos; i++) {
-        cout << "Aluno " << i + 1 << ":\n";
-        cout << "Nome: " << alunosCadastrados[i].nome << "\t";
-        cout << "Email: " << alunosCadastrados[i].email << "\t";
-        cout << "Matrícula: " << alunosCadastrados[i].matricula << "\t";
-        cout << "Telefone: " << alunosCadastrados[i].fone << "\t";
-        cout << "Turma/Série: " << alunosCadastrados[i].turmaSerie << "\t";
-        cout << "\n---------------------------------------------------------------\n";
-    }
-    system("pause");
-}
-
-
-
 void deletFuncionario();
 void deletFuncionario(){
     int funDel, novoTotalFuncionarios = 0;
 
-    mostrarFuncionarios();
+    exibirTodosFuncionarios();
 
     cout << "\n*********************  DELETAR CADASTRO DE FUNCIONÁRIO ************************ \n";
     cout << "Informe a matrícula do funcionário que deseja deletar.\n";
@@ -387,7 +352,7 @@ void deletAluno();
 void deletAluno(){
     int alunoDel, novoTotalAlunos = 0;
 
-    mostrarAlunos();
+    exibirTodosAlunos();
 
     cout << "\n*********************  DELETAR CADASTRO DE ALUNO ************************ \n";
     cout << "Informe a matrícula do aluno que deseja deletar.\n";
@@ -418,6 +383,7 @@ void deletAluno(){
         system("pause");
     }
 }
+
 
 
 void editArmario();
@@ -478,14 +444,14 @@ void editArmario(){
         break;
         }
     }
-salvarAlunosEmArquivo();
+salvarArmariosEmArquivo();
 }
 
 void editFuncionario();
 void editFuncionario(){
     int funEdit;
 
-    mostrarFuncionarios();
+    exibirTodosFuncionarios();
 
     cout << "\n*********************  EDITAR DADOS DE FUNCIONÁRIO ************************ \n";
     cout << "Informe a matrícula do funcionário que deseja editar.\n";
@@ -518,7 +484,7 @@ void editAluno();
 void editAluno(){
     int alunoEdit;
 
-    mostrarAlunos();
+    exibirTodosAlunos();
 
     cout << "\n*********************  EDITAR DADOS DE ALUNO ************************ \n";
     cout << "Informe a matrícula do aluno que deseja editar.\n";
@@ -548,6 +514,142 @@ void editAluno(){
     system("pause");
 salvarAlunosEmArquivo();
 }
+
+
+
+
+void exibirTodosFuncionarios();
+void exibirTodosFuncionarios(){
+    carregarFuncionariosDeArquivo(); // Carregar funcionários apenas uma vez no início.
+    system("cls");
+    gotoxy(1, 1);
+    cout << "---------------------------------------------------------------------------------------------------------------";
+    gotoxy(1, 2);
+    cout << "================================================FUNCIONARIO====================================================";
+    gotoxy(1, 3);
+    cout << "---------------------------------------------------------------------------------------------------------------";
+    gotoxy(7, 4);
+    cout << "Nome";
+    gotoxy(45, 4);
+    cout << "Email";
+    gotoxy(65, 4);
+    cout << "Matricula";
+    gotoxy(85, 4);
+    cout << "Contato";
+    gotoxy(105, 4);
+    cout << "Usuario";
+    gotoxy(1, 5);
+    cout << "---------------------------------------------------------------------------------------------------------------";
+
+    for (int i = 0; i < totalFuncionarios; i++) {
+        gotoxy(6, 6 + i);
+        printf("%s", funcionariosCadastrados[i].nome);
+        gotoxy(36, 6 + i);
+        printf("%s", funcionariosCadastrados[i].email);
+        gotoxy(66, 6 + i);
+        printf("%d", funcionariosCadastrados[i].matricula);
+        gotoxy(86, 6 + i);
+        printf("%d", funcionariosCadastrados[i].fone);
+        gotoxy(106, 6 + i);
+        printf("%s", funcionariosCadastrados[i].usuario);
+
+    }
+    cout << "\n";
+    cout << "================================================================================================================\n";
+    system("pause");
+}
+
+void exibirTodosAlunos();
+void exibirTodosAlunos(){
+    carregarAlunosDeArquivo();
+    system("cls");
+    gotoxy(1, 1);
+    cout << "--------------------------------------------------------------------------------------------------------------------";
+    gotoxy(1, 2);
+    cout << "=============================================ALUNOS=================================================================";
+    gotoxy(1, 3);
+    cout << "--------------------------------------------------------------------------------------------------------------------";
+    gotoxy(7, 4);
+    cout << "Nome";
+    gotoxy(30, 4);
+    cout << "Email";
+    gotoxy(65, 4);
+    cout << "Matricula";
+    gotoxy(85, 4);
+    cout << "Contato";
+    gotoxy(105, 4);
+    cout << "Turma/Serie";
+    cout << "\n";
+    cout << "---------------------------------------------------------------------------------------------------------------------";
+
+    for (int i = 0; i < totalAlunos; i++) {
+        gotoxy(6, 6 + i);
+        printf("%s", alunosCadastrados[i].nome);
+        gotoxy(28, 6 + i);
+        printf("%s", alunosCadastrados[i].email);
+        gotoxy(66, 6 + i);
+        printf("%d", alunosCadastrados[i].matricula);
+        gotoxy(86, 6 + i);
+        printf("%d", alunosCadastrados[i].fone);
+        gotoxy(105, 6 + i);
+        printf("%d", alunosCadastrados[i].turmaSerie);
+
+    }
+    cout << "\n";
+    cout << "=====================================================================================================================\n";
+    system("pause");
+}
+
+void exibirTodosArmarios();
+void exibirTodosArmarios(){
+    carregarArmariosDeArquivo();
+    system("cls");
+    gotoxy(1, 1);
+    cout << "----------------------------------------------------------------";
+    gotoxy(1, 2);
+    cout << "============================ARMARIOS============================";
+    gotoxy(1, 3);
+    cout << "----------------------------------------------------------------";
+    gotoxy(7, 4);
+    cout << "Numero";
+    gotoxy(20, 4);
+    cout << "Dispinibilidade";
+    gotoxy(45, 4);
+    cout << "Estado";
+    cout << "\n";
+    cout << "-----------------------------------------------------------------";
+
+    for (int i = 0; i < ARMARIOS; i++) {
+        gotoxy(8, 6 + i);
+        printf("%d", i +1);
+        if(armarios[i].disponivel==true){
+            gotoxy(23, 6 + i);
+            cout << "Disponivel";
+        }else{
+            gotoxy(23, 6 + i);
+            cout << "Indisponivel";
+
+            }
+
+        if(armarios[i].estado==true){
+             gotoxy(47, 6 + i);
+             printf("Bom");
+        }else{
+            gotoxy(47, 6 + i);
+             printf("Ruim");
+
+            }
+
+    }
+    cout << "\n";
+    cout << "=================================================================\n";
+    cout << "\nArmários Cadastrados: "<< ARMARIOS <<"\n\n";
+    cout << "[1] = Bom/Disponível\n";
+    cout << "[0] = Mau/Indisponível\n\n";
+    system("pause");
+
+}
+
 
 
 
@@ -588,7 +690,7 @@ int main(){
     // EXIBIR ARMÁRIOS
                         case 1:
                             carregarArmariosDeArquivo();
-                            mostrarArmarios();
+                            exibirTodosArmarios();
 
                             break;
     // SELECIONAR ARMÁRIO PARA EDITAR
@@ -633,8 +735,7 @@ int main(){
 
     // CONSULTAR ALUNO
                         case 1:
-                            carregarAlunosDeArquivo();
-                            mostrarAlunos();
+                            exibirTodosAlunos();
                             break;
 
     // CADASTRAR ALUNO
@@ -683,8 +784,7 @@ int main(){
 
     // CONSULTAR FUNCIONÁRIOS
                         case 1:
-                            carregarFuncionariosDeArquivo();
-                            mostrarFuncionarios();
+                            exibirTodosFuncionario();
 
                             break;
 
@@ -751,4 +851,3 @@ int main(){
     system("pause");
     return 0;
 }
-
