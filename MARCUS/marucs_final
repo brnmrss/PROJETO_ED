@@ -1,0 +1,763 @@
+#include <iostream>
+#include <cstring>
+#include <windows.h>
+#include <locale.h>
+#define FUNCIONARIO 5
+#define ALUNO 5
+using namespace std;
+
+// Definições das estruturas
+typedef struct {
+    int matricula;
+    char nome[50];
+    char email[50];
+    char fone[15];
+    char turmaSerie[20];
+} Aluno;
+
+typedef struct {
+    int matricula;
+    char nome[50];
+    char usuario[20];
+    char senha[20];
+    char email[50];
+    char fone[15];
+} Funcionario;
+
+// Arrays globais para armazenar alunos e funcionários
+Aluno alunosCadastrados[FUNCIONARIO]; // Supondo que você terá no máximo 100 alunos
+Funcionario funcionariosCadastrados[FUNCIONARIO]; // Supondo que você terá no máximo 100 funcionários
+
+// Contadores globais
+int totalAlunos = 0;
+int totalFuncionarios = 0;
+
+// Função para posicionar o cursor na tela
+void gotoxy(int x, int y) {
+    COORD coord;
+    coord.X = x;
+    coord.Y = y;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
+//ALUNOS
+//ALUNOS
+//ALUNOS
+//ALUNOS
+//ALUNOS
+
+// Função para salvar alunos em um arquivo de texto
+void salvarAlunos() {
+    FILE *arquivo;
+    arquivo = fopen("alunos.txt", "w");
+
+    if (arquivo == NULL) {
+        cout << "Erro ao abrir o arquivo!" << endl;
+        return;
+    }
+
+    for (int i = 0; i < totalAlunos; i++) {
+        fprintf(arquivo, "%d\n%s\n%s\n%s\n%s\n",
+            alunosCadastrados[i].matricula,
+            alunosCadastrados[i].nome,
+            alunosCadastrados[i].email,
+            alunosCadastrados[i].fone,
+            alunosCadastrados[i].turmaSerie);
+    }
+
+    fclose(arquivo);
+
+    cout << "Alunos salvos em 'alunos.txt' com sucesso!" << endl;
+}
+
+// Função para carregar alunos de um arquivo de texto
+void carregarAlunos() {
+    FILE *arquivo;
+    arquivo = fopen("alunos.txt", "r");
+
+    if (arquivo == NULL) {
+        cout << "Arquivo 'alunos.txt' nao encontrado!" << endl;
+        return;
+    }
+
+    // Limpa o array de alunos antes de carregar
+    totalAlunos = 0;
+
+    while (!feof(arquivo)) {
+        Aluno novoAluno;
+
+        if (fscanf(arquivo, "%d\n", &novoAluno.matricula) != 1) {
+            break;
+        }
+
+        fgets(novoAluno.nome, sizeof(novoAluno.nome), arquivo);
+        fgets(novoAluno.email, sizeof(novoAluno.email), arquivo);
+        fgets(novoAluno.fone, sizeof(novoAluno.fone), arquivo);
+        fgets(novoAluno.turmaSerie, sizeof(novoAluno.turmaSerie), arquivo);
+
+        // Remova a quebra de linha final, se presente
+        novoAluno.nome[strcspn(novoAluno.nome, "\n")] = '\0';
+        novoAluno.email[strcspn(novoAluno.email, "\n")] = '\0';
+        novoAluno.fone[strcspn(novoAluno.fone, "\n")] = '\0';
+        novoAluno.turmaSerie[strcspn(novoAluno.turmaSerie, "\n")] = '\0';
+
+        // Adiciona o novo aluno ao array
+        alunosCadastrados[totalAlunos] = novoAluno;
+        totalAlunos++;
+    }
+
+    fclose(arquivo);
+
+    cout << "Alunos carregados de 'alunos.txt' com sucesso!" << endl;
+}
+
+
+
+void cadastrarAluno() {
+    system("cls"); // Limpa a tela
+
+    Aluno novoAluno;
+
+    while (true) {
+        cout << "Informe a matricula do aluno: ";
+        cin >> novoAluno.matricula;
+
+        // Verifica se a matrícula já existe
+        bool matriculaExistente = false;
+        for (int i = 0; i < totalAlunos; i++) {
+            if (alunosCadastrados[i].matricula == novoAluno.matricula) {
+                matriculaExistente = true;
+                cout << "Erro: Matricula ja existe! Tente novamente." << endl;
+                break;
+            }
+        }
+
+        if (!matriculaExistente) {
+            break; // Matrícula única, sai do loop
+        }
+    }
+
+    cout << "Informe o nome do aluno: ";
+    cin.ignore();
+    cin.getline(novoAluno.nome, 50);
+
+    cout << "Informe o email do aluno: ";
+    cin.getline(novoAluno.email, 50);
+
+    cout << "Informe o telefone do aluno: ";
+    cin.getline(novoAluno.fone, 15);
+
+    cout << "Informe a turma do aluno: ";
+    cin.getline(novoAluno.turma, 20);
+
+    // Adiciona o novo aluno ao array
+    alunosCadastrados[totalAlunos] = novoAluno;
+    totalAlunos++;
+
+    cout << "Aluno cadastrado com sucesso!" << endl;
+    system("pause");
+    salvarAlunos();
+}
+
+// Função para atualizar dados de um aluno
+void atualizarAluno() {
+    system("cls"); // Limpa a tela
+
+    int matricula;
+    cout << "Informe a matricula do aluno que deseja atualizar: ";
+    cin >> matricula;
+
+    bool encontrado = false;
+    for (int i = 0; i < totalAlunos; i++) {
+        if (alunosCadastrados[i].matricula == matricula) {
+            encontrado = true;
+
+            // Exibe os detalhes do aluno escolhido
+            cout << "Aluno escolhido:" << endl;
+            cout << "Matricula: " << alunosCadastrados[i].matricula << endl;
+            cout << "Nome: " << alunosCadastrados[i].nome << endl;
+            cout << "Email: " << alunosCadastrados[i].email << endl;
+            cout << "Telefone: " << alunosCadastrados[i].fone << endl;
+            cout << "Turma: " << alunosCadastrados[i].turmaSerie << endl;
+
+            cout << "Escolha o que deseja atualizar:" << endl;
+            cout << "1. Nome" << endl;
+            cout << "2. Email" << endl;
+            cout << "3. Telefone" << endl;
+            cout << "4. Turma" << endl;
+            cout << "5. Voltar" << endl;
+            cout << "Opcao: ";
+
+            int opcao;
+            cin >> opcao;
+
+            switch (opcao) {
+                case 1:
+                    cout << "Informe o novo nome: ";
+                    cin.ignore();
+                    cin.getline(alunosCadastrados[i].nome, 50);
+                    cout << "Nome atualizado com sucesso!" << endl;
+                    break;
+                case 2:
+                    cout << "Informe o novo email: ";
+                    cin.ignore();
+                    cin.getline(alunosCadastrados[i].email, 50);
+                    cout << "Email atualizado com sucesso!" << endl;
+                    break;
+                case 3:
+                    cout << "Informe o novo telefone: ";
+                    cin.ignore();
+                    cin.getline(alunosCadastrados[i].fone, 15);
+                    cout << "Telefone atualizado com sucesso!" << endl;
+                    break;
+                case 4:
+                    cout << "Informe a nova turma: ";
+                    cin.ignore();
+                    cin.getline(alunosCadastrados[i].turmaSerie, 20);
+                    cout << "Turma atualizada com sucesso!" << endl;
+                    break;
+                case 5:
+                    return; // Voltar ao menu anterior
+                default:
+                    cout << "Opcao invalida!" << endl;
+                    break;
+            }
+        }
+    }
+
+    if (!encontrado) {
+        cout << "Aluno nao encontrado!" << endl;
+    }
+
+    system("pause"); // Aguarda até que o usuário pressione uma tecla para continuar
+    salvarAlunos();
+}
+
+void deletAluno(){
+    int alunoDel, novoTotalAlunos = 0;
+
+
+    cout << "\n*********************  DELETAR CADASTRO DE ALUNO ************************ \n";
+    cout << "Informe a matrícula do aluno que deseja deletar.\n";
+    cout << "\nMatrícula: ";
+    cin >> alunoDel;
+
+    // Criar um novo array temporário
+    Aluno novosAlunosCadastrados[ALUNO];
+    for (int i = 0; i < totalAlunos; i++) {
+        if (alunoDel != alunosCadastrados[i].matricula) {
+            novosAlunosCadastrados[novoTotalAlunos] = alunosCadastrados[i];
+            novoTotalAlunos++;
+        }
+    }
+
+    if (novoTotalAlunos < totalAlunos) {
+        totalAlunos = novoTotalAlunos;              // Exclusão bem-sucedida, atualizar o array principal
+        for (int i = 0; i < totalAlunos; i++) {
+            alunosCadastrados[i] = novosAlunosCadastrados[i];
+        }
+        system("cls");
+
+        ////////////////////////////////////////////salvarAlunosEmArquivo();
+
+        cout << "\nCadastro deletado.\n";
+        system("pause");
+    } else {
+        system("cls");
+        cout << "\nAluno não encontrado para exclusão.\n";
+        system("pause");
+    }
+    salvarAlunos();
+}
+
+void exibirTodosAlunos(){
+    carregarAlunos();
+    system("cls");
+    gotoxy(1, 1);
+    cout << "--------------------------------------------------------------------------------------------------------------------";
+    gotoxy(1, 2);
+    cout << "=============================================ALUNOS=================================================================";
+    gotoxy(1, 3);
+    cout << "--------------------------------------------------------------------------------------------------------------------";
+    gotoxy(7, 4);
+    cout << "Nome";
+    gotoxy(30, 4);
+    cout << "Email";
+    gotoxy(65, 4);
+    cout << "Matricula";
+    gotoxy(85, 4);
+    cout << "Contato";
+    gotoxy(105, 4);
+    cout << "Turma/Serie";
+    cout << "\n";
+    cout << "---------------------------------------------------------------------------------------------------------------------";
+
+    for (int i = 0; i < totalAlunos; i++) {
+        gotoxy(6, 6 + i);
+        printf("%s", alunosCadastrados[i].nome);
+        gotoxy(28, 6 + i);
+        printf("%s", alunosCadastrados[i].email);
+        gotoxy(66, 6 + i);
+        printf("%d", alunosCadastrados[i].matricula);
+        gotoxy(86, 6 + i);
+        printf("%s", alunosCadastrados[i].fone);
+        gotoxy(105, 6 + i);
+        printf("%s", alunosCadastrados[i].turmaSerie);
+
+    }
+    cout << "\n";
+    cout << "=====================================================================================================================\n";
+    system("pause");
+}
+
+
+//FUNCIONARIOS
+//FUNCIONARIOS
+//FUNCIONARIOS
+//FUNCIONARIOS
+
+
+// Função para salvar funcionários em um arquivo de texto
+void salvarFuncionarios() {
+    FILE *arquivo;
+    arquivo = fopen("funcionarios.txt", "w");
+
+    if (arquivo == NULL) {
+        cout << "Erro ao abrir o arquivo!" << endl;
+        return;
+    }
+
+    for (int i = 0; i < totalFuncionarios; i++) {
+        fprintf(arquivo, "%d\n%s\n%s\n%s\n%s\n%s\n",
+            funcionariosCadastrados[i].matricula,
+            funcionariosCadastrados[i].nome,
+            funcionariosCadastrados[i].usuario,
+            funcionariosCadastrados[i].senha,
+            funcionariosCadastrados[i].email,
+            funcionariosCadastrados[i].fone);
+    }
+
+    fclose(arquivo);
+
+    cout << "Funcionarios salvos em 'funcionarios.txt' com sucesso!" << endl;
+}
+
+// Função para carregar funcionários de um arquivo de texto
+void carregarFuncionarios() {
+    FILE *arquivo;
+    arquivo = fopen("funcionarios.txt", "r");
+
+    if (arquivo == NULL) {
+        cout << "Arquivo 'funcionarios.txt' nao encontrado!" << endl;
+        return;
+    }
+
+    // Limpa o array de funcionários antes de carregar
+    totalFuncionarios = 0;
+
+    while (!feof(arquivo)) {
+        Funcionario novoFuncionario;
+
+        if (fscanf(arquivo, "%d\n", &novoFuncionario.matricula) != 1) {
+            break;
+        }
+
+        fgets(novoFuncionario.nome, sizeof(novoFuncionario.nome), arquivo);
+        fgets(novoFuncionario.usuario, sizeof(novoFuncionario.usuario), arquivo);
+        fgets(novoFuncionario.senha, sizeof(novoFuncionario.senha), arquivo);
+        fgets(novoFuncionario.email, sizeof(novoFuncionario.email), arquivo);
+        fgets(novoFuncionario.fone, sizeof(novoFuncionario.fone), arquivo);
+
+        // Remova a quebra de linha final, se presente
+        novoFuncionario.nome[strcspn(novoFuncionario.nome, "\n")] = '\0';
+        novoFuncionario.usuario[strcspn(novoFuncionario.usuario, "\n")] = '\0';
+        novoFuncionario.senha[strcspn(novoFuncionario.senha, "\n")] = '\0';
+        novoFuncionario.email[strcspn(novoFuncionario.email, "\n")] = '\0';
+        novoFuncionario.fone[strcspn(novoFuncionario.fone, "\n")] = '\0';
+
+        // Adiciona o novo funcionário ao array
+        funcionariosCadastrados[totalFuncionarios] = novoFuncionario;
+        totalFuncionarios++;
+    }
+
+    fclose(arquivo);
+
+    cout << "Funcionarios carregados de 'funcionarios.txt' com sucesso!" << endl;
+}
+
+
+void cadastrarFuncionario() {
+    system("cls"); // Limpa a tela
+
+    Funcionario novoFuncionario;
+
+    while (true) {
+        cout << "Informe a matricula do funcionario: ";
+        cin >> novoFuncionario.matricula;
+
+        // Verifica se a matrícula já existe
+        bool matriculaExistente = false;
+        for (int i = 0; i < totalFuncionarios; i++) {
+            if (funcionariosCadastrados[i].matricula == novoFuncionario.matricula) {
+                matriculaExistente = true;
+                cout << "Erro: Matricula ja existe! Tente novamente." << endl;
+                break;
+            }
+        }
+
+        if (!matriculaExistente) {
+            break; // Matrícula única, sai do loop
+        }
+    }
+
+    cout << "Informe o nome do funcionario: ";
+    cin.ignore();
+    cin.getline(novoFuncionario.nome, 50);
+
+    cout << "Informe o usuario do funcionario: ";
+    cin.getline(novoFuncionario.usuario, 20);
+
+    cout << "Informe a senha do funcionario: ";
+    cin.getline(novoFuncionario.senha, 20);
+
+    cout << "Informe o email do funcionario: ";
+    cin.getline(novoFuncionario.email, 50);
+
+    cout << "Informe o telefone do funcionario: ";
+    cin.getline(novoFuncionario.fone, 15);
+
+    // Adiciona o novo funcionário ao array
+    funcionariosCadastrados[totalFuncionarios] = novoFuncionario;
+    totalFuncionarios++;
+
+    cout << "Funcionario cadastrado com sucesso!" << endl;
+    system("pause");
+    salvarFuncionarios();
+}
+
+// Função para visualizar a lista de funcionários
+void exibirTodosFuncionario(){
+    carregarFuncionarios();
+    system("cls");
+    gotoxy(1, 1);
+    cout << "---------------------------------------------------------------------------------------------------------------";
+    gotoxy(1, 2);
+    cout << "================================================FUNCIONARIO====================================================";
+    gotoxy(1, 3);
+    cout << "---------------------------------------------------------------------------------------------------------------";
+    gotoxy(7, 4);
+    cout << "Nome";
+    gotoxy(45, 4);
+    cout << "Email";
+    gotoxy(65, 4);
+    cout << "Matricula";
+    gotoxy(85, 4);
+    cout << "Contato";
+    gotoxy(105, 4);
+    cout << "Usuario";
+    gotoxy(1, 5);
+    cout << "---------------------------------------------------------------------------------------------------------------";
+
+    for (int i = 0; i < totalFuncionarios; i++) {
+        gotoxy(6, 6 + i);
+        printf("%s", funcionariosCadastrados[i].nome);
+        gotoxy(36, 6 + i);
+        printf("%s", funcionariosCadastrados[i].email);
+        gotoxy(66, 6 + i);
+        printf("%d", funcionariosCadastrados[i].matricula);
+        gotoxy(86, 6 + i);
+        printf("%s", funcionariosCadastrados[i].fone);
+        gotoxy(106, 6 + i);
+        printf("%s", funcionariosCadastrados[i].usuario);
+
+    }
+    cout << "\n";
+    cout << "================================================================================================================\n";
+    system("pause");
+}
+
+// Função para atualizar dados de um funcionário
+void atualizarFuncionario() {
+    system("cls");
+    int matricula;
+    cout << "Informe a matricula do funcionario que deseja atualizar: ";
+    cin >> matricula;
+
+    bool encontrado = false;
+    for (int i = 0; i < totalFuncionarios; i++) {
+        if (funcionariosCadastrados[i].matricula == matricula) {
+            encontrado = true;
+
+            // Exibe os detalhes do funcionário escolhido
+            cout << "Funcionario escolhido:" << endl;
+            cout << "Matricula: " << funcionariosCadastrados[i].matricula << endl;
+            cout << "Nome: " << funcionariosCadastrados[i].nome << endl;
+            cout << "Usuario: " << funcionariosCadastrados[i].usuario << endl;
+            cout << "Senha: " << funcionariosCadastrados[i].senha << endl;
+            cout << "Email: " << funcionariosCadastrados[i].email << endl;
+            cout << "Telefone: " << funcionariosCadastrados[i].fone << endl;
+
+            cout << "Escolha o que deseja atualizar:" << endl;
+            cout << "1. Nome" << endl;
+            cout << "2. Usuario" << endl;
+            cout << "3. Senha" << endl;
+            cout << "4. Email" << endl;
+            cout << "5. Telefone" << endl;
+            cout << "6. Voltar" << endl;
+            cout << "Opcao: ";
+
+            int opcao;
+            cin >> opcao;
+
+            switch (opcao) {
+                case 1:
+                    cout << "Informe o novo nome: ";
+                    cin.ignore();
+                    cin.getline(funcionariosCadastrados[i].nome, 50);
+                    cout << "Nome atualizado com sucesso!" << endl;
+                    break;
+                case 2:
+                    cout << "Informe o novo usuario: ";
+                    cin.ignore();
+                    cin.getline(funcionariosCadastrados[i].usuario, 20);
+                    cout << "Usuario atualizado com sucesso!" << endl;
+                    break;
+                case 3:
+                    cout << "Informe a nova senha: ";
+                    cin.ignore();
+                    cin.getline(funcionariosCadastrados[i].senha, 20);
+                    cout << "Senha atualizada com sucesso!" << endl;
+                    break;
+                case 4:
+                    cout << "Informe o novo email: ";
+                    cin.ignore();
+                    cin.getline(funcionariosCadastrados[i].email, 50);
+                    cout << "Email atualizado com sucesso!" << endl;
+                    break;
+                case 5:
+                    cout << "Informe o novo telefone: ";
+                    cin.ignore();
+                    cin.getline(funcionariosCadastrados[i].fone, 15);
+                    cout << "Telefone atualizado com sucesso!" << endl;
+                    break;
+                case 6:
+                    return; // Voltar ao menu anterior
+                default:
+                    cout << "Opcao invalida!" << endl;
+                    break;
+            }
+        }
+    }
+
+    if (!encontrado) {
+        cout << "Funcionario nao encontrado!" << endl;
+    }
+    salvarFuncionarios();
+}
+
+void deletFuncionario(){
+    int funDel, novoTotalFuncionarios = 0;
+
+    cout << "\n*********************  DELETAR CADASTRO DE FUNCIONÁRIO ************************ \n";
+    cout << "Informe a matrícula do funcionário que deseja deletar.\n";
+    cout << "\nMatrícula: ";
+    cin >> funDel;
+
+    // Criar um novo array temporário
+    Funcionario novosFuncionariosCadastrados[FUNCIONARIO];
+    for (int i = 0; i < totalFuncionarios; i++) {
+        if (funDel != funcionariosCadastrados[i].matricula) {
+            novosFuncionariosCadastrados[novoTotalFuncionarios] = funcionariosCadastrados[i];
+            novoTotalFuncionarios++;
+        }
+    }
+    if (novoTotalFuncionarios < totalFuncionarios) {
+        totalFuncionarios = novoTotalFuncionarios;      // Exclusão bem-sucedida, atualizar o array principal
+        for (int i = 0; i < totalFuncionarios; i++) {
+            funcionariosCadastrados[i] = novosFuncionariosCadastrados[i];
+        }
+        system("cls");
+
+        ////////////////////////////////////////////////////////salvarFuncionariosEmArquivo();
+
+        cout << "\nCadastro deletado.\n";
+        system("pause");
+    } else {
+        system("cls");
+        cout << "\nFuncionário não encontrado para exclusão.\n";
+        system("pause");
+    }
+    salvarFuncionarios();
+}
+
+
+void mostrarSubMenuAlunos() {
+    char escolha;
+
+    while (true) {
+        system("cls"); // Limpa a tela
+
+        gotoxy(10, 5);
+        cout << "**********************************************" << endl;
+        gotoxy(10, 6);
+        cout << "*           MENU ALUNOS                     *" << endl;
+        gotoxy(10, 7);
+        cout << "**********************************************" << endl;
+        gotoxy(10, 9);
+        cout << "1. Cadastrar Aluno" << endl;
+        gotoxy(10, 10);
+        cout << "2. Listar Alunos" << endl;
+        gotoxy(10, 11);
+        cout << "3. Atualizar Aluno" << endl;
+        gotoxy(10, 12);
+        cout << "4. Excluir Aluno" << endl;
+        gotoxy(10, 13);
+        cout << "5. Voltar" << endl;
+
+        gotoxy(10, 15);
+        cout << "Escolha uma opcao: ";
+        cin >> escolha;
+
+        switch (escolha) {
+            case '1':
+                cadastrarAluno();
+                break;
+            case '2':
+                exibirTodosAlunos();
+                break;
+            case '3':
+                atualizarAluno();
+                break;
+            case '4':
+                deletAluno();
+                break;
+            case '5':
+                // Voltar ao menu anterior
+                return;
+            default:
+                // Opção inválida
+                gotoxy(10, 17);
+                cout << "Opcao invalida! Pressione Enter para continuar...";
+                cin.ignore();
+                cin.get(); // Aguarda pressionar Enter para continuar
+                break;
+        }
+    }
+}
+
+void mostrarSubMenuFuncionarios() {
+    char escolha;
+
+    while (true) {
+        system("cls"); // Limpa a tela
+
+        gotoxy(10, 5);
+        cout << "**********************************************" << endl;
+        gotoxy(10, 6);
+        cout << "*        MENU FUNCIONARIOS                 *" << endl;
+        gotoxy(10, 7);
+        cout << "**********************************************" << endl;
+        gotoxy(10, 9);
+        cout << "1. Cadastrar Funcionario" << endl;
+        gotoxy(10, 10);
+        cout << "2. Listar Funcionarios" << endl;
+        gotoxy(10, 11);
+        cout << "3. Atualizar Funcionario" << endl;
+        gotoxy(10, 12);
+        cout << "4. Excluir Funcionario" << endl;
+        gotoxy(10, 13);
+        cout << "5. Voltar" << endl;
+
+        gotoxy(10, 15);
+        cout << "Escolha uma opcao: ";
+        cin >> escolha;
+
+        switch (escolha) {
+            case '1':
+                cadastrarFuncionario();
+                break;
+            case '2':
+                exibirTodosFuncionario();
+                break;
+            case '3':
+                atualizarFuncionario();
+                break;
+            case '4':
+                deletFuncionario();
+                break;
+            case '5':
+                // Voltar ao menu anterior
+                return;
+            default:
+                // Opção inválida
+                gotoxy(10, 17);
+                cout << "Opcao invalida! Pressione Enter para continuar...";
+                cin.ignore();
+                cin.get(); // Aguarda pressionar Enter para continuar
+                break;
+        }
+    }
+}
+
+int main() {
+    carregarFuncionarios();
+    setlocale(LC_ALL,"Portuguese");
+
+    char escolha;
+
+    while (true) {
+        system("cls"); // Limpa a tela
+
+        gotoxy(10, 5);
+        cout << "**********************************************" << endl;
+        gotoxy(10, 6);
+        cout << "*            MENU PRINCIPAL                 *" << endl;
+        gotoxy(10, 7);
+        cout << "**********************************************" << endl;
+        gotoxy(10, 9);
+        cout << "1. Funcionarios" << endl;
+        gotoxy(10, 10);
+        cout << "2. Alunos" << endl;
+        gotoxy(10, 11);
+        cout << "3. Armarios" << endl;
+        gotoxy(10, 12);
+        cout << "4. Reserva" << endl;
+        gotoxy(10, 13);
+        cout << "5. Sair" << endl;
+
+        gotoxy(10, 15);
+        cout << "Escolha uma opcao: ";
+        cin >> escolha;
+
+        switch (escolha) {
+            case '1':
+                // Menu de funcionários
+                mostrarSubMenuFuncionarios();
+                break;
+            case '2':
+                // Menu de alunos
+                mostrarSubMenuAlunos();
+                break;
+            case '3':
+                // Lógica para o menu de armários
+                // Implemente a lógica aqui
+                break;
+            case '4':
+                // Lógica para o menu de reserva
+                // Implemente a lógica aqui
+                break;
+            case '5':
+                // Sair do programa
+                return 0;
+            default:
+                // Opção inválida
+                gotoxy(10, 17);
+                cout << "Opcao invalida! Pressione Enter para continuar...";
+                cin.ignore();
+                cin.get(); // Aguarda pressionar Enter para continuar
+                break;
+        }
+    }
+
+    return 0;
+}
