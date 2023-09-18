@@ -39,6 +39,7 @@ Armario armariosCadastrados[ARMARIO];
 // Contadores globais
 int totalAlunos = 0;
 int totalFuncionarios = 0;
+int totalArmarios = 0;
 
 
 // Função para posicionar o cursor na tela
@@ -82,8 +83,6 @@ void salvarArmarios() {
 }
 
 // Função para carregar os estados dos armários a partir de um arquivo de texto
-// Função para carregar os estados dos armários a partir de um arquivo de texto
-// Função para carregar os estados dos armários a partir de um arquivo de texto
 void carregarArmarios() {
     FILE *arquivo;
     arquivo = fopen("armarios.txt", "r");
@@ -93,7 +92,10 @@ void carregarArmarios() {
         return;
     }
 
-    for (int i = 0; i < ARMARIO; i++) {
+    // Limpa a array de armários antes de carregar
+    totalArmarios = 0;
+
+    while (!feof(arquivo)) {
         Armario novoArmario;
 
         if (fscanf(arquivo, "%d\n", &novoArmario.numero) != 1) {
@@ -111,14 +113,16 @@ void carregarArmarios() {
         }
         novoArmario.estado = (estado == 1); // Converte 1 para true, 0 para false
 
-        // Adiciona o novo armário ao array
-        armariosCadastrados[i] = novoArmario;
+        // Adiciona o novo armário à array
+        armariosCadastrados[totalArmarios] = novoArmario;
+        totalArmarios++;
     }
 
     fclose(arquivo);
 
     cout << "Estados dos armarios carregados de 'armarios.txt' com sucesso!" << endl;
 }
+
 
 void inicializarArmarios() {
     for (int i = 0; i < ARMARIO; i++) {
