@@ -4,6 +4,7 @@
 #include <locale.h>
 #define FUNCIONARIO 5
 #define ALUNO 5
+#define ARMARIO 5
 using namespace std;
 
 // Definições das estruturas
@@ -24,13 +25,21 @@ typedef struct {
     char fone[15];
 } Funcionario;
 
-// Arrays globais para armazenar alunos e funcionários
-Aluno alunosCadastrados[FUNCIONARIO]; // Supondo que você terá no máximo 100 alunos
-Funcionario funcionariosCadastrados[FUNCIONARIO]; // Supondo que você terá no máximo 100 funcionários
+typedef struct {
+    int numero;
+    bool disponivel;
+    bool estado;
+} Armario;
+
+
+Aluno alunosCadastrados[FUNCIONARIO];
+Funcionario funcionariosCadastrados[FUNCIONARIO];
+Armario armariosCadastrados[ARMARIO];
 
 // Contadores globais
 int totalAlunos = 0;
 int totalFuncionarios = 0;
+
 
 // Função para posicionar o cursor na tela
 void gotoxy(int x, int y) {
@@ -39,6 +48,118 @@ void gotoxy(int x, int y) {
     coord.Y = y;
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
+//ARMARIOS
+//ARMARIOS
+//ARMARIOS
+//ARMARIOS
+//ARMARIOS
+//ARMARIOS
+
+
+
+
+// Função para salvar os estados dos armários em um arquivo de texto
+// Função para salvar os estados dos armários em um arquivo de texto
+void salvarArmarios() {
+    FILE *arquivo;
+    arquivo = fopen("armarios.txt", "w");
+
+    if (arquivo == NULL) {
+        cout << "Erro ao abrir o arquivo!" << endl;
+        return;
+    }
+
+    for (int i = 0; i < ARMARIO; i++) {
+        fprintf(arquivo, "%d\n%d\n%d\n",
+            armariosCadastrados[i].numero,
+            armariosCadastrados[i].disponivel ? 1 : 0, // Converte bool para 1 (true) ou 0 (false)
+            armariosCadastrados[i].estado ? 1 : 0);
+    }
+
+    fclose(arquivo);
+
+    cout << "Estados dos armarios salvos em 'armarios.txt' com sucesso!" << endl;
+}
+
+// Função para carregar os estados dos armários a partir de um arquivo de texto
+// Função para carregar os estados dos armários a partir de um arquivo de texto
+// Função para carregar os estados dos armários a partir de um arquivo de texto
+void carregarArmarios() {
+    FILE *arquivo;
+    arquivo = fopen("armarios.txt", "r");
+
+    if (arquivo == NULL) {
+        cout << "Arquivo 'armarios.txt' nao encontrado!" << endl;
+        return;
+    }
+
+    for (int i = 0; i < ARMARIO; i++) {
+        Armario novoArmario;
+
+        if (fscanf(arquivo, "%d\n", &novoArmario.numero) != 1) {
+            break;
+        }
+
+        int disponivel, estado;
+        if (fscanf(arquivo, "%d\n", &disponivel) != 1) {
+            break;
+        }
+        novoArmario.disponivel = (disponivel == 1); // Converte 1 para true, 0 para false
+
+        if (fscanf(arquivo, "%d\n", &estado) != 1) {
+            break;
+        }
+        novoArmario.estado = (estado == 1); // Converte 1 para true, 0 para false
+
+        // Adiciona o novo armário ao array
+        armariosCadastrados[i] = novoArmario;
+    }
+
+    fclose(arquivo);
+
+    cout << "Estados dos armarios carregados de 'armarios.txt' com sucesso!" << endl;
+}
+
+void inicializarArmarios() {
+    for (int i = 0; i < ARMARIO; i++) {
+        armariosCadastrados[i].numero = i + 1;
+        armariosCadastrados[i].disponivel = true;
+        armariosCadastrados[i].estado = true;
+    }
+    salvarArmarios();
+}
+
+void exibirTodosArmarios() {
+    carregarArmarios(); // AGUARDANDO IMPLEMENTAÇÃO DE SALVAR ARMARIOS EM ARQUIVO
+    system("cls");
+    gotoxy(1, 1);
+    cout << "-------------------------------------------------------";
+    gotoxy(1, 2);
+    cout << "=========================ARMARIOS======================";
+    gotoxy(1, 3);
+    cout << "-------------------------------------------------------";
+    gotoxy(3, 4);
+    cout << "Numero";
+    gotoxy(20, 4);
+    cout << "Estado";
+    gotoxy(40, 4);
+    cout << "Disponibilidade";
+    cout << "\n";
+    cout << "--------------------------------------------------------";
+
+    for (int i = 0; i < ARMARIO; i++) {
+        gotoxy(3, 6 + i);
+        printf("%d", armariosCadastrados[i].numero);
+        gotoxy(20, 6 + i);
+        printf("%s", armariosCadastrados[i].estado ? "Bom" : "Quebrado");
+        gotoxy(40, 6 + i);
+        printf("%s", armariosCadastrados[i].disponivel ? "Disponível" : "Não Disponível");
+    }
+    cout << "\n";
+    cout << "========================================================\n";
+    system("pause");
+}
+
 
 //ALUNOS
 //ALUNOS
@@ -148,7 +269,7 @@ void cadastrarAluno() {
     cin.getline(novoAluno.fone, 15);
 
     cout << "Informe a turma do aluno: ";
-    cin.getline(novoAluno.turma, 20);
+    cin.getline(novoAluno.turmaSerie, 20);
 
     // Adiciona o novo aluno ao array
     alunosCadastrados[totalAlunos] = novoAluno;
@@ -590,6 +711,55 @@ void deletFuncionario(){
     salvarFuncionarios();
 }
 
+//MENUS
+//MENUS
+//MENUS
+//MENUS
+//MENUS
+
+void menuArmarios() {
+    char escolha;
+
+    while (true) {
+        system("cls"); // Limpa a tela
+
+        gotoxy(10, 5);
+        cout << "**********************************************" << endl;
+        gotoxy(10, 6);
+        cout << "*           MENU ARMARIOS                   *" << endl;
+        gotoxy(10, 7);
+        cout << "**********************************************" << endl;
+        gotoxy(10, 9);
+        cout << "1. Visualizar Armarios" << endl;
+        gotoxy(10, 10);
+        cout << "2. Editar Armarios" << endl;
+        gotoxy(10, 11);
+        cout << "3. Voltar" << endl;
+
+        gotoxy(10, 13);
+        cout << "Escolha uma opcao: ";
+        cin >> escolha;
+
+        switch (escolha) {
+            case '1':
+                exibirTodosArmarios();
+                break;
+            case '2':
+
+                break;
+            case '3':
+                // Voltar ao menu anterior
+                return;
+            default:
+                // Opção inválida
+                gotoxy(10, 15);
+                cout << "Opcao invalida! Pressione Enter para continuar...";
+                cin.ignore();
+                cin.get(); // Aguarda pressionar Enter para continuar
+                break;
+        }
+    }
+}
 
 void mostrarSubMenuAlunos() {
     char escolha;
@@ -700,6 +870,7 @@ void mostrarSubMenuFuncionarios() {
 }
 
 int main() {
+    inicializarArmarios();
     carregarFuncionarios();
     setlocale(LC_ALL,"Portuguese");
 
@@ -739,8 +910,7 @@ int main() {
                 mostrarSubMenuAlunos();
                 break;
             case '3':
-                // Lógica para o menu de armários
-                // Implemente a lógica aqui
+                menuArmarios();
                 break;
             case '4':
                 // Lógica para o menu de reserva
