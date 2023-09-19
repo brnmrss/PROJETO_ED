@@ -129,262 +129,55 @@ void carregarArmariosDeArquivo(){
     }
 }
 
-
-
-void salvarFuncionariosEmArquivo();
-void salvarFuncionariosEmArquivo(){
-    FILE* arquivoFuncionario = fopen("funcionarios.txt", "w");
-
-    for (int i = 0; i < totalFuncionarios; i++){
-        fprintf(arquivoFuncionario, "%s %d %s %d %s %d \n",
-            funcionariosCadastrados[i].nome,
-            funcionariosCadastrados[i].matricula,
-            funcionariosCadastrados[i].email,
-            funcionariosCadastrados[i].fone,
-            funcionariosCadastrados[i].usuario,
-            funcionariosCadastrados[i].senha);
-    }
-    fclose(arquivoFuncionario);
-}
-
-void carregarFuncionariosDeArquivo();
-void carregarFuncionariosDeArquivo(){
-    FILE* arquivoFuncionario = fopen("funcionarios.txt", "r");
-    totalFuncionarios = 0;
-
-    if (arquivoFuncionario == NULL){
-        cout << "\nNada para ser lido.\n";
-        system("pause");
-    }
-    while (fscanf(arquivoFuncionario, "%s %d %s %d %s %d\n",
-                  funcionariosCadastrados[totalFuncionarios].nome,
-                  &funcionariosCadastrados[totalFuncionarios].matricula,
-                  funcionariosCadastrados[totalFuncionarios].email,
-                  &funcionariosCadastrados[totalFuncionarios].fone,
-                  funcionariosCadastrados[totalFuncionarios].usuario,
-                  &funcionariosCadastrados[totalFuncionarios].senha) != EOF)
-    {
-    totalFuncionarios++;
-    }
-    fclose(arquivoFuncionario);
-}
-
-
-
-void salvarAlunosEmArquivo();
-void salvarAlunosEmArquivo(){
-    FILE* arquivoAluno = fopen("alunos.txt", "w");
-
-    for (int i = 0; i < totalAlunos; i++){
-        fprintf(arquivoAluno, "%s %d %s %d %d \n",
-            alunosCadastrados[i].nome,
-            alunosCadastrados[i].matricula,
-            alunosCadastrados[i].email,
-            alunosCadastrados[i].fone,
-            alunosCadastrados[i].turmaSerie);
-    }
-    fclose(arquivoAluno);
-}
-
-void carregarAlunosDeArquivo();
-void carregarAlunosDeArquivo(){
-    FILE* arquivoAluno = fopen("alunos.txt", "r");
-    totalAlunos = 0;
-
-    if (arquivoAluno == NULL){
-        cout << "\nNada para ser lido.\n";
-        system("pause");
-    }
-    while (fscanf(arquivoAluno, "%s %d %s %d %d\n",
-                  alunosCadastrados[totalAlunos].nome,
-                  &alunosCadastrados[totalAlunos].matricula,
-                  alunosCadastrados[totalAlunos].email,
-                  &alunosCadastrados[totalAlunos].fone,
-                  &alunosCadastrados[totalAlunos].turmaSerie) != EOF)
-    {
-    totalAlunos++;
-    }
-    fclose(arquivoAluno);
-}
-
-
-
-void cadastrarFuncionario();
-void cadastrarFuncionario(){
-    Funcionario novoFuncionario;
-    system("cls"); // Limpa a tela
-    cout << "\n*********** CADASTRO DE FUNCIONÁRIO ***********\n\n";
-    cout << "Nome: ";
-    cin.ignore(); // Limpa o buffer do teclado
-    cin.getline(novoFuncionario.nome, 50);
-
-    bool matriculaExistente;
-    do{
-        cout << "Matrícula: ";
-        cin >> novoFuncionario.matricula;
-        matriculaExistente = false;
-
-        for (int i = 0; i < totalFuncionarios; i++){
-            if (novoFuncionario.matricula == funcionariosCadastrados[i].matricula){
-                matriculaExistente = true;
-                cout << "Matrícula já está em uso. Escolha outra matrícula." << endl;
-            break;
-            }
-        }
-    }
-    while (matriculaExistente);
-
-    cout << "Email: ";
-    cin >> novoFuncionario.email;
-    cout << "Telefone: ";
-    cin >> novoFuncionario.fone;
-
-    bool usuarioExistente;
-    do{
-        cout << "Usuário: ";
-        cin >> novoFuncionario.usuario;
-        usuarioExistente = false;
-
-        for (int i = 0; i < totalFuncionarios; i++){
-            if (strcmp(novoFuncionario.usuario, funcionariosCadastrados[i].usuario) == 0){
-                usuarioExistente = true;
-                cout << "Usuário já está em uso. Escolha outro usuário." << endl;
-            break;
-            }
-        }
-    }
-    while (usuarioExistente);
-
-    cout << "Senha: ";
-    cin >> novoFuncionario.senha;
-
-    funcionariosCadastrados[totalFuncionarios] = novoFuncionario;   // Adiciona o novo funcionário ao array e incrementa o contador
-    totalFuncionarios++;
-
+void exibirTodosArmarios();
+void exibirTodosArmarios(){
+    carregarArmariosDeArquivo();
     system("cls");
-    cout << "\nFuncionário cadastrado com sucesso.\n";
-    system("pause");
-    salvarFuncionariosEmArquivo();
-}
+    gotoxy(1, 1);
+    cout << "----------------------------------------------------------------";
+    gotoxy(1, 2);
+    cout << "============================ARMARIOS============================";
+    gotoxy(1, 3);
+    cout << "----------------------------------------------------------------";
+    gotoxy(7, 4);
+    cout << "Numero";
+    gotoxy(20, 4);
+    cout << "Dispinibilidade";
+    gotoxy(45, 4);
+    cout << "Estado";
+    cout << "\n";
+    cout << "-----------------------------------------------------------------";
 
-void cadastrarAluno();
-void cadastrarAluno(){
-    Aluno novoAluno;
+    for (int i = 0; i < ARMARIOS; i++) {
+        gotoxy(8, 6 + i);
+        printf("%d", i +1);
+        if(armarios[i].disponivel==true){
+            gotoxy(23, 6 + i);
+            cout << "Disponivel";
+        }else{
+            gotoxy(23, 6 + i);
+            cout << "Indisponivel";
 
-    system("cls"); // Limpa a tela
-    cin.ignore(); // Limpa o buffer do teclado
-    cout << "\n*********** CADASTRO DE ALUNO ***********\n\n";
-    cout << "Nome: ";
-    cin.getline(novoAluno.nome, 50);
-
-
-    bool matriculaExistenteAluno;
-    do{
-        cout << "Matrícula: ";
-        cin >> novoAluno.matricula;
-        matriculaExistenteAluno = false;
-
-        for (int i = 0; i < totalAlunos; i++){
-            if (novoAluno.matricula == alunosCadastrados[i].matricula){
-                matriculaExistenteAluno = true;
-                cout << "Matrícula já está em uso. Escolha outra matrícula." << endl;
-            break;
             }
-        }
+
+        if(armarios[i].estado==true){
+             gotoxy(47, 6 + i);
+             printf("Bom");
+        }else{
+            gotoxy(47, 6 + i);
+             printf("Ruim");
+
+            }
+
     }
-    while (matriculaExistenteAluno);
-
-    cout << "Email: ";
-    cin >> novoAluno.email;
-    cout << "Telefone: ";
-    cin >> novoAluno.fone;
-    cout << "Turma/Série: ";
-    cin >> novoAluno.turmaSerie;
-
-                                                    // Adiciona o novo aluno ao array e incrementa o contador
-    alunosCadastrados[totalAlunos] = novoAluno;
-    totalAlunos++;
-
-    system("cls");
-    cout << "\nAluno cadastrado com sucesso.\n";
+    cout << "\n";
+    cout << "=================================================================\n";
+    cout << "\nArmários Cadastrados: "<< ARMARIOS <<"\n\n";
+    cout << "[1] = Bom/Disponível\n";
+    cout << "[0] = Mau/Indisponível\n\n";
     system("pause");
-    salvarAlunosEmArquivo();
+
 }
-
-
-
-void deletFuncionario();
-void deletFuncionario(){
-    int funDel, novoTotalFuncionarios = 0;
-
-    exibirTodosFuncionarios();
-
-    cout << "\n*********************  DELETAR CADASTRO DE FUNCIONÁRIO ************************ \n";
-    cout << "Informe a matrícula do funcionário que deseja deletar.\n";
-    cout << "\nMatrícula: ";
-    cin >> funDel;
-
-    // Criar um novo array temporário
-    Funcionario novosFuncionariosCadastrados[FUNCIONARIO];
-    for (int i = 0; i < totalFuncionarios; i++) {
-        if (funDel != funcionariosCadastrados[i].matricula) {
-            novosFuncionariosCadastrados[novoTotalFuncionarios] = funcionariosCadastrados[i];
-            novoTotalFuncionarios++;
-        }
-    }
-    if (novoTotalFuncionarios < totalFuncionarios) {
-        totalFuncionarios = novoTotalFuncionarios;      // Exclusão bem-sucedida, atualizar o array principal
-        for (int i = 0; i < totalFuncionarios; i++) {
-            funcionariosCadastrados[i] = novosFuncionariosCadastrados[i];
-        }
-        system("cls");
-        salvarFuncionariosEmArquivo();
-        cout << "\nCadastro deletado.\n";
-        system("pause");
-    } else {
-        system("cls");
-        cout << "\nFuncionário não encontrado para exclusão.\n";
-        system("pause");
-    }
-}
-
-void deletAluno();
-void deletAluno(){
-    int alunoDel, novoTotalAlunos = 0;
-
-    exibirTodosAlunos();
-
-    cout << "\n*********************  DELETAR CADASTRO DE ALUNO ************************ \n";
-    cout << "Informe a matrícula do aluno que deseja deletar.\n";
-    cout << "\nMatrícula: ";
-    cin >> alunoDel;
-
-    // Criar um novo array temporário
-    Aluno novosAlunosCadastrados[ALUNO];
-    for (int i = 0; i < totalAlunos; i++) {
-        if (alunoDel != alunosCadastrados[i].matricula) {
-            novosAlunosCadastrados[novoTotalAlunos] = alunosCadastrados[i];
-            novoTotalAlunos++;
-        }
-    }
-
-    if (novoTotalAlunos < totalAlunos) {
-        totalAlunos = novoTotalAlunos;              // Exclusão bem-sucedida, atualizar o array principal
-        for (int i = 0; i < totalAlunos; i++) {
-            alunosCadastrados[i] = novosAlunosCadastrados[i];
-        }
-        system("cls");
-        salvarAlunosEmArquivo();
-        cout << "\nCadastro deletado.\n";
-        system("pause");
-    } else {
-        system("cls");
-        cout << "\nAluno não encontrado para exclusão.\n";
-        system("pause");
-    }
-}
-
-
 
 void editArmario();
 void editArmario(){
@@ -447,116 +240,41 @@ void editArmario(){
 salvarArmariosEmArquivo();
 }
 
-void editFuncionario();
-void editFuncionario(){
-    int funEdit;
 
-    exibirTodosFuncionarios();
+void salvarAlunosEmArquivo();
+void salvarAlunosEmArquivo(){
+    FILE* arquivoAluno = fopen("alunos.txt", "w");
 
-    cout << "\n*********************  EDITAR DADOS DE FUNCIONÁRIO ************************ \n";
-    cout << "Informe a matrícula do funcionário que deseja editar.\n";
-    cout << "\nMatrícula: ";
-    cin >> funEdit;
-
-    for (int i = 0; i < totalFuncionarios; i++) {
-        if (funcionariosCadastrados[i].matricula == funEdit) {
-        cout << "Funcionário escolhido: " << funcionariosCadastrados[i].nome << endl;
-
-        cout << "Digite o novo nome: ";
-        cin.ignore();
-        cin.getline(funcionariosCadastrados[i].nome, 50);
-        cout << "Digite o novo email: ";
-        cin >> funcionariosCadastrados[i].email;
-        cout << "Digite a nova matrícula: ";
-        cin >> funcionariosCadastrados[i].matricula;
-        cout << "Digite o novo telefone: ";
-        cin >> funcionariosCadastrados[i].fone;
-
-        cout << "Funcionário editado com sucesso!" << endl;
-        break; // Sair do loop ao encontrar o funcionário
-        }
+    for (int i = 0; i < totalAlunos; i++){
+        fprintf(arquivoAluno, "%s %d %s %d %d \n",
+            alunosCadastrados[i].nome,
+            alunosCadastrados[i].matricula,
+            alunosCadastrados[i].email,
+            alunosCadastrados[i].fone,
+            alunosCadastrados[i].turmaSerie);
     }
-    system("pause");
-salvarFuncionariosEmArquivo();
+    fclose(arquivoAluno);
 }
 
-void editAluno();
-void editAluno(){
-    int alunoEdit;
+void carregarAlunosDeArquivo();
+void carregarAlunosDeArquivo(){
+    FILE* arquivoAluno = fopen("alunos.txt", "r");
+    totalAlunos = 0;
 
-    exibirTodosAlunos();
-
-    cout << "\n*********************  EDITAR DADOS DE ALUNO ************************ \n";
-    cout << "Informe a matrícula do aluno que deseja editar.\n";
-    cout << "\nMatrícula: ";
-    cin >> alunoEdit;
-
-    for (int i = 0; i < totalAlunos; i++) {
-        if (alunosCadastrados[i].matricula == alunoEdit) {
-        cout << "Aluno escolhido: " << alunosCadastrados[i].nome << endl;
-
-        cout << "Digite o novo nome: ";
-        cin.ignore();
-        cin.getline(alunosCadastrados[i].nome, 50);
-        cout << "Digite o novo email: ";
-        cin >> alunosCadastrados[i].email;
-        cout << "Digite a nova matrícula: ";
-        cin >> alunosCadastrados[i].matricula;
-        cout << "Digite o novo telefone: ";
-        cin >> alunosCadastrados[i].fone;
-        cout << "Digite a nova Turma/Série: ";
-        cin >> alunosCadastrados[i].turmaSerie;
-
-        cout << "Aluno editado com sucesso!" << endl;
-        break;
-        }
+    if (arquivoAluno == NULL){
+        cout << "\nNada para ser lido.\n";
+        system("pause");
     }
-    system("pause");
-salvarAlunosEmArquivo();
-}
-
-
-
-
-void exibirTodosFuncionarios();
-void exibirTodosFuncionarios(){
-    carregarFuncionariosDeArquivo(); // Carregar funcionários apenas uma vez no início.
-    system("cls");
-    gotoxy(1, 1);
-    cout << "---------------------------------------------------------------------------------------------------------------";
-    gotoxy(1, 2);
-    cout << "================================================FUNCIONARIO====================================================";
-    gotoxy(1, 3);
-    cout << "---------------------------------------------------------------------------------------------------------------";
-    gotoxy(7, 4);
-    cout << "Nome";
-    gotoxy(45, 4);
-    cout << "Email";
-    gotoxy(65, 4);
-    cout << "Matricula";
-    gotoxy(85, 4);
-    cout << "Contato";
-    gotoxy(105, 4);
-    cout << "Usuario";
-    gotoxy(1, 5);
-    cout << "---------------------------------------------------------------------------------------------------------------";
-
-    for (int i = 0; i < totalFuncionarios; i++) {
-        gotoxy(6, 6 + i);
-        printf("%s", funcionariosCadastrados[i].nome);
-        gotoxy(36, 6 + i);
-        printf("%s", funcionariosCadastrados[i].email);
-        gotoxy(66, 6 + i);
-        printf("%d", funcionariosCadastrados[i].matricula);
-        gotoxy(86, 6 + i);
-        printf("%d", funcionariosCadastrados[i].fone);
-        gotoxy(106, 6 + i);
-        printf("%s", funcionariosCadastrados[i].usuario);
-
+    while (fscanf(arquivoAluno, "%s %d %s %d %d\n",
+                  alunosCadastrados[totalAlunos].nome,
+                  &alunosCadastrados[totalAlunos].matricula,
+                  alunosCadastrados[totalAlunos].email,
+                  &alunosCadastrados[totalAlunos].fone,
+                  &alunosCadastrados[totalAlunos].turmaSerie) != EOF)
+    {
+    totalAlunos++;
     }
-    cout << "\n";
-    cout << "================================================================================================================\n";
-    system("pause");
+    fclose(arquivoAluno);
 }
 
 void exibirTodosAlunos();
@@ -600,64 +318,333 @@ void exibirTodosAlunos(){
     system("pause");
 }
 
-void exibirTodosArmarios();
-void exibirTodosArmarios(){
-    carregarArmariosDeArquivo();
-    system("cls");
-    gotoxy(1, 1);
-    cout << "----------------------------------------------------------------";
-    gotoxy(1, 2);
-    cout << "============================ARMARIOS============================";
-    gotoxy(1, 3);
-    cout << "----------------------------------------------------------------";
-    gotoxy(7, 4);
-    cout << "Numero";
-    gotoxy(20, 4);
-    cout << "Dispinibilidade";
-    gotoxy(45, 4);
-    cout << "Estado";
-    cout << "\n";
-    cout << "-----------------------------------------------------------------";
+void cadastrarAluno();
+void cadastrarAluno(){
+    Aluno novoAluno;
 
-    for (int i = 0; i < ARMARIOS; i++) {
-        gotoxy(8, 6 + i);
-        printf("%d", i +1);
-        if(armarios[i].disponivel==true){
-            gotoxy(23, 6 + i);
-            cout << "Disponivel";
-        }else{
-            gotoxy(23, 6 + i);
-            cout << "Indisponivel";
+    system("cls"); // Limpa a tela
+    cin.ignore(); // Limpa o buffer do teclado
+    cout << "\n*********** CADASTRO DE ALUNO ***********\n\n";
+    cout << "Nome: ";
+    cin.getline(novoAluno.nome, 50);
 
+
+    bool matriculaExistenteAluno;
+    do{
+        cout << "Matrícula: ";
+        cin >> novoAluno.matricula;
+        matriculaExistenteAluno = false;
+
+        for (int i = 0; i < totalAlunos; i++){
+            if (novoAluno.matricula == alunosCadastrados[i].matricula){
+                matriculaExistenteAluno = true;
+                cout << "Matrícula já está em uso. Escolha outra matrícula." << endl;
+            break;
             }
-
-        if(armarios[i].estado==true){
-             gotoxy(47, 6 + i);
-             printf("Bom");
-        }else{
-            gotoxy(47, 6 + i);
-             printf("Ruim");
-
-            }
-
+        }
     }
-    cout << "\n";
-    cout << "=================================================================\n";
-    cout << "\nArmários Cadastrados: "<< ARMARIOS <<"\n\n";
-    cout << "[1] = Bom/Disponível\n";
-    cout << "[0] = Mau/Indisponível\n\n";
-    system("pause");
+    while (matriculaExistenteAluno);
 
+    cout << "Email: ";
+    cin >> novoAluno.email;
+    cout << "Telefone: ";
+    cin >> novoAluno.fone;
+    cout << "Turma/Série: ";
+    cin >> novoAluno.turmaSerie;
+
+                                                    // Adiciona o novo aluno ao array e incrementa o contador
+    alunosCadastrados[totalAlunos] = novoAluno;
+    totalAlunos++;
+
+    system("cls");
+    cout << "\nAluno cadastrado com sucesso.\n";
+    system("pause");
+    salvarAlunosEmArquivo();
+}
+
+void editAluno();
+void editAluno(){
+    int alunoEdit;
+
+    exibirTodosAlunos();
+
+    cout << "\n*********************  EDITAR DADOS DE ALUNO ************************ \n";
+    cout << "Informe a matrícula do aluno que deseja editar.\n";
+    cout << "\nMatrícula: ";
+    cin >> alunoEdit;
+
+    for (int i = 0; i < totalAlunos; i++) {
+        if (alunosCadastrados[i].matricula == alunoEdit) {
+        cout << "Aluno escolhido: " << alunosCadastrados[i].nome << endl;
+
+        cout << "Digite o novo nome: ";
+        cin.ignore();
+        cin.getline(alunosCadastrados[i].nome, 50);
+        cout << "Digite o novo email: ";
+        cin >> alunosCadastrados[i].email;
+        cout << "Digite a nova matrícula: ";
+        cin >> alunosCadastrados[i].matricula;
+        cout << "Digite o novo telefone: ";
+        cin >> alunosCadastrados[i].fone;
+        cout << "Digite a nova Turma/Série: ";
+        cin >> alunosCadastrados[i].turmaSerie;
+
+        cout << "Aluno editado com sucesso!" << endl;
+        break;
+        }
+    }
+    system("pause");
+salvarAlunosEmArquivo();
+}
+
+void deletAluno();
+void deletAluno(){
+    int alunoDel, novoTotalAlunos = 0;
+
+    exibirTodosAlunos();
+
+    cout << "\n*********************  DELETAR CADASTRO DE ALUNO ************************ \n";
+    cout << "Informe a matrícula do aluno que deseja deletar.\n";
+    cout << "\nMatrícula: ";
+    cin >> alunoDel;
+
+    // Criar um novo array temporário
+    Aluno novosAlunosCadastrados[ALUNO];
+    for (int i = 0; i < totalAlunos; i++) {
+        if (alunoDel != alunosCadastrados[i].matricula) {
+            novosAlunosCadastrados[novoTotalAlunos] = alunosCadastrados[i];
+            novoTotalAlunos++;
+        }
+    }
+
+    if (novoTotalAlunos < totalAlunos) {
+        totalAlunos = novoTotalAlunos;              // Exclusão bem-sucedida, atualizar o array principal
+        for (int i = 0; i < totalAlunos; i++) {
+            alunosCadastrados[i] = novosAlunosCadastrados[i];
+        }
+        system("cls");
+        salvarAlunosEmArquivo();
+        cout << "\nCadastro deletado.\n";
+        system("pause");
+    } else {
+        system("cls");
+        cout << "\nAluno não encontrado para exclusão.\n";
+        system("pause");
+    }
 }
 
 
+void salvarFuncionariosEmArquivo();
+void salvarFuncionariosEmArquivo(){
+    FILE* arquivoFuncionario = fopen("funcionarios.txt", "w");
+
+    for (int i = 0; i < totalFuncionarios; i++){
+        fprintf(arquivoFuncionario, "%s %d %s %d %s %d \n",
+            funcionariosCadastrados[i].nome,
+            funcionariosCadastrados[i].matricula,
+            funcionariosCadastrados[i].email,
+            funcionariosCadastrados[i].fone,
+            funcionariosCadastrados[i].usuario,
+            funcionariosCadastrados[i].senha);
+    }
+    fclose(arquivoFuncionario);
+}
+
+void carregarFuncionariosDeArquivo();
+void carregarFuncionariosDeArquivo(){
+    FILE* arquivoFuncionario = fopen("funcionarios.txt", "r");
+    totalFuncionarios = 0;
+
+    if (arquivoFuncionario == NULL){
+        cout << "\nNada para ser lido.\n";
+        system("pause");
+    }
+    while (fscanf(arquivoFuncionario, "%s %d %s %d %s %d\n",
+                  funcionariosCadastrados[totalFuncionarios].nome,
+                  &funcionariosCadastrados[totalFuncionarios].matricula,
+                  funcionariosCadastrados[totalFuncionarios].email,
+                  &funcionariosCadastrados[totalFuncionarios].fone,
+                  funcionariosCadastrados[totalFuncionarios].usuario,
+                  &funcionariosCadastrados[totalFuncionarios].senha) != EOF)
+    {
+    totalFuncionarios++;
+    }
+    fclose(arquivoFuncionario);
+}
+
+void exibirTodosFuncionarios();
+void exibirTodosFuncionarios(){
+    carregarFuncionariosDeArquivo(); // Carregar funcionários apenas uma vez no início.
+    system("cls");
+    gotoxy(1, 1);
+    cout << "---------------------------------------------------------------------------------------------------------------";
+    gotoxy(1, 2);
+    cout << "================================================FUNCIONARIO====================================================";
+    gotoxy(1, 3);
+    cout << "---------------------------------------------------------------------------------------------------------------";
+    gotoxy(7, 4);
+    cout << "Nome";
+    gotoxy(45, 4);
+    cout << "Email";
+    gotoxy(65, 4);
+    cout << "Matricula";
+    gotoxy(85, 4);
+    cout << "Contato";
+    gotoxy(105, 4);
+    cout << "Usuario";
+    gotoxy(1, 5);
+    cout << "---------------------------------------------------------------------------------------------------------------";
+
+    for (int i = 0; i < totalFuncionarios; i++) {
+        gotoxy(6, 6 + i);
+        printf("%s", funcionariosCadastrados[i].nome);
+        gotoxy(36, 6 + i);
+        printf("%s", funcionariosCadastrados[i].email);
+        gotoxy(66, 6 + i);
+        printf("%d", funcionariosCadastrados[i].matricula);
+        gotoxy(86, 6 + i);
+        printf("%d", funcionariosCadastrados[i].fone);
+        gotoxy(106, 6 + i);
+        printf("%s", funcionariosCadastrados[i].usuario);
+
+    }
+    cout << "\n";
+    cout << "================================================================================================================\n";
+    system("pause");
+}
+
+void cadastrarFuncionario();
+void cadastrarFuncionario(){
+    Funcionario novoFuncionario;
+    system("cls"); // Limpa a tela
+    cout << "\n*********** CADASTRO DE FUNCIONÁRIO ***********\n\n";
+    cout << "Nome: ";
+    cin.ignore(); // Limpa o buffer do teclado
+    cin.getline(novoFuncionario.nome, 50);
+
+    bool matriculaExistente;
+    do{
+        cout << "Matrícula: ";
+        cin >> novoFuncionario.matricula;
+        matriculaExistente = false;
+
+        for (int i = 0; i < totalFuncionarios; i++){
+            if (novoFuncionario.matricula == funcionariosCadastrados[i].matricula){
+                matriculaExistente = true;
+                cout << "Matrícula já está em uso. Escolha outra matrícula." << endl;
+            break;
+            }
+        }
+    }
+    while (matriculaExistente);
+
+    cout << "Email: ";
+    cin >> novoFuncionario.email;
+    cout << "Telefone: ";
+    cin >> novoFuncionario.fone;
+
+    bool usuarioExistente;
+    do{
+        cout << "Usuário: ";
+        cin >> novoFuncionario.usuario;
+        usuarioExistente = false;
+
+        for (int i = 0; i < totalFuncionarios; i++){
+            if (strcmp(novoFuncionario.usuario, funcionariosCadastrados[i].usuario) == 0){
+                usuarioExistente = true;
+                cout << "Usuário já está em uso. Escolha outro usuário." << endl;
+            break;
+            }
+        }
+    }
+    while (usuarioExistente);
+
+    cout << "Senha: ";
+    cin >> novoFuncionario.senha;
+
+    funcionariosCadastrados[totalFuncionarios] = novoFuncionario;   // Adiciona o novo funcionário ao array e incrementa o contador
+    totalFuncionarios++;
+
+    system("cls");
+    cout << "\nFuncionário cadastrado com sucesso.\n";
+    system("pause");
+    salvarFuncionariosEmArquivo();
+}
+
+void editFuncionario();
+void editFuncionario(){
+    int funEdit;
+
+    exibirTodosFuncionarios();
+
+    cout << "\n*********************  EDITAR DADOS DE FUNCIONÁRIO ************************ \n";
+    cout << "Informe a matrícula do funcionário que deseja editar.\n";
+    cout << "\nMatrícula: ";
+    cin >> funEdit;
+
+    for (int i = 0; i < totalFuncionarios; i++) {
+        if (funcionariosCadastrados[i].matricula == funEdit) {
+        cout << "Funcionário escolhido: " << funcionariosCadastrados[i].nome << endl;
+
+        cout << "Digite o novo nome: ";
+        cin.ignore();
+        cin.getline(funcionariosCadastrados[i].nome, 50);
+        cout << "Digite o novo email: ";
+        cin >> funcionariosCadastrados[i].email;
+        cout << "Digite a nova matrícula: ";
+        cin >> funcionariosCadastrados[i].matricula;
+        cout << "Digite o novo telefone: ";
+        cin >> funcionariosCadastrados[i].fone;
+
+        cout << "Funcionário editado com sucesso!" << endl;
+        break; // Sair do loop ao encontrar o funcionário
+        }
+    }
+    system("pause");
+salvarFuncionariosEmArquivo();
+}
+
+void deletFuncionario();
+void deletFuncionario(){
+    int funDel, novoTotalFuncionarios = 0;
+
+    exibirTodosFuncionarios();
+
+    cout << "\n*********************  DELETAR CADASTRO DE FUNCIONÁRIO ************************ \n";
+    cout << "Informe a matrícula do funcionário que deseja deletar.\n";
+    cout << "\nMatrícula: ";
+    cin >> funDel;
+
+    // Criar um novo array temporário
+    Funcionario novosFuncionariosCadastrados[FUNCIONARIO];
+    for (int i = 0; i < totalFuncionarios; i++) {
+        if (funDel != funcionariosCadastrados[i].matricula) {
+            novosFuncionariosCadastrados[novoTotalFuncionarios] = funcionariosCadastrados[i];
+            novoTotalFuncionarios++;
+        }
+    }
+    if (novoTotalFuncionarios < totalFuncionarios) {
+        totalFuncionarios = novoTotalFuncionarios;      // Exclusão bem-sucedida, atualizar o array principal
+        for (int i = 0; i < totalFuncionarios; i++) {
+            funcionariosCadastrados[i] = novosFuncionariosCadastrados[i];
+        }
+        system("cls");
+        salvarFuncionariosEmArquivo();
+        cout << "\nCadastro deletado.\n";
+        system("pause");
+    } else {
+        system("cls");
+        cout << "\nFuncionário não encontrado para exclusão.\n";
+        system("pause");
+    }
+}
 
 
 int main(){
     setlocale(LC_ALL, "Portuguese");
     inicializarArmarios();
 
-    int opMenu, opFechar, codigo = 0;
+    int opMenu, opFechar;
     int opArm, numEdit, codigoDel;
     int opAlu;
     int opFun;
@@ -784,7 +771,7 @@ int main(){
 
     // CONSULTAR FUNCIONÁRIOS
                         case 1:
-                            exibirTodosFuncionario();
+                            exibirTodosFuncionarios();
 
                             break;
 
