@@ -5,6 +5,7 @@
 #define FUNCIONARIO 5
 #define ALUNO 5
 #define ARMARIO 5
+#define RESERVA 100
 using namespace std;
 
 // Definições das estruturas
@@ -31,15 +32,26 @@ typedef struct {
     bool estado;
 } Armario;
 
+typedef struct {
+    int codigo;
+    int matAluno;
+    int matFunc;
+    int numArmario;
+    char dataRec[11];
+    char dataDev[11];
+} Reserva;
 
-Aluno alunosCadastrados[FUNCIONARIO];
+
+Aluno alunosCadastrados[ALUNO];
 Funcionario funcionariosCadastrados[FUNCIONARIO];
 Armario armariosCadastrados[ARMARIO];
+Reserva reservasCadastradas[RESERVA];
 
 // Contadores globais
 int totalAlunos = 0;
 int totalFuncionarios = 0;
 int totalArmarios = 0;
+int totalReservas = 0;
 
 
 // Função para posicionar o cursor na tela
@@ -57,10 +69,6 @@ void gotoxy(int x, int y) {
 //ARMARIOS
 
 
-
-
-// Função para salvar os estados dos armários em um arquivo de texto
-// Função para salvar os estados dos armários em um arquivo de texto
 void salvarArmarios() {
     FILE *arquivo;
     arquivo = fopen("armarios.txt", "w");
@@ -82,7 +90,6 @@ void salvarArmarios() {
     cout << "Estados dos armarios salvos em 'armarios.txt' com sucesso!" << endl;
 }
 
-// Função para carregar os estados dos armários a partir de um arquivo de texto
 void carregarArmarios() {
     FILE *arquivo;
     arquivo = fopen("armarios.txt", "r");
@@ -123,14 +130,31 @@ void carregarArmarios() {
     cout << "Estados dos armarios carregados de 'armarios.txt' com sucesso!" << endl;
 }
 
-
 void inicializarArmarios() {
-    for (int i = 0; i < ARMARIO; i++) {
-        armariosCadastrados[i].numero = i + 1;
-        armariosCadastrados[i].disponivel = true;
-        armariosCadastrados[i].estado = true;
+    FILE* arquivo = fopen("armarios.txt", "r");
+
+    if (arquivo == NULL) {
+        // Arquivo não existe, então inicialize os armários
+        for (int i = 0; i < ARMARIO; i++) {
+            armariosCadastrados[i].numero = i + 1; // Número do armário
+            armariosCadastrados[i].disponivel = true; // Armário inicialmente disponível
+            armariosCadastrados[i].estado = true; // Estado inicial do armário
+        }
+
+        // Salve as informações dos armários em um arquivo
+        salvarArmarios();
+    } else {
+        // Arquivo existe, então carregue as informações dos armários
+        for (int i = 0; i < ARMARIO; i++) {
+            if (fscanf(arquivo, "%d %d %d\n",
+                        &armariosCadastrados[i].numero,
+                        &armariosCadastrados[i].disponivel,
+                        &armariosCadastrados[i].estado) == EOF) {
+                break;
+            }
+        }
+        fclose(arquivo);
     }
-    salvarArmarios();
 }
 
 void exibirTodosArmarios() {
@@ -164,6 +188,116 @@ void exibirTodosArmarios() {
     system("pause");
 }
 
+int encontrarArmarioDisponivel() {
+    for (int i = 0; i < totalArmarios; i++) {
+        if (armariosCadastrados[i].disponivel) {
+            armariosCadastrados[i].disponivel = false; // Marcar o armário como indisponível
+            salvarArmarios();
+            return armariosCadastrados[i].numero;
+        }
+    }
+    return -1; // Retorna -1 se nenhum armário estiver disponível
+}
+
+//RESERVAS
+//RESERVAS
+//RESERVAS
+//RESERVAS
+//RESERVAS
+//RESERVAS
+
+void salvarReservas() {
+    FILE *arquivo;
+    arquivo = fopen("reservas.txt", "w");
+
+    if (arquivo == NULL) {
+        cout << "Erro ao abrir o arquivo de reservas!" << endl;
+        return;
+    }
+
+    for (int i = 0; i < totalReservas; i++) {
+        fprintf(arquivo, "%d\n", reservasCadastradas[i].codigo);
+        fprintf(arquivo, "%d\n", reservasCadastradas[i].matAluno);
+        fprintf(arquivo, "%d\n", reservasCadastradas[i].matFunc);
+        fprintf(arquivo, "%d\n", reservasCadastradas[i].numArmario);
+        fprintf(arquivo, "%s\n", reservasCadastradas[i].dataRec);
+        fprintf(arquivo, "%s\n", reservasCadastradas[i].dataDev);
+    }
+
+    fclose(arquivo);
+
+    cout << "Reservas salvas em 'reservas.txt' com sucesso!" << endl;
+}
+
+void carregarReservas() {
+    FILE *arquivo;
+    arquivo = fopen("reservas.txt", "r");
+
+    if (arquivo == NULL) {
+        cout << "Arquivo 'reservas.txt' nao encontrado. Nenhuma reserva carregada." << endl;
+        return;
+    }
+
+    // Limpar as reservas antes de carregar
+    totalReservas = 0;
+
+    while (!feof(arquivo)) {
+        Reserva novaReserva;
+
+        if (fscanf(arquivo, "%d\n", &novaReserva.codigo) != 1) {
+            break;
+        }
+
+        if (fscanf(arquivo, "%d\n", &novaReserva.matAluno) != 1) {
+            break;
+        }
+
+        if (fscanf(arquivo, "%d\n", &novaReserva.matFunc) != 1) {
+            break;
+        }
+
+        if (fscanf(arquivo, "%d\n", &novaReserva.numArmario) != 1) {
+            break;
+        }
+
+        // Adicionar a nova reserva ao array
+        reservasCadastradas[totalReservas] = novaReserva;
+        totalReservas++;
+    }
+
+    fclose(arquivo);
+
+    cout << "Reservas carregadas de 'reservas.txt' com sucesso!" << endl;
+}
+
+void visualizarReservas() {
+    system("cls"); // Limpa a tela
+    gotoxy(10, 2);
+    cout << "***************************************" << endl;
+    gotoxy(10, 3);
+    cout << "*       RESERVAS CADASTRADAS         *" << endl;
+    gotoxy(10, 4);
+    cout << "***************************************" << endl;
+    gotoxy(10, 6);
+    cout << "Código | Matrícula Aluno | Matrícula Func | Núm. Armário" << endl;
+    gotoxy(10, 7);
+    cout << "------------------------------------------------------" << endl;
+
+    // Exibir as reservas cadastradas
+    for (int i = 0; i < totalReservas; i++) {
+        gotoxy(10, 8 + i);
+        cout << reservasCadastradas[i].codigo << "      | " << reservasCadastradas[i].matAluno
+                  << "               | " << reservasCadastradas[i].matFunc << "             | "
+                  << reservasCadastradas[i].numArmario << endl;
+    }
+
+    gotoxy(10, 10 + totalReservas);
+    cout << "***************************************" << endl;
+    cout << "Pressione Enter para voltar ao menu..." << endl;
+    cin.ignore();
+    cin.get(); // Aguarda pressionar Enter para continuar
+}
+
 
 //ALUNOS
 //ALUNOS
@@ -195,7 +329,6 @@ void salvarAlunos() {
     cout << "Alunos salvos em 'alunos.txt' com sucesso!" << endl;
 }
 
-// Função para carregar alunos de um arquivo de texto
 void carregarAlunos() {
     FILE *arquivo;
     arquivo = fopen("alunos.txt", "r");
@@ -235,8 +368,6 @@ void carregarAlunos() {
 
     cout << "Alunos carregados de 'alunos.txt' com sucesso!" << endl;
 }
-
-
 
 void cadastrarAluno() {
     system("cls"); // Limpa a tela
@@ -280,11 +411,37 @@ void cadastrarAluno() {
     totalAlunos++;
 
     cout << "Aluno cadastrado com sucesso!" << endl;
+
+    int numArmario = encontrarArmarioDisponivel();
+
+    if (numArmario != -1) { // Se um armário disponível foi encontrado
+        Reserva novaReserva;
+        novaReserva.codigo = totalReservas; // Próximo código de reserva disponível
+        novaReserva.matAluno = novoAluno.matricula; // Matrícula do novo aluno
+        // Solicitar a matrícula do funcionário ou obter de outra forma
+        cout << "Digite a matricula do funcionario responsavel: ";
+        cin >> novaReserva.matFunc;
+        novaReserva.numArmario = numArmario; // Número do armário disponível
+
+        cout << "\ninforme a data de recebimento do armario(dd/MM/AAA): ";
+        cin >> novaReserva.dataRec;
+        cout << "\ninforme a data de devolucao do armario(dd/MM/AAA): ";
+        cin >> novaReserva.dataDev;
+
+        // Adicionar a nova reserva à array de reservas
+        reservasCadastradas[totalReservas] = novaReserva;
+        totalReservas++; // Atualizar o contador de armários reservados
+
+        cout << "Aluno cadastrado e reserva criada com sucesso!" << endl;
+        salvarReservas();
+    } else {
+        cout << "Nenhum armario disponivel para criar reserva." << endl;
+    }
+
     system("pause");
     salvarAlunos();
 }
 
-// Função para atualizar dados de um aluno
 void atualizarAluno() {
     system("cls"); // Limpa a tela
 
@@ -828,7 +985,7 @@ void mostrarSubMenuFuncionarios() {
         gotoxy(10, 5);
         cout << "**********************************************" << endl;
         gotoxy(10, 6);
-        cout << "*        MENU FUNCIONARIOS                 *" << endl;
+        cout << "*            MENU FUNCIONARIOS               *" << endl;
         gotoxy(10, 7);
         cout << "**********************************************" << endl;
         gotoxy(10, 9);
@@ -873,9 +1030,61 @@ void mostrarSubMenuFuncionarios() {
     }
 }
 
+void menuReservas()
+{
+    char escolha;
+
+    while (true) {
+        system("cls"); // Limpa a tela
+
+        gotoxy(10, 5);
+        cout << "**********************************************" << endl;
+        gotoxy(10, 6);
+        cout << "*                MENU RESERVAS               *" << endl;
+        gotoxy(10, 7);
+        cout << "**********************************************" << endl;
+        gotoxy(10, 9);
+        cout << "1. Visualizar Reservas" << endl;
+        gotoxy(10, 10);
+        cout << "2. Fila de Reservas" << endl;
+        gotoxy(10, 11);
+        cout << "3. Gerar Termo de Compromisso" << endl;
+        gotoxy(10, 12);
+        cout << "4. Voltar" << endl;
+
+
+        gotoxy(10, 15);
+        cout << "Escolha uma opcao: ";
+        cin >> escolha;
+
+        switch (escolha) {
+            case '1':
+                visualizarReservas();
+                break;
+            case '2':
+
+                break;
+            case '3':
+
+                break;
+            case '4':
+                return;
+            default:
+                // Opção inválida
+                gotoxy(10, 17);
+                cout << "Opcao invalida! Pressione Enter para continuar...";
+                cin.ignore();
+                cin.get(); // Aguarda pressionar Enter para continuar
+                break;
+        }
+    }
+}
+
 int main() {
     inicializarArmarios();
     carregarFuncionarios();
+    carregarArmarios();
+    carregarReservas();
     setlocale(LC_ALL,"Portuguese");
 
     char escolha;
@@ -917,8 +1126,7 @@ int main() {
                 menuArmarios();
                 break;
             case '4':
-                // Lógica para o menu de reserva
-                // Implemente a lógica aqui
+                menuReservas();
                 break;
             case '5':
                 // Sair do programa
@@ -932,6 +1140,5 @@ int main() {
                 break;
         }
     }
-
     return 0;
 }
