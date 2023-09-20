@@ -9,7 +9,8 @@
 using namespace std;
 
 // Definições das estruturas
-typedef struct {
+typedef struct
+{
     int matricula;
     char nome[50];
     char email[50];
@@ -17,7 +18,8 @@ typedef struct {
     char turmaSerie[20];
 } Aluno;
 
-typedef struct {
+typedef struct
+{
     int matricula;
     char nome[50];
     char usuario[20];
@@ -26,19 +28,21 @@ typedef struct {
     char fone[15];
 } Funcionario;
 
-typedef struct {
+typedef struct
+{
     int numero;
     bool disponivel;
     bool estado;
 } Armario;
 
-typedef struct {
+typedef struct
+{
     int codigo;
     int matAluno;
     int matFunc;
     int numArmario;
-    char dataRec[11];
-    char dataDev[11];
+    char dataRec[20];
+    char dataDev[20];
 } Reserva;
 
 
@@ -55,7 +59,8 @@ int totalReservas = 0;
 
 
 // Função para posicionar o cursor na tela
-void gotoxy(int x, int y) {
+void gotoxy(int x, int y)
+{
     COORD coord;
     coord.X = x;
     coord.Y = y;
@@ -69,20 +74,23 @@ void gotoxy(int x, int y) {
 //ARMARIOS
 
 
-void salvarArmarios() {
+void salvarArmarios()
+{
     FILE *arquivo;
     arquivo = fopen("armarios.txt", "w");
 
-    if (arquivo == NULL) {
+    if (arquivo == NULL)
+    {
         cout << "Erro ao abrir o arquivo!" << endl;
         return;
     }
 
-    for (int i = 0; i < ARMARIO; i++) {
+    for (int i = 0; i < ARMARIO; i++)
+    {
         fprintf(arquivo, "%d\n%d\n%d\n",
-            armariosCadastrados[i].numero,
-            armariosCadastrados[i].disponivel ? 1 : 0, // Converte bool para 1 (true) ou 0 (false)
-            armariosCadastrados[i].estado ? 1 : 0);
+                armariosCadastrados[i].numero,
+                armariosCadastrados[i].disponivel ? 1 : 0, // Converte bool para 1 (true) ou 0 (false)
+                armariosCadastrados[i].estado ? 1 : 0);
     }
 
     fclose(arquivo);
@@ -90,11 +98,13 @@ void salvarArmarios() {
     cout << "Estados dos armarios salvos em 'armarios.txt' com sucesso!" << endl;
 }
 
-void carregarArmarios() {
+void carregarArmarios()
+{
     FILE *arquivo;
     arquivo = fopen("armarios.txt", "r");
 
-    if (arquivo == NULL) {
+    if (arquivo == NULL)
+    {
         cout << "Arquivo 'armarios.txt' nao encontrado!" << endl;
         return;
     }
@@ -102,20 +112,24 @@ void carregarArmarios() {
     // Limpa a array de armários antes de carregar
     totalArmarios = 0;
 
-    while (!feof(arquivo)) {
+    while (!feof(arquivo))
+    {
         Armario novoArmario;
 
-        if (fscanf(arquivo, "%d\n", &novoArmario.numero) != 1) {
+        if (fscanf(arquivo, "%d\n", &novoArmario.numero) != 1)
+        {
             break;
         }
 
         int disponivel, estado;
-        if (fscanf(arquivo, "%d\n", &disponivel) != 1) {
+        if (fscanf(arquivo, "%d\n", &disponivel) != 1)
+        {
             break;
         }
         novoArmario.disponivel = (disponivel == 1); // Converte 1 para true, 0 para false
 
-        if (fscanf(arquivo, "%d\n", &estado) != 1) {
+        if (fscanf(arquivo, "%d\n", &estado) != 1)
+        {
             break;
         }
         novoArmario.estado = (estado == 1); // Converte 1 para true, 0 para false
@@ -130,12 +144,15 @@ void carregarArmarios() {
     cout << "Estados dos armarios carregados de 'armarios.txt' com sucesso!" << endl;
 }
 
-void inicializarArmarios() {
+void inicializarArmarios()
+{
     FILE* arquivo = fopen("armarios.txt", "r");
 
-    if (arquivo == NULL) {
+    if (arquivo == NULL)
+    {
         // Arquivo não existe, então inicialize os armários
-        for (int i = 0; i < ARMARIO; i++) {
+        for (int i = 0; i < ARMARIO; i++)
+        {
             armariosCadastrados[i].numero = i + 1; // Número do armário
             armariosCadastrados[i].disponivel = true; // Armário inicialmente disponível
             armariosCadastrados[i].estado = true; // Estado inicial do armário
@@ -143,13 +160,17 @@ void inicializarArmarios() {
 
         // Salve as informações dos armários em um arquivo
         salvarArmarios();
-    } else {
+    }
+    else
+    {
         // Arquivo existe, então carregue as informações dos armários
-        for (int i = 0; i < ARMARIO; i++) {
+        for (int i = 0; i < ARMARIO; i++)
+        {
             if (fscanf(arquivo, "%d %d %d\n",
-                        &armariosCadastrados[i].numero,
-                        &armariosCadastrados[i].disponivel,
-                        &armariosCadastrados[i].estado) == EOF) {
+                       &armariosCadastrados[i].numero,
+                       &armariosCadastrados[i].disponivel,
+                       &armariosCadastrados[i].estado) == EOF)
+            {
                 break;
             }
         }
@@ -157,7 +178,8 @@ void inicializarArmarios() {
     }
 }
 
-void exibirTodosArmarios() {
+void exibirTodosArmarios()
+{
     carregarArmarios(); // AGUARDANDO IMPLEMENTAÇÃO DE SALVAR ARMARIOS EM ARQUIVO
     system("cls");
     gotoxy(1, 1);
@@ -175,7 +197,8 @@ void exibirTodosArmarios() {
     cout << "\n";
     cout << "--------------------------------------------------------";
 
-    for (int i = 0; i < ARMARIO; i++) {
+    for (int i = 0; i < ARMARIO; i++)
+    {
         gotoxy(3, 6 + i);
         printf("%d", armariosCadastrados[i].numero);
         gotoxy(20, 6 + i);
@@ -188,9 +211,12 @@ void exibirTodosArmarios() {
     system("pause");
 }
 
-int encontrarArmarioDisponivel() {
-    for (int i = 0; i < totalArmarios; i++) {
-        if (armariosCadastrados[i].disponivel) {
+int encontrarArmarioDisponivel()
+{
+    for (int i = 0; i < totalArmarios; i++)
+    {
+        if (armariosCadastrados[i].disponivel)
+        {
             armariosCadastrados[i].disponivel = false; // Marcar o armário como indisponível
             salvarArmarios();
             return armariosCadastrados[i].numero;
@@ -206,16 +232,19 @@ int encontrarArmarioDisponivel() {
 //RESERVAS
 //RESERVAS
 
-void salvarReservas() {
+void salvarReservas()
+{
     FILE *arquivo;
     arquivo = fopen("reservas.txt", "w");
 
-    if (arquivo == NULL) {
+    if (arquivo == NULL)
+    {
         cout << "Erro ao abrir o arquivo de reservas!" << endl;
         return;
     }
 
-    for (int i = 0; i < totalReservas; i++) {
+    for (int i = 0; i < totalReservas; i++)
+    {
         fprintf(arquivo, "%d\n", reservasCadastradas[i].codigo);
         fprintf(arquivo, "%d\n", reservasCadastradas[i].matAluno);
         fprintf(arquivo, "%d\n", reservasCadastradas[i].matFunc);
@@ -229,11 +258,13 @@ void salvarReservas() {
     cout << "Reservas salvas em 'reservas.txt' com sucesso!" << endl;
 }
 
-void carregarReservas() {
+void carregarReservas()
+{
     FILE *arquivo;
     arquivo = fopen("reservas.txt", "r");
 
-    if (arquivo == NULL) {
+    if (arquivo == NULL)
+    {
         cout << "Arquivo 'reservas.txt' nao encontrado. Nenhuma reserva carregada." << endl;
         return;
     }
@@ -241,22 +272,37 @@ void carregarReservas() {
     // Limpar as reservas antes de carregar
     totalReservas = 0;
 
-    while (!feof(arquivo)) {
+    while (!feof(arquivo))
+    {
         Reserva novaReserva;
 
-        if (fscanf(arquivo, "%d\n", &novaReserva.codigo) != 1) {
+        if (fscanf(arquivo, "%d\n", &novaReserva.codigo) != 1)
+        {
             break;
         }
 
-        if (fscanf(arquivo, "%d\n", &novaReserva.matAluno) != 1) {
+        if (fscanf(arquivo, "%d\n", &novaReserva.matAluno) != 1)
+        {
             break;
         }
 
-        if (fscanf(arquivo, "%d\n", &novaReserva.matFunc) != 1) {
+        if (fscanf(arquivo, "%d\n", &novaReserva.matFunc) != 1)
+        {
             break;
         }
 
-        if (fscanf(arquivo, "%d\n", &novaReserva.numArmario) != 1) {
+        if (fscanf(arquivo, "%d\n", &novaReserva.numArmario) != 1)
+        {
+            break;
+        }
+
+        if (fscanf(arquivo, "%s\n", &novaReserva.dataRec) != 1)
+        {
+            break;
+        }
+
+        if (fscanf(arquivo, "%s\n", &novaReserva.dataDev) != 1)
+        {
             break;
         }
 
@@ -270,32 +316,50 @@ void carregarReservas() {
     cout << "Reservas carregadas de 'reservas.txt' com sucesso!" << endl;
 }
 
-void visualizarReservas() {
-    system("cls"); // Limpa a tela
-    gotoxy(10, 2);
-    cout << "***************************************" << endl;
-    gotoxy(10, 3);
-    cout << "*       RESERVAS CADASTRADAS         *" << endl;
-    gotoxy(10, 4);
-    cout << "***************************************" << endl;
-    gotoxy(10, 6);
-    cout << "Código | Matrícula Aluno | Matrícula Func | Núm. Armário" << endl;
-    gotoxy(10, 7);
-    cout << "------------------------------------------------------" << endl;
+void visualizarReservas()
+{
+    carregarReservas();
+    system("cls");
+    gotoxy(1, 1);
+    cout << "--------------------------------------------------------------------------------------------------------------------";
+    gotoxy(1, 2);
+    cout << "============================================ RESERVAS CADASTRADAS ==================================================";
+    gotoxy(1, 3);
+    cout << "--------------------------------------------------------------------------------------------------------------------";
+    gotoxy(7, 4);
+    cout << "Código";
+    gotoxy(22, 4);
+    cout << "Mat. Aluno";
+    gotoxy(42, 4);
+    cout << "Mat. Func";
+    gotoxy(62, 4);
+    cout << "Num. Armário";
+    gotoxy(82, 4);
+    cout << "Dt. Recebimento";
+    gotoxy(100, 4);
+    cout << "Dt. Devolução";
+    cout << "\n";
+    cout << "---------------------------------------------------------------------------------------------------------------------";
 
-    // Exibir as reservas cadastradas
-    for (int i = 0; i < totalReservas; i++) {
-        gotoxy(10, 8 + i);
-        cout << reservasCadastradas[i].codigo << "      | " << reservasCadastradas[i].matAluno
-                  << "               | " << reservasCadastradas[i].matFunc << "             | "
-                  << reservasCadastradas[i].numArmario << endl;
+    for (int i = 0; i < totalReservas; i++)
+    {
+        gotoxy(6, 6 + i);
+        printf("%d", reservasCadastradas[i].codigo);
+        gotoxy(25, 6 + i);
+        printf("%d", reservasCadastradas[i].matAluno);
+        gotoxy(45, 6 + i);
+        printf("%d", reservasCadastradas[i].matFunc);
+        gotoxy(65, 6 + i);
+        printf("%d", reservasCadastradas[i].numArmario);
+        gotoxy(82, 6 + i);
+        printf("%s", reservasCadastradas[i].dataRec);
+        gotoxy(98, 6 + i);
+        printf("%s", reservasCadastradas[i].dataDev);
+
     }
-
-    gotoxy(10, 10 + totalReservas);
-    cout << "***************************************" << endl;
-    cout << "Pressione Enter para voltar ao menu..." << endl;
-    cin.ignore();
-    cin.get(); // Aguarda pressionar Enter para continuar
+    cout << "\n";
+    cout << "=====================================================================================================================\n";
+    system("pause");
 }
 
 
@@ -306,22 +370,25 @@ void visualizarReservas() {
 //ALUNOS
 
 // Função para salvar alunos em um arquivo de texto
-void salvarAlunos() {
+void salvarAlunos()
+{
     FILE *arquivo;
     arquivo = fopen("alunos.txt", "w");
 
-    if (arquivo == NULL) {
+    if (arquivo == NULL)
+    {
         cout << "Erro ao abrir o arquivo!" << endl;
         return;
     }
 
-    for (int i = 0; i < totalAlunos; i++) {
+    for (int i = 0; i < totalAlunos; i++)
+    {
         fprintf(arquivo, "%d\n%s\n%s\n%s\n%s\n",
-            alunosCadastrados[i].matricula,
-            alunosCadastrados[i].nome,
-            alunosCadastrados[i].email,
-            alunosCadastrados[i].fone,
-            alunosCadastrados[i].turmaSerie);
+                alunosCadastrados[i].matricula,
+                alunosCadastrados[i].nome,
+                alunosCadastrados[i].email,
+                alunosCadastrados[i].fone,
+                alunosCadastrados[i].turmaSerie);
     }
 
     fclose(arquivo);
@@ -329,11 +396,13 @@ void salvarAlunos() {
     cout << "Alunos salvos em 'alunos.txt' com sucesso!" << endl;
 }
 
-void carregarAlunos() {
+void carregarAlunos()
+{
     FILE *arquivo;
     arquivo = fopen("alunos.txt", "r");
 
-    if (arquivo == NULL) {
+    if (arquivo == NULL)
+    {
         cout << "Arquivo 'alunos.txt' nao encontrado!" << endl;
         return;
     }
@@ -341,10 +410,12 @@ void carregarAlunos() {
     // Limpa o array de alunos antes de carregar
     totalAlunos = 0;
 
-    while (!feof(arquivo)) {
+    while (!feof(arquivo))
+    {
         Aluno novoAluno;
 
-        if (fscanf(arquivo, "%d\n", &novoAluno.matricula) != 1) {
+        if (fscanf(arquivo, "%d\n", &novoAluno.matricula) != 1)
+        {
             break;
         }
 
@@ -369,26 +440,31 @@ void carregarAlunos() {
     cout << "Alunos carregados de 'alunos.txt' com sucesso!" << endl;
 }
 
-void cadastrarAluno() {
+void cadastrarAluno()
+{
     system("cls"); // Limpa a tela
 
     Aluno novoAluno;
 
-    while (true) {
+    while (true)
+    {
         cout << "Informe a matricula do aluno: ";
         cin >> novoAluno.matricula;
 
         // Verifica se a matrícula já existe
         bool matriculaExistente = false;
-        for (int i = 0; i < totalAlunos; i++) {
-            if (alunosCadastrados[i].matricula == novoAluno.matricula) {
+        for (int i = 0; i < totalAlunos; i++)
+        {
+            if (alunosCadastrados[i].matricula == novoAluno.matricula)
+            {
                 matriculaExistente = true;
                 cout << "Erro: Matricula ja existe! Tente novamente." << endl;
                 break;
             }
         }
 
-        if (!matriculaExistente) {
+        if (!matriculaExistente)
+        {
             break; // Matrícula única, sai do loop
         }
     }
@@ -414,7 +490,8 @@ void cadastrarAluno() {
 
     int numArmario = encontrarArmarioDisponivel();
 
-    if (numArmario != -1) { // Se um armário disponível foi encontrado
+    if (numArmario != -1)   // Se um armário disponível foi encontrado
+    {
         Reserva novaReserva;
         novaReserva.codigo = totalReservas; // Próximo código de reserva disponível
         novaReserva.matAluno = novoAluno.matricula; // Matrícula do novo aluno
@@ -434,7 +511,9 @@ void cadastrarAluno() {
 
         cout << "Aluno cadastrado e reserva criada com sucesso!" << endl;
         salvarReservas();
-    } else {
+    }
+    else
+    {
         cout << "Nenhum armario disponivel para criar reserva." << endl;
     }
 
@@ -442,7 +521,8 @@ void cadastrarAluno() {
     salvarAlunos();
 }
 
-void atualizarAluno() {
+void atualizarAluno()
+{
     system("cls"); // Limpa a tela
 
     int matricula;
@@ -450,8 +530,10 @@ void atualizarAluno() {
     cin >> matricula;
 
     bool encontrado = false;
-    for (int i = 0; i < totalAlunos; i++) {
-        if (alunosCadastrados[i].matricula == matricula) {
+    for (int i = 0; i < totalAlunos; i++)
+    {
+        if (alunosCadastrados[i].matricula == matricula)
+        {
             encontrado = true;
 
             // Exibe os detalhes do aluno escolhido
@@ -473,41 +555,43 @@ void atualizarAluno() {
             int opcao;
             cin >> opcao;
 
-            switch (opcao) {
-                case 1:
-                    cout << "Informe o novo nome: ";
-                    cin.ignore();
-                    cin.getline(alunosCadastrados[i].nome, 50);
-                    cout << "Nome atualizado com sucesso!" << endl;
-                    break;
-                case 2:
-                    cout << "Informe o novo email: ";
-                    cin.ignore();
-                    cin.getline(alunosCadastrados[i].email, 50);
-                    cout << "Email atualizado com sucesso!" << endl;
-                    break;
-                case 3:
-                    cout << "Informe o novo telefone: ";
-                    cin.ignore();
-                    cin.getline(alunosCadastrados[i].fone, 15);
-                    cout << "Telefone atualizado com sucesso!" << endl;
-                    break;
-                case 4:
-                    cout << "Informe a nova turma: ";
-                    cin.ignore();
-                    cin.getline(alunosCadastrados[i].turmaSerie, 20);
-                    cout << "Turma atualizada com sucesso!" << endl;
-                    break;
-                case 5:
-                    return; // Voltar ao menu anterior
-                default:
-                    cout << "Opcao invalida!" << endl;
-                    break;
+            switch (opcao)
+            {
+            case 1:
+                cout << "Informe o novo nome: ";
+                cin.ignore();
+                cin.getline(alunosCadastrados[i].nome, 50);
+                cout << "Nome atualizado com sucesso!" << endl;
+                break;
+            case 2:
+                cout << "Informe o novo email: ";
+                cin.ignore();
+                cin.getline(alunosCadastrados[i].email, 50);
+                cout << "Email atualizado com sucesso!" << endl;
+                break;
+            case 3:
+                cout << "Informe o novo telefone: ";
+                cin.ignore();
+                cin.getline(alunosCadastrados[i].fone, 15);
+                cout << "Telefone atualizado com sucesso!" << endl;
+                break;
+            case 4:
+                cout << "Informe a nova turma: ";
+                cin.ignore();
+                cin.getline(alunosCadastrados[i].turmaSerie, 20);
+                cout << "Turma atualizada com sucesso!" << endl;
+                break;
+            case 5:
+                return; // Voltar ao menu anterior
+            default:
+                cout << "Opcao invalida!" << endl;
+                break;
             }
         }
     }
 
-    if (!encontrado) {
+    if (!encontrado)
+    {
         cout << "Aluno nao encontrado!" << endl;
     }
 
@@ -515,7 +599,8 @@ void atualizarAluno() {
     salvarAlunos();
 }
 
-void deletAluno(){
+void deletAluno()
+{
     int alunoDel, novoTotalAlunos = 0;
 
 
@@ -526,16 +611,20 @@ void deletAluno(){
 
     // Criar um novo array temporário
     Aluno novosAlunosCadastrados[ALUNO];
-    for (int i = 0; i < totalAlunos; i++) {
-        if (alunoDel != alunosCadastrados[i].matricula) {
+    for (int i = 0; i < totalAlunos; i++)
+    {
+        if (alunoDel != alunosCadastrados[i].matricula)
+        {
             novosAlunosCadastrados[novoTotalAlunos] = alunosCadastrados[i];
             novoTotalAlunos++;
         }
     }
 
-    if (novoTotalAlunos < totalAlunos) {
+    if (novoTotalAlunos < totalAlunos)
+    {
         totalAlunos = novoTotalAlunos;              // Exclusão bem-sucedida, atualizar o array principal
-        for (int i = 0; i < totalAlunos; i++) {
+        for (int i = 0; i < totalAlunos; i++)
+        {
             alunosCadastrados[i] = novosAlunosCadastrados[i];
         }
         system("cls");
@@ -544,7 +633,9 @@ void deletAluno(){
 
         cout << "\nCadastro deletado.\n";
         system("pause");
-    } else {
+    }
+    else
+    {
         system("cls");
         cout << "\nAluno não encontrado para exclusão.\n";
         system("pause");
@@ -552,7 +643,8 @@ void deletAluno(){
     salvarAlunos();
 }
 
-void exibirTodosAlunos(){
+void exibirTodosAlunos()
+{
     carregarAlunos();
     system("cls");
     gotoxy(1, 1);
@@ -574,7 +666,8 @@ void exibirTodosAlunos(){
     cout << "\n";
     cout << "---------------------------------------------------------------------------------------------------------------------";
 
-    for (int i = 0; i < totalAlunos; i++) {
+    for (int i = 0; i < totalAlunos; i++)
+    {
         gotoxy(6, 6 + i);
         printf("%s", alunosCadastrados[i].nome);
         gotoxy(28, 6 + i);
@@ -600,23 +693,26 @@ void exibirTodosAlunos(){
 
 
 // Função para salvar funcionários em um arquivo de texto
-void salvarFuncionarios() {
+void salvarFuncionarios()
+{
     FILE *arquivo;
     arquivo = fopen("funcionarios.txt", "w");
 
-    if (arquivo == NULL) {
+    if (arquivo == NULL)
+    {
         cout << "Erro ao abrir o arquivo!" << endl;
         return;
     }
 
-    for (int i = 0; i < totalFuncionarios; i++) {
+    for (int i = 0; i < totalFuncionarios; i++)
+    {
         fprintf(arquivo, "%d\n%s\n%s\n%s\n%s\n%s\n",
-            funcionariosCadastrados[i].matricula,
-            funcionariosCadastrados[i].nome,
-            funcionariosCadastrados[i].usuario,
-            funcionariosCadastrados[i].senha,
-            funcionariosCadastrados[i].email,
-            funcionariosCadastrados[i].fone);
+                funcionariosCadastrados[i].matricula,
+                funcionariosCadastrados[i].nome,
+                funcionariosCadastrados[i].usuario,
+                funcionariosCadastrados[i].senha,
+                funcionariosCadastrados[i].email,
+                funcionariosCadastrados[i].fone);
     }
 
     fclose(arquivo);
@@ -625,11 +721,13 @@ void salvarFuncionarios() {
 }
 
 // Função para carregar funcionários de um arquivo de texto
-void carregarFuncionarios() {
+void carregarFuncionarios()
+{
     FILE *arquivo;
     arquivo = fopen("funcionarios.txt", "r");
 
-    if (arquivo == NULL) {
+    if (arquivo == NULL)
+    {
         cout << "Arquivo 'funcionarios.txt' nao encontrado!" << endl;
         return;
     }
@@ -637,10 +735,12 @@ void carregarFuncionarios() {
     // Limpa o array de funcionários antes de carregar
     totalFuncionarios = 0;
 
-    while (!feof(arquivo)) {
+    while (!feof(arquivo))
+    {
         Funcionario novoFuncionario;
 
-        if (fscanf(arquivo, "%d\n", &novoFuncionario.matricula) != 1) {
+        if (fscanf(arquivo, "%d\n", &novoFuncionario.matricula) != 1)
+        {
             break;
         }
 
@@ -667,27 +767,31 @@ void carregarFuncionarios() {
     cout << "Funcionarios carregados de 'funcionarios.txt' com sucesso!" << endl;
 }
 
-
-void cadastrarFuncionario() {
+void cadastrarFuncionario()
+{
     system("cls"); // Limpa a tela
 
     Funcionario novoFuncionario;
 
-    while (true) {
+    while (true)
+    {
         cout << "Informe a matricula do funcionario: ";
         cin >> novoFuncionario.matricula;
 
         // Verifica se a matrícula já existe
         bool matriculaExistente = false;
-        for (int i = 0; i < totalFuncionarios; i++) {
-            if (funcionariosCadastrados[i].matricula == novoFuncionario.matricula) {
+        for (int i = 0; i < totalFuncionarios; i++)
+        {
+            if (funcionariosCadastrados[i].matricula == novoFuncionario.matricula)
+            {
                 matriculaExistente = true;
                 cout << "Erro: Matricula ja existe! Tente novamente." << endl;
                 break;
             }
         }
 
-        if (!matriculaExistente) {
+        if (!matriculaExistente)
+        {
             break; // Matrícula única, sai do loop
         }
     }
@@ -718,7 +822,8 @@ void cadastrarFuncionario() {
 }
 
 // Função para visualizar a lista de funcionários
-void exibirTodosFuncionario(){
+void exibirTodosFuncionario()
+{
     carregarFuncionarios();
     system("cls");
     gotoxy(1, 1);
@@ -740,7 +845,8 @@ void exibirTodosFuncionario(){
     gotoxy(1, 5);
     cout << "---------------------------------------------------------------------------------------------------------------";
 
-    for (int i = 0; i < totalFuncionarios; i++) {
+    for (int i = 0; i < totalFuncionarios; i++)
+    {
         gotoxy(6, 6 + i);
         printf("%s", funcionariosCadastrados[i].nome);
         gotoxy(36, 6 + i);
@@ -759,15 +865,18 @@ void exibirTodosFuncionario(){
 }
 
 // Função para atualizar dados de um funcionário
-void atualizarFuncionario() {
+void atualizarFuncionario()
+{
     system("cls");
     int matricula;
     cout << "Informe a matricula do funcionario que deseja atualizar: ";
     cin >> matricula;
 
     bool encontrado = false;
-    for (int i = 0; i < totalFuncionarios; i++) {
-        if (funcionariosCadastrados[i].matricula == matricula) {
+    for (int i = 0; i < totalFuncionarios; i++)
+    {
+        if (funcionariosCadastrados[i].matricula == matricula)
+        {
             encontrado = true;
 
             // Exibe os detalhes do funcionário escolhido
@@ -791,53 +900,56 @@ void atualizarFuncionario() {
             int opcao;
             cin >> opcao;
 
-            switch (opcao) {
-                case 1:
-                    cout << "Informe o novo nome: ";
-                    cin.ignore();
-                    cin.getline(funcionariosCadastrados[i].nome, 50);
-                    cout << "Nome atualizado com sucesso!" << endl;
-                    break;
-                case 2:
-                    cout << "Informe o novo usuario: ";
-                    cin.ignore();
-                    cin.getline(funcionariosCadastrados[i].usuario, 20);
-                    cout << "Usuario atualizado com sucesso!" << endl;
-                    break;
-                case 3:
-                    cout << "Informe a nova senha: ";
-                    cin.ignore();
-                    cin.getline(funcionariosCadastrados[i].senha, 20);
-                    cout << "Senha atualizada com sucesso!" << endl;
-                    break;
-                case 4:
-                    cout << "Informe o novo email: ";
-                    cin.ignore();
-                    cin.getline(funcionariosCadastrados[i].email, 50);
-                    cout << "Email atualizado com sucesso!" << endl;
-                    break;
-                case 5:
-                    cout << "Informe o novo telefone: ";
-                    cin.ignore();
-                    cin.getline(funcionariosCadastrados[i].fone, 15);
-                    cout << "Telefone atualizado com sucesso!" << endl;
-                    break;
-                case 6:
-                    return; // Voltar ao menu anterior
-                default:
-                    cout << "Opcao invalida!" << endl;
-                    break;
+            switch (opcao)
+            {
+            case 1:
+                cout << "Informe o novo nome: ";
+                cin.ignore();
+                cin.getline(funcionariosCadastrados[i].nome, 50);
+                cout << "Nome atualizado com sucesso!" << endl;
+                break;
+            case 2:
+                cout << "Informe o novo usuario: ";
+                cin.ignore();
+                cin.getline(funcionariosCadastrados[i].usuario, 20);
+                cout << "Usuario atualizado com sucesso!" << endl;
+                break;
+            case 3:
+                cout << "Informe a nova senha: ";
+                cin.ignore();
+                cin.getline(funcionariosCadastrados[i].senha, 20);
+                cout << "Senha atualizada com sucesso!" << endl;
+                break;
+            case 4:
+                cout << "Informe o novo email: ";
+                cin.ignore();
+                cin.getline(funcionariosCadastrados[i].email, 50);
+                cout << "Email atualizado com sucesso!" << endl;
+                break;
+            case 5:
+                cout << "Informe o novo telefone: ";
+                cin.ignore();
+                cin.getline(funcionariosCadastrados[i].fone, 15);
+                cout << "Telefone atualizado com sucesso!" << endl;
+                break;
+            case 6:
+                return; // Voltar ao menu anterior
+            default:
+                cout << "Opcao invalida!" << endl;
+                break;
             }
         }
     }
 
-    if (!encontrado) {
+    if (!encontrado)
+    {
         cout << "Funcionario nao encontrado!" << endl;
     }
     salvarFuncionarios();
 }
 
-void deletFuncionario(){
+void deletFuncionario()
+{
     int funDel, novoTotalFuncionarios = 0;
 
     cout << "\n*********************  DELETAR CADASTRO DE FUNCIONÁRIO ************************ \n";
@@ -847,15 +959,19 @@ void deletFuncionario(){
 
     // Criar um novo array temporário
     Funcionario novosFuncionariosCadastrados[FUNCIONARIO];
-    for (int i = 0; i < totalFuncionarios; i++) {
-        if (funDel != funcionariosCadastrados[i].matricula) {
+    for (int i = 0; i < totalFuncionarios; i++)
+    {
+        if (funDel != funcionariosCadastrados[i].matricula)
+        {
             novosFuncionariosCadastrados[novoTotalFuncionarios] = funcionariosCadastrados[i];
             novoTotalFuncionarios++;
         }
     }
-    if (novoTotalFuncionarios < totalFuncionarios) {
+    if (novoTotalFuncionarios < totalFuncionarios)
+    {
         totalFuncionarios = novoTotalFuncionarios;      // Exclusão bem-sucedida, atualizar o array principal
-        for (int i = 0; i < totalFuncionarios; i++) {
+        for (int i = 0; i < totalFuncionarios; i++)
+        {
             funcionariosCadastrados[i] = novosFuncionariosCadastrados[i];
         }
         system("cls");
@@ -864,7 +980,9 @@ void deletFuncionario(){
 
         cout << "\nCadastro deletado.\n";
         system("pause");
-    } else {
+    }
+    else
+    {
         system("cls");
         cout << "\nFuncionário não encontrado para exclusão.\n";
         system("pause");
@@ -878,10 +996,12 @@ void deletFuncionario(){
 //MENUS
 //MENUS
 
-void menuArmarios() {
+void menuArmarios()
+{
     char escolha;
 
-    while (true) {
+    while (true)
+    {
         system("cls"); // Limpa a tela
 
         gotoxy(10, 5);
@@ -901,31 +1021,34 @@ void menuArmarios() {
         cout << "Escolha uma opcao: ";
         cin >> escolha;
 
-        switch (escolha) {
-            case '1':
-                exibirTodosArmarios();
-                break;
-            case '2':
+        switch (escolha)
+        {
+        case '1':
+            exibirTodosArmarios();
+            break;
+        case '2':
 
-                break;
-            case '3':
-                // Voltar ao menu anterior
-                return;
-            default:
-                // Opção inválida
-                gotoxy(10, 15);
-                cout << "Opcao invalida! Pressione Enter para continuar...";
-                cin.ignore();
-                cin.get(); // Aguarda pressionar Enter para continuar
-                break;
+            break;
+        case '3':
+            // Voltar ao menu anterior
+            return;
+        default:
+            // Opção inválida
+            gotoxy(10, 15);
+            cout << "Opcao invalida! Pressione Enter para continuar...";
+            cin.ignore();
+            cin.get(); // Aguarda pressionar Enter para continuar
+            break;
         }
     }
 }
 
-void mostrarSubMenuAlunos() {
+void mostrarSubMenuAlunos()
+{
     char escolha;
 
-    while (true) {
+    while (true)
+    {
         system("cls"); // Limpa a tela
 
         gotoxy(10, 5);
@@ -949,37 +1072,40 @@ void mostrarSubMenuAlunos() {
         cout << "Escolha uma opcao: ";
         cin >> escolha;
 
-        switch (escolha) {
-            case '1':
-                cadastrarAluno();
-                break;
-            case '2':
-                exibirTodosAlunos();
-                break;
-            case '3':
-                atualizarAluno();
-                break;
-            case '4':
-                deletAluno();
-                break;
-            case '5':
-                // Voltar ao menu anterior
-                return;
-            default:
-                // Opção inválida
-                gotoxy(10, 17);
-                cout << "Opcao invalida! Pressione Enter para continuar...";
-                cin.ignore();
-                cin.get(); // Aguarda pressionar Enter para continuar
-                break;
+        switch (escolha)
+        {
+        case '1':
+            cadastrarAluno();
+            break;
+        case '2':
+            exibirTodosAlunos();
+            break;
+        case '3':
+            atualizarAluno();
+            break;
+        case '4':
+            deletAluno();
+            break;
+        case '5':
+            // Voltar ao menu anterior
+            return;
+        default:
+            // Opção inválida
+            gotoxy(10, 17);
+            cout << "Opcao invalida! Pressione Enter para continuar...";
+            cin.ignore();
+            cin.get(); // Aguarda pressionar Enter para continuar
+            break;
         }
     }
 }
 
-void mostrarSubMenuFuncionarios() {
+void mostrarSubMenuFuncionarios()
+{
     char escolha;
 
-    while (true) {
+    while (true)
+    {
         system("cls"); // Limpa a tela
 
         gotoxy(10, 5);
@@ -1003,29 +1129,30 @@ void mostrarSubMenuFuncionarios() {
         cout << "Escolha uma opcao: ";
         cin >> escolha;
 
-        switch (escolha) {
-            case '1':
-                cadastrarFuncionario();
-                break;
-            case '2':
-                exibirTodosFuncionario();
-                break;
-            case '3':
-                atualizarFuncionario();
-                break;
-            case '4':
-                deletFuncionario();
-                break;
-            case '5':
-                // Voltar ao menu anterior
-                return;
-            default:
-                // Opção inválida
-                gotoxy(10, 17);
-                cout << "Opcao invalida! Pressione Enter para continuar...";
-                cin.ignore();
-                cin.get(); // Aguarda pressionar Enter para continuar
-                break;
+        switch (escolha)
+        {
+        case '1':
+            cadastrarFuncionario();
+            break;
+        case '2':
+            exibirTodosFuncionario();
+            break;
+        case '3':
+            atualizarFuncionario();
+            break;
+        case '4':
+            deletFuncionario();
+            break;
+        case '5':
+            // Voltar ao menu anterior
+            return;
+        default:
+            // Opção inválida
+            gotoxy(10, 17);
+            cout << "Opcao invalida! Pressione Enter para continuar...";
+            cin.ignore();
+            cin.get(); // Aguarda pressionar Enter para continuar
+            break;
         }
     }
 }
@@ -1034,7 +1161,8 @@ void menuReservas()
 {
     char escolha;
 
-    while (true) {
+    while (true)
+    {
         system("cls"); // Limpa a tela
 
         gotoxy(10, 5);
@@ -1057,30 +1185,32 @@ void menuReservas()
         cout << "Escolha uma opcao: ";
         cin >> escolha;
 
-        switch (escolha) {
-            case '1':
-                visualizarReservas();
-                break;
-            case '2':
+        switch (escolha)
+        {
+        case '1':
+            visualizarReservas();
+            break;
+        case '2':
 
-                break;
-            case '3':
+            break;
+        case '3':
 
-                break;
-            case '4':
-                return;
-            default:
-                // Opção inválida
-                gotoxy(10, 17);
-                cout << "Opcao invalida! Pressione Enter para continuar...";
-                cin.ignore();
-                cin.get(); // Aguarda pressionar Enter para continuar
-                break;
+            break;
+        case '4':
+            return;
+        default:
+            // Opção inválida
+            gotoxy(10, 17);
+            cout << "Opcao invalida! Pressione Enter para continuar...";
+            cin.ignore();
+            cin.get(); // Aguarda pressionar Enter para continuar
+            break;
         }
     }
 }
 
-int main() {
+int main()
+{
     inicializarArmarios();
     carregarFuncionarios();
     carregarArmarios();
@@ -1089,7 +1219,8 @@ int main() {
 
     char escolha;
 
-    while (true) {
+    while (true)
+    {
         system("cls"); // Limpa a tela
 
         gotoxy(10, 5);
@@ -1113,31 +1244,32 @@ int main() {
         cout << "Escolha uma opcao: ";
         cin >> escolha;
 
-        switch (escolha) {
-            case '1':
-                // Menu de funcionários
-                mostrarSubMenuFuncionarios();
-                break;
-            case '2':
-                // Menu de alunos
-                mostrarSubMenuAlunos();
-                break;
-            case '3':
-                menuArmarios();
-                break;
-            case '4':
-                menuReservas();
-                break;
-            case '5':
-                // Sair do programa
-                return 0;
-            default:
-                // Opção inválida
-                gotoxy(10, 17);
-                cout << "Opcao invalida! Pressione Enter para continuar...";
-                cin.ignore();
-                cin.get(); // Aguarda pressionar Enter para continuar
-                break;
+        switch (escolha)
+        {
+        case '1':
+            // Menu de funcionários
+            mostrarSubMenuFuncionarios();
+            break;
+        case '2':
+            // Menu de alunos
+            mostrarSubMenuAlunos();
+            break;
+        case '3':
+            menuArmarios();
+            break;
+        case '4':
+            menuReservas();
+            break;
+        case '5':
+            // Sair do programa
+            return 0;
+        default:
+            // Opção inválida
+            gotoxy(10, 17);
+            cout << "Opcao invalida! Pressione Enter para continuar...";
+            cin.ignore();
+            cin.get(); // Aguarda pressionar Enter para continuar
+            break;
         }
     }
     return 0;
