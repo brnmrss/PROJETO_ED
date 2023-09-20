@@ -369,7 +369,6 @@ void visualizarReservas()
 //ALUNOS
 //ALUNOS
 
-// Função para salvar alunos em um arquivo de texto
 void salvarAlunos()
 {
     FILE *arquivo;
@@ -442,7 +441,7 @@ void carregarAlunos()
 
 void cadastrarAluno()
 {
-    system("cls"); // Limpa a tela
+    system("cls");
 
     Aluno novoAluno;
 
@@ -451,7 +450,6 @@ void cadastrarAluno()
         cout << "Informe a matricula do aluno: ";
         cin >> novoAluno.matricula;
 
-        // Verifica se a matrícula já existe
         bool matriculaExistente = false;
         for (int i = 0; i < totalAlunos; i++)
         {
@@ -465,7 +463,7 @@ void cadastrarAluno()
 
         if (!matriculaExistente)
         {
-            break; // Matrícula única, sai do loop
+            break;
         }
     }
 
@@ -482,7 +480,7 @@ void cadastrarAluno()
     cout << "Informe a turma do aluno: ";
     cin.getline(novoAluno.turmaSerie, 20);
 
-    // Adiciona o novo aluno ao array
+
     alunosCadastrados[totalAlunos] = novoAluno;
     totalAlunos++;
 
@@ -490,24 +488,24 @@ void cadastrarAluno()
 
     int numArmario = encontrarArmarioDisponivel();
 
-    if (numArmario != -1)   // Se um armário disponível foi encontrado
+    if (numArmario != -1)
     {
         Reserva novaReserva;
-        novaReserva.codigo = totalReservas; // Próximo código de reserva disponível
-        novaReserva.matAluno = novoAluno.matricula; // Matrícula do novo aluno
-        // Solicitar a matrícula do funcionário ou obter de outra forma
+        novaReserva.codigo = totalReservas;
+        novaReserva.matAluno = novoAluno.matricula;
+
         cout << "Digite a matricula do funcionario responsavel: ";
         cin >> novaReserva.matFunc;
-        novaReserva.numArmario = numArmario; // Número do armário disponível
+        novaReserva.numArmario = numArmario;
 
         cout << "\ninforme a data de recebimento do armario(dd/MM/AAA): ";
         cin >> novaReserva.dataRec;
         cout << "\ninforme a data de devolucao do armario(dd/MM/AAA): ";
         cin >> novaReserva.dataDev;
 
-        // Adicionar a nova reserva à array de reservas
+
         reservasCadastradas[totalReservas] = novaReserva;
-        totalReservas++; // Atualizar o contador de armários reservados
+        totalReservas++;
 
         cout << "Aluno cadastrado e reserva criada com sucesso!" << endl;
         salvarReservas();
