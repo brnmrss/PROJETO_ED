@@ -184,7 +184,6 @@ void carregarReservas()
 
     fclose(arquivo);
 
-    cout << "Reservas carregadas de 'reservas.txt' com sucesso!" << endl;
 }
 
 void visualizarReservas()
@@ -273,7 +272,6 @@ void editarReserva()
 
     system("pause");
 }
-
 
 void gerarTermoCompromisso()
 {
@@ -377,7 +375,6 @@ void carregarArmarios()
         return;
     }
 
-    // Limpa a array de armários antes de carregar
     totalArmarios = 0;
 
     while (!feof(arquivo))
@@ -402,7 +399,6 @@ void carregarArmarios()
         }
         novoArmario.estado = (estado == 1); // Converte 1 para true, 0 para false
 
-        // Adiciona o novo armário à array
         armariosCadastrados[totalArmarios] = novoArmario;
         totalArmarios++;
     }
@@ -490,7 +486,7 @@ int encontrarArmarioDisponivel()
             return armariosCadastrados[i].numero;
         }
     }
-    return -1; // Retorna -1 se nenhum armário estiver disponível
+    return -1;
 }
 
 void editarArmario()
@@ -538,7 +534,7 @@ void editarArmario()
                             // Verifique se há alunos na fila de espera
                             if (totalAlunoFila == 0)
                             {
-                                // Remova a reserva, pois o armário está disponível
+                                // Remova a reserva
                                 for (int k = j; k < totalReservas - 1; k++)
                                 {
                                     reservasCadastradas[k] = reservasCadastradas[k + 1];
@@ -589,6 +585,7 @@ void editarArmario()
     system("pause");
     salvarArmarios();
 }
+
 void excluirReserva()
 {
     system("cls");
@@ -670,14 +667,11 @@ void excluirReserva()
     system("pause");
 }
 
-
-
 //ALUNOS
 //ALUNOS
 //ALUNOS
 //ALUNOS
 //ALUNOS
-
 
 void carregarAlunosFila()
 {
@@ -1818,4 +1812,3 @@ int main()
 
     return 0;
 }
- 
