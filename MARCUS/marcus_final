@@ -233,7 +233,8 @@ void visualizarReservas()
     system("pause");
 }
 
-void editarReserva() {
+void editarReserva()
+{
     system("cls");
 
     int codigoReserva;
@@ -241,8 +242,10 @@ void editarReserva() {
     cin >> codigoReserva;
 
     bool encontrou = false;
-    for (int i = 0; i < totalReservas; i++) {
-        if (reservasCadastradas[i].codigo == codigoReserva) {
+    for (int i = 0; i < totalReservas; i++)
+    {
+        if (reservasCadastradas[i].codigo == codigoReserva)
+        {
             encontrou = true;
 
             // Encontrou a reserva, agora permita a edição das datas
@@ -263,7 +266,8 @@ void editarReserva() {
         }
     }
 
-    if (!encontrou) {
+    if (!encontrou)
+    {
         cout << "Reserva nao encontrada com o codigo informado." << endl;
     }
 
@@ -271,7 +275,8 @@ void editarReserva() {
 }
 
 
-void gerarTermoCompromisso() {
+void gerarTermoCompromisso()
+{
     system("cls");
 
     int matriculaAluno;
@@ -279,20 +284,25 @@ void gerarTermoCompromisso() {
     cin >> matriculaAluno;
 
     bool encontrou = false;
-    for (int i = 0; i < totalReservas; i++) {
-        if (reservasCadastradas[i].matAluno == matriculaAluno) {
+    for (int i = 0; i < totalReservas; i++)
+    {
+        if (reservasCadastradas[i].matAluno == matriculaAluno)
+        {
             encontrou = true;
 
             // Encontrou a reserva do aluno, agora procure as informações do aluno
             int indiceAluno = -1;
-            for (int j = 0; j < totalAlunos; j++) {
-                if (alunosCadastrados[j].matricula == matriculaAluno) {
+            for (int j = 0; j < totalAlunos; j++)
+            {
+                if (alunosCadastrados[j].matricula == matriculaAluno)
+                {
                     indiceAluno = j;
                     break;
                 }
             }
 
-            if (indiceAluno != -1) {
+            if (indiceAluno != -1)
+            {
                 system("cls");
                 gotoxy(10, 5);
                 cout << "--- TERMO DE COMPROMISSO ---";
@@ -308,13 +318,16 @@ void gerarTermoCompromisso() {
                 cout << "Assinatura: ____________________";
                 gotoxy(10, 12);
                 cout << "Data: ____/____/____\n\n\n\n\n";
-            } else {
+            }
+            else
+            {
                 cout << "Aluno não encontrado." << endl;
             }
         }
     }
 
-    if (!encontrou) {
+    if (!encontrou)
+    {
         cout << "Reserva não encontrada para a matrícula informada." << endl;
     }
 
@@ -480,7 +493,8 @@ int encontrarArmarioDisponivel()
     return -1; // Retorna -1 se nenhum armário estiver disponível
 }
 
-void editarArmario() {
+void editarArmario()
+{
     system("cls");
 
     int numeroArmario;
@@ -488,8 +502,10 @@ void editarArmario() {
     cin >> numeroArmario;
 
     bool encontrado = false;
-    for (int i = 0; i < totalArmarios; i++) {
-        if (armariosCadastrados[i].numero == numeroArmario) {
+    for (int i = 0; i < totalArmarios; i++)
+    {
+        if (armariosCadastrados[i].numero == numeroArmario)
+        {
             encontrado = true;
 
             cout << "Armario Numero: " << armariosCadastrados[i].numero << endl;
@@ -500,35 +516,45 @@ void editarArmario() {
             cout << "Escolha o que deseja editar (D para disponibilidade, E para estado): ";
             cin >> escolha;
 
-            if (escolha == 'D' || escolha == 'd') {
+            if (escolha == 'D' || escolha == 'd')
+            {
                 // Editar a disponibilidade do armário
                 cout << "Nova Disponibilidade (1 para Disponivel, 0 para Indisponivel): ";
                 cin >> armariosCadastrados[i].disponivel;
                 cout << "Disponibilidade editada com sucesso!" << endl;
 
                 // Se a disponibilidade for alterada para 1 (Disponível)
-                if (armariosCadastrados[i].disponivel) {
-                        if (totalAlunoFila > 0) {
-                    armariosCadastrados[i].disponivel = false;
-                }
+                if (armariosCadastrados[i].disponivel)
+                {
+                    if (totalAlunoFila > 0)
+                    {
+                        armariosCadastrados[i].disponivel = false;
+                    }
                     // Verifique se há uma reserva associada a este armário
-                    for (int j = 0; j < totalReservas; j++) {
-                        if (reservasCadastradas[j].numArmario == numeroArmario) {
+                    for (int j = 0; j < totalReservas; j++)
+                    {
+                        if (reservasCadastradas[j].numArmario == numeroArmario)
+                        {
                             // Verifique se há alunos na fila de espera
-                            if (totalAlunoFila == 0) {
+                            if (totalAlunoFila == 0)
+                            {
                                 // Remova a reserva, pois o armário está disponível
-                                for (int k = j; k < totalReservas - 1; k++) {
+                                for (int k = j; k < totalReservas - 1; k++)
+                                {
                                     reservasCadastradas[k] = reservasCadastradas[k + 1];
                                 }
                                 totalReservas--;
-                            } else {
+                            }
+                            else
+                            {
                                 // Altere a matrícula e as datas para "a definir"
                                 reservasCadastradas[j].matAluno = alunoFila[0].matricula;
                                 strcpy(reservasCadastradas[j].dataRec, "definir");
                                 strcpy(reservasCadastradas[j].dataDev, "definir");
 
                                 // Remova o aluno da fila de espera
-                                for (int k = 0; k < totalAlunoFila - 1; k++) {
+                                for (int k = 0; k < totalAlunoFila - 1; k++)
+                                {
                                     alunoFila[k] = alunoFila[k + 1];
                                 }
                                 totalAlunoFila--;
@@ -538,12 +564,16 @@ void editarArmario() {
                     salvarAlunosFila();
                     salvarReservas();
                 }
-            } else if (escolha == 'E' || escolha == 'e') {
+            }
+            else if (escolha == 'E' || escolha == 'e')
+            {
                 // Editar o estado do armário
                 cout << "Novo Estado (1 para Bom, 0 para Quebrado): ";
                 cin >> armariosCadastrados[i].estado;
                 cout << "Estado editado com sucesso!" << endl;
-            } else {
+            }
+            else
+            {
                 cout << "Escolha invalida!" << endl;
             }
 
@@ -551,12 +581,93 @@ void editarArmario() {
         }
     }
 
-    if (!encontrado) {
+    if (!encontrado)
+    {
         cout << "Armario nao encontrado." << endl;
     }
 
     system("pause");
     salvarArmarios();
+}
+void excluirReserva()
+{
+    system("cls");
+
+    int codigoReserva;
+    cout << "Informe o código da reserva que deseja excluir: ";
+    cin >> codigoReserva;
+
+    bool encontrou = false;
+    for (int i = 0; i < totalReservas; i++)
+    {
+        if (reservasCadastradas[i].codigo == codigoReserva)
+        {
+            encontrou = true;
+
+            // Verifica se há alunos na fila de espera
+            if (totalAlunoFila > 0)
+            {
+                // Torna o armário associado à reserva disponível novamente
+                int numArmario = reservasCadastradas[i].numArmario;
+                for (int j = 0; j < totalArmarios; j++)
+                {
+                    if (armariosCadastrados[j].numero == numArmario)
+                    {
+                        armariosCadastrados[j].disponivel = true;
+                        break;
+                    }
+                }
+
+                // Remove a reserva
+                for (int j = i; j < totalReservas - 1; j++)
+                {
+                    reservasCadastradas[j] = reservasCadastradas[j + 1];
+                }
+                totalReservas--;
+
+                // Atribui o armário ao próximo aluno da fila
+                reservasCadastradas[totalReservas].codigo = totalReservas + 1;
+                reservasCadastradas[totalReservas].matAluno = alunoFila[0].matricula;
+                strcpy(reservasCadastradas[totalReservas].dataRec, "definir");
+                strcpy(reservasCadastradas[totalReservas].dataDev, "definir");
+                reservasCadastradas[totalReservas].numArmario = numArmario;
+                totalReservas++;
+
+                // Remove o aluno da fila de espera
+                for (int j = 0; j < totalAlunoFila - 1; j++)
+                {
+                    alunoFila[j] = alunoFila[j + 1];
+                }
+                totalAlunoFila--;
+
+                cout << "Reserva excluída e armário atribuído ao próximo aluno da fila." << endl;
+                salvarAlunosFila();
+                salvarArmarios();
+                salvarReservas();
+            }
+            else
+            {
+                // Se não houver alunos na fila, apenas exclui a reserva
+                for (int j = i; j < totalReservas - 1; j++)
+                {
+                    reservasCadastradas[j] = reservasCadastradas[j + 1];
+                }
+                totalReservas--;
+
+                cout << "Reserva excluída com sucesso." << endl;
+                salvarReservas();
+            }
+
+            break;
+        }
+    }
+
+    if (!encontrou)
+    {
+        cout << "Reserva não encontrada com o código informado." << endl;
+    }
+
+    system("pause");
 }
 
 
@@ -849,7 +960,8 @@ void atualizarAluno()
     salvarAlunos();
 }
 
-void deletAluno() {
+void deletAluno()
+{
     system("cls");
 
     int matriculaAluno;
@@ -857,24 +969,31 @@ void deletAluno() {
     cin >> matriculaAluno;
 
     bool encontrou = false;
-    for (int i = 0; i < totalAlunos; i++) {
-        if (alunosCadastrados[i].matricula == matriculaAluno) {
+    for (int i = 0; i < totalAlunos; i++)
+    {
+        if (alunosCadastrados[i].matricula == matriculaAluno)
+        {
             encontrou = true;
 
             // Verifica se a matricula do aluno está em alguma reserva
-            for (int j = 0; j < totalReservas; j++) {
-                if (reservasCadastradas[j].matAluno == matriculaAluno) {
+            for (int j = 0; j < totalReservas; j++)
+            {
+                if (reservasCadastradas[j].matAluno == matriculaAluno)
+                {
                     // Torna o armário associado à reserva disponível novamente
                     int numArmario = reservasCadastradas[j].numArmario;
-                    for (int k = 0; k < totalArmarios; k++) {
-                        if (armariosCadastrados[k].numero == numArmario) {
+                    for (int k = 0; k < totalArmarios; k++)
+                    {
+                        if (armariosCadastrados[k].numero == numArmario)
+                        {
                             armariosCadastrados[k].disponivel = true;
                             break;
                         }
                     }
 
                     // Exclui a reserva associada a esse aluno
-                    for (int k = j; k < totalReservas - 1; k++) {
+                    for (int k = j; k < totalReservas - 1; k++)
+                    {
                         reservasCadastradas[k] = reservasCadastradas[k + 1];
                     }
                     totalReservas--;
@@ -886,10 +1005,12 @@ void deletAluno() {
             }
 
             // Verifica se há alunos na fila de espera
-            if (totalAlunoFila > 0) {
+            if (totalAlunoFila > 0)
+            {
                 // Aloca o armário para o próximo aluno na fila
                 int numArmario = encontrarArmarioDisponivel();
-                if (numArmario != -1) {
+                if (numArmario != -1)
+                {
                     Reserva novaReserva;
                     novaReserva.codigo = totalReservas;
                     novaReserva.matAluno = alunoFila[0].matricula;
@@ -902,7 +1023,8 @@ void deletAluno() {
                     totalReservas++;
 
                     // Remove o primeiro aluno da fila de espera
-                    for (int k = 0; k < totalAlunoFila - 1; k++) {
+                    for (int k = 0; k < totalAlunoFila - 1; k++)
+                    {
                         alunoFila[k] = alunoFila[k + 1];
                     }
                     totalAlunoFila--;
@@ -914,7 +1036,8 @@ void deletAluno() {
             }
 
             // Exclui o aluno
-            for (int k = i; k < totalAlunos - 1; k++) {
+            for (int k = i; k < totalAlunos - 1; k++)
+            {
                 alunosCadastrados[k] = alunosCadastrados[k + 1];
             }
             totalAlunos--;
@@ -926,7 +1049,8 @@ void deletAluno() {
         }
     }
 
-    if (!encontrou) {
+    if (!encontrou)
+    {
         cout << "Aluno não encontrado com a matrícula informada." << endl;
     }
 
@@ -1472,7 +1596,10 @@ void menuReservas()
         gotoxy(10, 12);
         cout << "4. Editar Reservas" << endl;
         gotoxy(10, 13);
-        cout << "5. Voltar" << endl;
+        cout << "5. Excluir Reservas" << endl;
+        gotoxy(10, 14);
+        cout << "6. Voltar" << endl;
+
 
 
         gotoxy(10, 15);
@@ -1486,50 +1613,54 @@ void menuReservas()
             break;
         case '2':
             carregarAlunosFila();
-    system("cls");
-    gotoxy(1, 1);
-    cout << "--------------------------------------------------------------------------------------------------------------------";
-    gotoxy(1, 2);
-    cout << "============================================ ALUNOS NA FILA ========================================================";
-    gotoxy(1, 3);
-    cout << "--------------------------------------------------------------------------------------------------------------------";
-    gotoxy(7, 4);
-    cout << "Nome";
-    gotoxy(30, 4);
-    cout << "Email";
-    gotoxy(65, 4);
-    cout << "Matricula";
-    gotoxy(85, 4);
-    cout << "Contato";
-    gotoxy(105, 4);
-    cout << "Turma/Serie";
-    cout << "\n";
-    cout << "---------------------------------------------------------------------------------------------------------------------";
+            system("cls");
+            gotoxy(1, 1);
+            cout << "--------------------------------------------------------------------------------------------------------------------";
+            gotoxy(1, 2);
+            cout << "============================================ ALUNOS NA FILA ========================================================";
+            gotoxy(1, 3);
+            cout << "--------------------------------------------------------------------------------------------------------------------";
+            gotoxy(7, 4);
+            cout << "Nome";
+            gotoxy(30, 4);
+            cout << "Email";
+            gotoxy(65, 4);
+            cout << "Matricula";
+            gotoxy(85, 4);
+            cout << "Contato";
+            gotoxy(105, 4);
+            cout << "Turma/Serie";
+            cout << "\n";
+            cout << "---------------------------------------------------------------------------------------------------------------------";
 
-    for (int i = 0; i < totalAlunoFila; i++)
-    {
-        gotoxy(6, 6 + i);
-        printf("%s", alunoFila[i].nome);
-        gotoxy(28, 6 + i);
-        printf("%s", alunoFila[i].email);
-        gotoxy(66, 6 + i);
-        printf("%d", alunoFila[i].matricula);
-        gotoxy(86, 6 + i);
-        printf("%s", alunoFila[i].fone);
-        gotoxy(105, 6 + i);
-        printf("%s", alunoFila[i].turmaSerie);
+            for (int i = 0; i < totalAlunoFila; i++)
+            {
+                gotoxy(6, 6 + i);
+                printf("%s", alunoFila[i].nome);
+                gotoxy(28, 6 + i);
+                printf("%s", alunoFila[i].email);
+                gotoxy(66, 6 + i);
+                printf("%d", alunoFila[i].matricula);
+                gotoxy(86, 6 + i);
+                printf("%s", alunoFila[i].fone);
+                gotoxy(105, 6 + i);
+                printf("%s", alunoFila[i].turmaSerie);
 
-    }
-    cout << "\n";
-    cout << "=====================================================================================================================\n";
-    system("pause");
+            }
+            cout << "\n";
+            cout << "=====================================================================================================================\n";
+            system("pause");
             break;
         case '3':
             gerarTermoCompromisso();
             break;
         case '4':
             editarReserva();
+            break;
         case '5':
+            excluirReserva();
+            break;
+        case '6':
             return;
         default:
             // Opção inválida
@@ -1650,6 +1781,7 @@ int main()
     int opcao;
     do
     {
+        system("cls");
         cout << "Sistema de Consulta e Reserva de Armários\n\n";
         cout << "[1] Entrar\n";
         cout << "[2] Cadastrar\n";
