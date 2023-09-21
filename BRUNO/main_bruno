@@ -58,6 +58,9 @@ int totalFuncionarios = 0;
 Aluno alunosCadastrados[ALUNO];
 int totalAlunos = 0;
 
+Armario armariosCadastrados[ARMARIOS];
+int totalArmarios = 0;
+
 Armario armarios[ARMARIOS];
 AlunoCurso AluCurso[ALUNO];
 Reserva Res[ARMARIOS];
@@ -66,43 +69,53 @@ Curso Cursos[CURSO];
 
 void salvarArmariosEmArquivo();
 void salvarArmariosEmArquivo(){
-    FILE* arquivo = fopen("armarios.txt", "w");
+    FILE *arquivo;
+    arquivo = fopen("armarios.txt", "w");
 
-    if (arquivo != NULL) {
-        for (int i = 0; i < ARMARIOS; i++) {
-            fprintf(arquivo, "%d %d %d\n",
-                    armarios[i].numero,
-                    armarios[i].disponivel,
-                    armarios[i].estado);
-        }
-        fclose(arquivo);
-    } else {
-        cout << "Erro ao abrir o arquivo de armários." << endl;
+    if (arquivo == NULL)
+    {
+        cout << "Erro ao abrir o arquivo!" << endl;
+        return;
     }
+
+    for (int i = 0; i < ARMARIOS; i++)
+    {
+        fprintf(arquivo, "%d\n%d\n%d\n",
+                armariosCadastrados[i].numero,
+                armariosCadastrados[i].disponivel ? 1 : 0, // Converte bool para 1 (true) ou 0 (false)
+                armariosCadastrados[i].estado ? 1 : 0);
+    }
+
+    fclose(arquivo);
 }
 
 void inicializarArmarios();
 void inicializarArmarios(){
     FILE* arquivo = fopen("armarios.txt", "r");
 
-    if (arquivo == NULL) {
+    if (arquivo == NULL)
+    {
         // Arquivo não existe, então inicialize os armários
-        for (int i = 0; i < ARMARIOS; i++) {
-            armarios[i].numero = i + 1; // Número do armário
-            armarios[i].disponivel = true; // Armário inicialmente disponível
-            armarios[i].estado = true; // Estado inicial do armário
+        for (int i = 0; i < ARMARIOS; i++)
+        {
+            armariosCadastrados[i].numero = i + 1; // Número do armário
+            armariosCadastrados[i].disponivel = true; // Armário inicialmente disponível
+            armariosCadastrados[i].estado = true; // Estado inicial do armário
         }
 
         // Salve as informações dos armários em um arquivo
         salvarArmariosEmArquivo();
-    } else {
-
+    }
+    else
+    {
         // Arquivo existe, então carregue as informações dos armários
-        for (int i = 0; i < ARMARIOS; i++) {
+        for (int i = 0; i < ARMARIOS; i++)
+        {
             if (fscanf(arquivo, "%d %d %d\n",
-                        &armarios[i].numero,
-                        &armarios[i].disponivel,
-                        &armarios[i].estado) == EOF) {
+                       &armariosCadastrados[i].numero,
+                       &armariosCadastrados[i].disponivel,
+                       &armariosCadastrados[i].estado) == EOF)
+            {
                 break;
             }
         }
@@ -112,76 +125,89 @@ void inicializarArmarios(){
 
 void carregarArmariosDeArquivo();
 void carregarArmariosDeArquivo(){
+    FILE *arquivo;
+    arquivo = fopen("armarios.txt", "r");
 
-
-    FILE* arquivo = fopen("armarios.txt", "r");
-
-    if (arquivo != NULL) {
-        for (int i = 0; i < ARMARIOS; i++) {
-            fprintf(arquivo, "%d %d %d\n",
-                    armarios[i].numero,
-                    armarios[i].disponivel,
-                    armarios[i].estado);
-        }
-        fclose(arquivo);
-    } else {
-        cout << "Erro ao abrir o arquivo de armários." << endl;
+    if (arquivo == NULL)
+    {
+        cout << "Arquivo 'armarios.txt' não encontrado!" << endl;
+        return;
     }
+
+    // Limpa a array de armários antes de carregar
+    totalArmarios = 0;
+
+    while (!feof(arquivo))
+    {
+        Armario novoArmario;
+
+        if (fscanf(arquivo, "%d\n", &novoArmario.numero) != 1)
+        {
+            break;
+        }
+
+        int disponivel, estado;
+        if (fscanf(arquivo, "%d\n", &disponivel) != 1)
+        {
+            break;
+        }
+        novoArmario.disponivel = (disponivel == 1); // Converte 1 para true, 0 para false
+
+        if (fscanf(arquivo, "%d\n", &estado) != 1)
+        {
+            break;
+        }
+        novoArmario.estado = (estado == 1); // Converte 1 para true, 0 para false
+
+        // Adiciona o novo armário à array
+        armariosCadastrados[totalArmarios] = novoArmario;
+        totalArmarios++;
+    }
+
+    fclose(arquivo);
+
+    cout << "Estados dos armarios carregados de 'armarios.txt' com sucesso!" << endl;
 }
 
 void exibirTodosArmarios();
 void exibirTodosArmarios(){
-    carregarArmariosDeArquivo();
+    carregarArmariosDeArquivo(); // AGUARDANDO IMPLEMENTAÇÃO DE SALVAR ARMARIOS EM ARQUIVO
     system("cls");
     gotoxy(1, 1);
-    cout << "----------------------------------------------------------------";
+    cout << "-------------------------------------------------------";
     gotoxy(1, 2);
-    cout << "============================ARMARIOS============================";
+    cout << "=========================ARMARIOS======================";
     gotoxy(1, 3);
-    cout << "----------------------------------------------------------------";
-    gotoxy(7, 4);
+    cout << "-------------------------------------------------------";
+    gotoxy(3, 4);
     cout << "Numero";
     gotoxy(20, 4);
-    cout << "Dispinibilidade";
-    gotoxy(45, 4);
     cout << "Estado";
+    gotoxy(40, 4);
+    cout << "Disponibilidade";
     cout << "\n";
-    cout << "-----------------------------------------------------------------";
+    cout << "--------------------------------------------------------";
 
-    for (int i = 0; i < ARMARIOS; i++) {
-        gotoxy(8, 6 + i);
-        printf("%d", i +1);
-        if(armarios[i].disponivel==true){
-            gotoxy(23, 6 + i);
-            cout << "Disponivel";
-        }else{
-            gotoxy(23, 6 + i);
-            cout << "Indisponivel";
-
-            }
-
-        if(armarios[i].estado==true){
-             gotoxy(47, 6 + i);
-             printf("Bom");
-        }else{
-            gotoxy(47, 6 + i);
-             printf("Ruim");
-
-            }
-
+    for (int i = 0; i < ARMARIOS; i++)
+    {
+        gotoxy(3, 6 + i);
+        printf("%d", armariosCadastrados[i].numero);
+        gotoxy(20, 6 + i);
+        printf("%s", armariosCadastrados[i].estado ? "Bom" : "Quebrado");
+        gotoxy(40, 6 + i);
+        printf("%s", armariosCadastrados[i].disponivel ? "Disponível" : "Não Disponível");
     }
     cout << "\n";
-    cout << "=================================================================\n";
-    cout << "\nArmários Cadastrados: "<< ARMARIOS <<"\n\n";
-    cout << "[1] = Bom/Disponível\n";
-    cout << "[0] = Mau/Indisponível\n\n";
+    cout << "========================================================\n";
     system("pause");
 
 }
 
 void editArmario();
 void editArmario(){
+    carregarArmariosDeArquivo();
     int armarioEdit, novoEstado, novaDisponibilidade;
+    bool edicaoBemSucedida = false;
 
     cout << "\n*********************  EDITAR DADOS DE ARMÁRIO ************************ \n";
     cout << "Informe o número do armário que deseja editar.\n";
@@ -189,56 +215,61 @@ void editArmario(){
     cin >> armarioEdit;
 
     for (int i = 0; i < ARMARIOS; i++) {
-        if (armarios[i].numero == armarioEdit) {
-        cout << "\n\nArmário escolhido: " << armarios[i].numero << endl;
+        if (armariosCadastrados[i].numero == armarioEdit) {
+            cout << "\n\nArmário escolhido: " << armariosCadastrados[i].numero << endl;
 
-        cout << "\n\n[1] = Bom/Disponível\n";
-        cout << "[0] = Mau/Indisponível";
+            cout << "\n\n[1] = Bom/Disponível\n";
+            cout << "[0] = Mau/Indisponível";
 
-        cout << "\n\nDigite o novo estado: ";
-        cin >> novoEstado;
+            cout << "\n\nDigite o novo estado: ";
+            cin >> novoEstado;
 
-        switch(novoEstado){
-            case 0:
-                armarios[i].estado = false;
-                system("pause");
-                break;
+            switch (novoEstado) {
+                case 0:
+                    armariosCadastrados[i].estado = false;
+                    break;
 
-            case 1:
-                armarios[i].estado = true;
-                system("pause");
-                break;
+                case 1:
+                    armariosCadastrados[i].estado = true;
+                    break;
 
-            default:
-                cout << "Opção não disponível.";
-        }
+                default:
+                    cout << "Opção não disponível.";
+                    continue; // Volte para a iteração, não saia do loop.
+            }
 
-        cout << "\nDigite a nova disponibilidade: ";
-        cin >> novaDisponibilidade;
+            cout << "\nDigite a nova disponibilidade: ";
+            cin >> novaDisponibilidade;
 
-        switch(novaDisponibilidade){
-            case 0:
-                armarios[i].disponivel = false;
-                system("pause");
-                break;
+            switch (novaDisponibilidade) {
+                case 0:
+                    armariosCadastrados[i].disponivel = false;
+                    break;
 
-            case 1:
-                armarios[i].disponivel = true;
-                system("pause");
-                break;
+                case 1:
+                    armariosCadastrados[i].disponivel = true;
+                    break;
 
-            default:
-                cout << "Opção não disponível.";
-        }
+                default:
+                    cout << "Opção não disponível.";
+                    continue; // Volte para a iteração, não saia do loop.
+            }
 
-        system("cls");
-        cout << "\n\nArmário editado com sucesso!\n" << endl;
-        system("pause");
-        break;
+            edicaoBemSucedida = true;
+            system("cls");
+            cout << "\n\nArmário editado com sucesso!\n" << endl;
+            salvarArmariosEmArquivo();
+            break; // Saia do loop assim que a edição for concluída com sucesso.
         }
     }
-salvarArmariosEmArquivo();
+
+    if (!edicaoBemSucedida) {
+        cout << "\nArmário não encontrado. Edição cancelada.\n";
+    }
+
+    system("pause");
 }
+
 
 
 void salvarAlunosEmArquivo();
@@ -676,13 +707,13 @@ int main(){
 
     // EXIBIR ARMÁRIOS
                         case 1:
-                            carregarArmariosDeArquivo();
+
                             exibirTodosArmarios();
 
                             break;
     // SELECIONAR ARMÁRIO PARA EDITAR
                         case 2:
-                            carregarArmariosDeArquivo();
+
                             editArmario();
 
                             break;
