@@ -50,12 +50,14 @@ Aluno alunosCadastrados[ALUNO];
 Funcionario funcionariosCadastrados[FUNCIONARIO];
 Armario armariosCadastrados[ARMARIO];
 Reserva reservasCadastradas[RESERVA];
+Aluno alunoFila[ALUNO];
 
 // Contadores globais
 int totalAlunos = 0;
 int totalFuncionarios = 0;
 int totalArmarios = 0;
 int totalReservas = 0;
+int totalAlunoFila = 0;
 
 
 // Função para posicionar o cursor na tela
@@ -95,7 +97,6 @@ void salvarArmarios()
 
     fclose(arquivo);
 
-    cout << "Estados dos armarios salvos em 'armarios.txt' com sucesso!" << endl;
 }
 
 void carregarArmarios()
@@ -255,7 +256,6 @@ void salvarReservas()
 
     fclose(arquivo);
 
-    cout << "Reservas salvas em 'reservas.txt' com sucesso!" << endl;
 }
 
 void carregarReservas()
@@ -361,7 +361,6 @@ void visualizarReservas()
     cout << "=====================================================================================================================\n";
     system("pause");
 }
-
 
 //ALUNOS
 //ALUNOS
@@ -507,7 +506,7 @@ void cadastrarAluno()
         reservasCadastradas[totalReservas] = novaReserva;
         totalReservas++;
 
-        cout << "Aluno cadastrado e reserva criada com sucesso!" << endl;
+        cout << "Reserva criada com sucesso!" << endl;
         salvarReservas();
     }
     else
@@ -1213,6 +1212,7 @@ int main()
     carregarFuncionarios();
     carregarArmarios();
     carregarReservas();
+    carregarAlunos();
     setlocale(LC_ALL,"Portuguese");
 
     char escolha;
