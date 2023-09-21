@@ -307,7 +307,7 @@ void gerarTermoCompromisso() {
                 gotoxy(10, 11);
                 cout << "Assinatura: ____________________";
                 gotoxy(10, 12);
-                cout << "Data: ____/____/____\n";
+                cout << "Data: ____/____/____\n\n\n\n\n";
             } else {
                 cout << "Aluno não encontrado." << endl;
             }
@@ -320,6 +320,8 @@ void gerarTermoCompromisso() {
 
     system("pause");
 }
+
+
 //ARMARIOS
 //ARMARIOS
 //ARMARIOS
@@ -477,7 +479,6 @@ int encontrarArmarioDisponivel()
     }
     return -1; // Retorna -1 se nenhum armário estiver disponível
 }
-
 
 void editarArmario() {
     system("cls");
@@ -848,49 +849,91 @@ void atualizarAluno()
     salvarAlunos();
 }
 
-void deletAluno()
-{
-    int alunoDel, novoTotalAlunos = 0;
+void deletAluno() {
+    system("cls");
 
+    int matriculaAluno;
+    cout << "Informe a matricula do aluno que deseja excluir: ";
+    cin >> matriculaAluno;
 
-    cout << "\n*********************  DELETAR CADASTRO DE ALUNO ************************ \n";
-    cout << "Informe a matrícula do aluno que deseja deletar.\n";
-    cout << "\nMatrícula: ";
-    cin >> alunoDel;
+    bool encontrou = false;
+    for (int i = 0; i < totalAlunos; i++) {
+        if (alunosCadastrados[i].matricula == matriculaAluno) {
+            encontrou = true;
 
-    // Criar um novo array temporário
-    Aluno novosAlunosCadastrados[ALUNO];
-    for (int i = 0; i < totalAlunos; i++)
-    {
-        if (alunoDel != alunosCadastrados[i].matricula)
-        {
-            novosAlunosCadastrados[novoTotalAlunos] = alunosCadastrados[i];
-            novoTotalAlunos++;
+            // Verifica se a matricula do aluno está em alguma reserva
+            for (int j = 0; j < totalReservas; j++) {
+                if (reservasCadastradas[j].matAluno == matriculaAluno) {
+                    // Torna o armário associado à reserva disponível novamente
+                    int numArmario = reservasCadastradas[j].numArmario;
+                    for (int k = 0; k < totalArmarios; k++) {
+                        if (armariosCadastrados[k].numero == numArmario) {
+                            armariosCadastrados[k].disponivel = true;
+                            break;
+                        }
+                    }
+
+                    // Exclui a reserva associada a esse aluno
+                    for (int k = j; k < totalReservas - 1; k++) {
+                        reservasCadastradas[k] = reservasCadastradas[k + 1];
+                    }
+                    totalReservas--;
+
+                    salvarArmarios();
+                    salvarReservas();
+                    break;
+                }
+            }
+
+            // Verifica se há alunos na fila de espera
+            if (totalAlunoFila > 0) {
+                // Aloca o armário para o próximo aluno na fila
+                int numArmario = encontrarArmarioDisponivel();
+                if (numArmario != -1) {
+                    Reserva novaReserva;
+                    novaReserva.codigo = totalReservas;
+                    novaReserva.matAluno = alunoFila[0].matricula;
+                    novaReserva.matFunc = matriculaFuncionarioLogado; // Use a matrícula do funcionário logado
+                    novaReserva.numArmario = numArmario;
+                    strcpy(novaReserva.dataRec, "definir");
+                    strcpy(novaReserva.dataDev, "definir");
+
+                    reservasCadastradas[totalReservas] = novaReserva;
+                    totalReservas++;
+
+                    // Remove o primeiro aluno da fila de espera
+                    for (int k = 0; k < totalAlunoFila - 1; k++) {
+                        alunoFila[k] = alunoFila[k + 1];
+                    }
+                    totalAlunoFila--;
+
+                    salvarArmarios();
+                    salvarReservas();
+                    salvarAlunosFila();
+                }
+            }
+
+            // Exclui o aluno
+            for (int k = i; k < totalAlunos - 1; k++) {
+                alunosCadastrados[k] = alunosCadastrados[k + 1];
+            }
+            totalAlunos--;
+
+            cout << "Aluno excluído com sucesso!" << endl;
+            salvarAlunos();
+
+            break;
         }
     }
 
-    if (novoTotalAlunos < totalAlunos)
-    {
-        totalAlunos = novoTotalAlunos;              // Exclusão bem-sucedida, atualizar o array principal
-        for (int i = 0; i < totalAlunos; i++)
-        {
-            alunosCadastrados[i] = novosAlunosCadastrados[i];
-        }
-        system("cls");
-
-        ////////////////////////////////////////////salvarAlunosEmArquivo();
-
-        cout << "\nCadastro deletado.\n";
-        system("pause");
+    if (!encontrou) {
+        cout << "Aluno não encontrado com a matrícula informada." << endl;
     }
-    else
-    {
-        system("cls");
-        cout << "\nAluno não encontrado para exclusão.\n";
-        system("pause");
-    }
-    salvarAlunos();
+
+    system("pause");
 }
+
+
 
 void exibirTodosAlunos()
 {
