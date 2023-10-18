@@ -1,0 +1,128 @@
+#include <iostream>
+#include <cstring>
+#include <string>
+#define PALAVRA_MAX 255
+#define DESCRICAO_MAX 255
+
+using namespace std;
+
+struct Palavra {
+    char nome[PALAVRA_MAX];
+    char descricao[DESCRICAO_MAX];
+    struct Palavra* pProx;
+};
+
+struct Dicionario {
+    char letra;
+    int quantidade;
+    struct Palavra* palavra;
+    struct Dicionario* pP; // Apontador para o próximo nó
+    struct Dicionario* pA; // Apontador para o nó anterior
+};
+
+Dicionario inicio_dicionario, *dicionarioAtual;
+
+Dicionario* encontrarOuCriarNo(char letra) {
+    dicionarioAtual = &inicio_dicionario;
+
+    while (dicionarioAtual->pP != nullptr) {
+        if (dicionarioAtual->letra == letra) {
+            return dicionarioAtual;
+        }
+        dicionarioAtual = dicionarioAtual->pP;
+    }
+
+    // Nenhum nó com a letra encontrada, crie um novo
+    Dicionario* novoNo = new Dicionario;
+    novoNo->letra = letra;
+    novoNo->quantidade = 0;
+    novoNo->palavra = nullptr;
+    novoNo->pP = nullptr;
+    novoNo->pA = dicionarioAtual; // O nó anterior é o nó atual
+
+    dicionarioAtual->pP = novoNo; // O próximo nó do nó atual é o novo nó
+
+    return novoNo;
+}
+
+void inserirPalavra(Dicionario* dicionario, const char nomeTemp[PALAVRA_MAX], const char descriTemp[DESCRICAO_MAX]) {
+    Palavra* novaPalavra = new Palavra;
+    strcpy(novaPalavra->nome, nomeTemp);
+    strcpy(novaPalavra->descricao, descriTemp);
+    novaPalavra->pProx = nullptr;
+
+    if (dicionario->palavra == nullptr) {
+        dicionario->palavra = novaPalavra;
+    } else {
+        Palavra* palavraAtual = dicionario->palavra;
+        while (palavraAtual->pProx != nullptr) {
+            palavraAtual = palavraAtual->pProx;
+        }
+        palavraAtual->pProx = novaPalavra;
+    }
+
+    dicionario->quantidade++;
+}
+
+void inserir(char nomeTemp[PALAVRA_MAX], char descriTemp[DESCRICAO_MAX]) {
+    char primeiraLetra = toupper(nomeTemp[0]);
+    Dicionario* dicionario = encontrarOuCriarNo(primeiraLetra);
+    inserirPalavra(dicionario, nomeTemp, descriTemp);
+}
+
+void inserirManualmente() {
+    char nomeTemp[PALAVRA_MAX], descrTemp[DESCRICAO_MAX];
+    cout << " Insira a Palavra Desejada: ";
+    cin.ignore();
+    cin.getline(nomeTemp, PALAVRA_MAX);
+    cout << " Insira a Descrição da Palavra: ";
+    cin.getline(descrTemp, DESCRICAO_MAX);
+    inserir(nomeTemp, descrTemp);
+}
+
+void exibir() {
+    Dicionario* dicionarioAtual = inicio_dicionario.pP;
+
+    while (dicionarioAtual != nullptr) {
+        cout << "Letra: " << dicionarioAtual->letra << "\tQuantidade de palavras: " << dicionarioAtual->quantidade << "\n";
+
+        Palavra* palavraAtual = dicionarioAtual->palavra;
+        while (palavraAtual != nullptr) {
+            cout << palavraAtual->nome << "\n";
+            cout << palavraAtual->descricao << "\n";
+            palavraAtual = palavraAtual->pProx;
+        }
+
+        dicionarioAtual = dicionarioAtual->pP;
+    }
+
+    system("pause");
+}
+
+int main() {
+    inicio_dicionario.pP = nullptr;
+    int opcao;
+
+    do {
+        cout << "Inserir...[1]\n";
+        cout << "Exibir....[2]\n";
+        cout << "Sair......[3]\n";
+        cout << "Selecione uma opcao: ";
+        cin >> opcao;
+
+        switch (opcao) {
+            case 1:
+                inserirManualmente();
+                break;
+            case 2:
+                exibir();
+                break;
+            case 3:
+                cout << "Saindo..." << endl;
+                break;
+            default:
+                cout << "Insira uma opcao valida!" << endl;
+                break;
+        }
+    } while (opcao != 3);
+}
