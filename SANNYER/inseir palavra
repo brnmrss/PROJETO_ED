@@ -23,11 +23,11 @@ struct Dicionario {
 Dicionario inicio_dicionario, *dicionarioAtual;
 
 Dicionario* encontrarOuCriarNo(char letra) {
-    dicionarioAtual = &inicio_dicionario;
+    Dicionario* dicionarioAtual = inicio_dicionario.pP; // Comece no primeiro dicionário da lista
 
-    while (dicionarioAtual->pP != nullptr) {
+    while (dicionarioAtual != nullptr) {
         if (dicionarioAtual->letra == letra) {
-            return dicionarioAtual;
+            return dicionarioAtual; // O nó para a letra já existe, retorne-o
         }
         dicionarioAtual = dicionarioAtual->pP;
     }
@@ -38,12 +38,18 @@ Dicionario* encontrarOuCriarNo(char letra) {
     novoNo->quantidade = 0;
     novoNo->palavra = nullptr;
     novoNo->pP = nullptr;
-    novoNo->pA = dicionarioAtual; // O nó anterior é o nó atual
+    novoNo->pA = nullptr; // Não é necessário definir o nó anterior
 
-    dicionarioAtual->pP = novoNo; // O próximo nó do nó atual é o novo nó
+    // Insira o novo nó no início da lista
+    novoNo->pP = inicio_dicionario.pP;
+    if (inicio_dicionario.pP != nullptr) {
+        inicio_dicionario.pP->pA = novoNo;
+    }
+    inicio_dicionario.pP = novoNo;
 
     return novoNo;
 }
+
 
 void inserirPalavra(Dicionario* dicionario, const char nomeTemp[PALAVRA_MAX], const char descriTemp[DESCRICAO_MAX]) {
     Palavra* novaPalavra = new Palavra;
@@ -69,6 +75,62 @@ void inserir(char nomeTemp[PALAVRA_MAX], char descriTemp[DESCRICAO_MAX]) {
     Dicionario* dicionario = encontrarOuCriarNo(primeiraLetra);
     inserirPalavra(dicionario, nomeTemp, descriTemp);
 }
+void salvarEmArquivo() {
+    FILE *arquivo = fopen("dicionario.txt", "w");
+    Dicionario* dicionarioAtual = inicio_dicionario.pP; // Comece no primeiro dicionário
+
+    while (dicionarioAtual != nullptr) {
+        Palavra* palavraAtual = dicionarioAtual->palavra;
+
+        while (palavraAtual != nullptr) {
+            fprintf(arquivo, "%s\n", palavraAtual->nome);
+            fprintf(arquivo, "%s\n", palavraAtual->descricao);
+            palavraAtual = palavraAtual->pProx;
+        }
+
+        dicionarioAtual = dicionarioAtual->pP; // Avance para o próximo dicionário
+    }
+
+    fclose(arquivo);
+}
+
+void carregarDeArquivo() {
+    char nomeTemp[PALAVRA_MAX];
+    char descriTemp[DESCRICAO_MAX];
+
+    FILE* arquivo = fopen("dicionario.txt", "r");
+    if (arquivo == NULL) {
+        cout << "Arquivo 'dicionario.txt' nao encontrado!" << endl;
+        return;
+    }
+
+    while (!feof(arquivo)) {
+        fgets(nomeTemp, sizeof(nomeTemp), arquivo);
+        fgets(descriTemp, sizeof(descriTemp), arquivo);
+        nomeTemp[strcspn(nomeTemp, "\n")] = '\0';
+        descriTemp[strcspn(descriTemp, "\n")] = '\0';
+
+        // Verifique se a palavra já existe no dicionário atual antes de inserir
+        char primeiraLetra = toupper(nomeTemp[0]);
+        Dicionario* dicionario = encontrarOuCriarNo(primeiraLetra);
+        Palavra* palavraAtual = dicionario->palavra;
+        bool palavraEncontrada = false;
+
+        while (palavraAtual != nullptr) {
+            if (strcmp(palavraAtual->nome, nomeTemp) == 0) {
+                palavraEncontrada = true;
+                break;
+            }
+            palavraAtual = palavraAtual->pProx;
+        }
+
+        if (!palavraEncontrada) {
+            inserirPalavra(dicionario, nomeTemp, descriTemp);
+        }
+    }
+
+    fclose(arquivo);
+}
 
 void inserirManualmente() {
     char nomeTemp[PALAVRA_MAX], descrTemp[DESCRICAO_MAX];
@@ -78,11 +140,11 @@ void inserirManualmente() {
     cout << " Insira a Descrição da Palavra: ";
     cin.getline(descrTemp, DESCRICAO_MAX);
     inserir(nomeTemp, descrTemp);
+    salvarEmArquivo();
 }
 
 void exibir() {
     Dicionario* dicionarioAtual = inicio_dicionario.pP;
-
     while (dicionarioAtual != nullptr) {
         cout << "Letra: " << dicionarioAtual->letra << "\tQuantidade de palavras: " << dicionarioAtual->quantidade << "\n";
 
@@ -100,7 +162,9 @@ void exibir() {
 }
 
 int main() {
+
     inicio_dicionario.pP = nullptr;
+    carregarDeArquivo();
     int opcao;
 
     do {
