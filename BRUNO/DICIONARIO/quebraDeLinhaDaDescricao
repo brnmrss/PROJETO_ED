@@ -1,0 +1,47 @@
+// CPP program to illustrate substr()
+#include <iostream>
+#include <fstream>
+#include <string.h>
+#include <cstring>
+#include <stdlib.h>
+#include <stdio.h>
+#include <cstdlib>
+#include <windows.h>
+#include <string>
+
+#define DESC 258
+
+using namespace std;
+
+int main(){
+    string descricao;
+
+    cout << "Descricao: ";
+    getline (cin, descricao);
+
+    const char *descricao_cstr = descricao.c_str(); // Converte a string em um C-string
+
+    string linha1, linha2, linha3;
+    linha2 = " ";
+    linha3 = " ";
+
+    if (descricao.length() >= 85) {
+        linha1 = descricao.substr(0, 85);
+
+        if (descricao.length() >= 170) {
+            linha2 = descricao.substr(85, 85);
+            linha3 = descricao.substr(170, 85);
+        } else {
+            linha2 = descricao.substr(85, descricao.length() - 85);
+        }
+    } else {
+        linha1 = descricao;
+    }
+
+// prints the result
+    cout << "Linha 1: " << linha1 << endl;
+    cout << "Linha 2: " << linha2 << endl;
+    cout << "Linha 3: " << linha3 << endl;
+
+    return 0;
+}
