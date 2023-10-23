@@ -146,7 +146,7 @@ void inserirManualmente() {
     cout << " Insira a Palavra Desejada: ";
     cin.ignore();
     cin.getline(nomeTemp, PALAVRA_MAX);
-    cout << " Insira a Descri��o da Palavra: ";
+    cout << " Insira a Descricao da Palavra: ";
     cin.getline(descrTemp, DESCRICAO_MAX);
     inserir(nomeTemp, descrTemp);
     salvarEmArquivo();
@@ -198,6 +198,40 @@ void gotoxy(int x, int y){
   CursorPosition.Y = y; // Locates Row
   SetConsoleCursorPosition(console,CursorPosition); // Sets position for next thing to be printed
 }
+Palavra* buscarPorNome(const char palavra[PALAVRA_MAX]) {
+    Dicionario* dicionarioAtual = inicio_dicionario.pP;
+
+    while (dicionarioAtual != nullptr) {
+        Palavra* palavraAtual = dicionarioAtual->palavra;
+
+        while (palavraAtual != nullptr) {
+            if (strcmp(palavra, palavraAtual->nome) == 0) {
+                return palavraAtual;
+            }
+            palavraAtual = palavraAtual->pProx;
+        }
+
+        dicionarioAtual = dicionarioAtual->pP;
+    }
+
+    return nullptr; // Retorna nullptr se a palavra não for encontrada
+}
+
+void exibirBuscaPorNome() {
+    char nomeTemp[PALAVRA_MAX];
+    cout << "Digite a palavra que deseja buscar: ";
+    cin.ignore();
+    cin.getline(nomeTemp, PALAVRA_MAX);
+    Palavra* palavraTemp = buscarPorNome(nomeTemp);
+
+    if (palavraTemp != nullptr) {
+        cout << "Nome: " << palavraTemp->nome << "\n";
+        cout << "Descricao: " << palavraTemp->descricao << "\n";
+    } else {
+        cout << "Palavra nao encontrada.\n";
+    }
+     system("pause");
+}
 
 
 int main(){
@@ -210,13 +244,13 @@ int main(){
     int opFechar, opMenu;
     while(opFechar != 1){
         system("cls");
-        cout << "\n*********************  DICION�RIO (CIDADES) ************************ \n\n";
+        cout << "\n*********************  DICIONARIO (CIDADES) ************************ \n\n";
         cout << "1 - Adicionar palavra. \n";
         cout << "2 - Exibir todas as palavras.\n";
         cout << "3 - Pesquisar por palavra.\n";
-        cout << "4 - Pesquisar por relev�ncia.\n";
+        cout << "4 - Pesquisar por relevancia.\n";
         cout << "5 - Fechar programa.\n\n";
-        cout << "Informe qual campo deseja acessar, de acordo com o n�mero: ";
+        cout << "Informe qual campo deseja acessar, de acordo com o numero: ";
         cin >> opMenu;
 
         switch(opMenu){
@@ -233,7 +267,7 @@ int main(){
 
 // PESQUISA UMA CIDADE ESPEC�FICA DENTRO DO DICION�RIO
             case 3:
-
+                exibirBuscaPorNome();
                 break;
 
 // EXIBE A CIDADE DE ACORDO COM A PALAVRA FORNECIDA E A DESCRI��O
@@ -244,8 +278,8 @@ int main(){
 // ENCERRAR
             case 5:
                 cout << "\n\nTem certeza que deseja fechar o programa?\n";
-                cout << "[1] sim    [2] n�o";
-                cout << "\nOp��o: ";
+                cout << "[1] sim    [2] nao";
+                cout << "\nopcao: ";
                 cin >> opFechar;
 
                 switch(opFechar){
@@ -258,14 +292,14 @@ int main(){
                         break;
 
                     default:
-                        cout << "\nOp��o inv�lida, por favor tente novamente.\n";
+                        cout << "\nOpcao invalida, por favor tente novamente.\n";
                         system("pause");
                 }
                 break;
 
 
             default:
-                cout << "\nOp��o inv�lida, por favor tente novamente.\n";
+                cout << "\nOpcao invalida, por favor tente novamente.\n";
                 system("pause");
 
         }
