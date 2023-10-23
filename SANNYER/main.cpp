@@ -171,6 +171,60 @@ void quebrarString(const std::string& texto, int palavrasPorLinha) {
 }
 
 
+
+void excluirPalavra() {
+    char nomeTemp[PALAVRA_MAX];
+    char primeiraLetra;
+    Palavra* palavraAux = nullptr;
+    Palavra* palavraAtual = nullptr;
+
+    cout << " Insira a Palavra Desejada: ";
+    cin.ignore();
+    cin.getline(nomeTemp, PALAVRA_MAX);
+    primeiraLetra = toupper(nomeTemp[0]);
+
+    Dicionario* dicionarioAtual = inicio_dicionario.pP;
+
+    while (dicionarioAtual != nullptr) {
+        if (dicionarioAtual->letra == primeiraLetra) {
+            palavraAtual = dicionarioAtual->palavra;
+            while (palavraAtual != nullptr) {
+                if (strcmp(nomeTemp, palavraAtual->nome) == 0) {
+                    cout << "Remover " << palavraAtual->nome << "? Sim[S] Nao[outra tecla]----> ";
+                    char resp;
+                    cin.get(resp);
+                    cin.ignore();  // Adicionei esta linha para limpar o buffer.
+                    if (toupper(resp) == 'S') {
+                        if (palavraAux == nullptr) {
+                            // A palavra a ser removida é a primeira na lista.
+                            dicionarioAtual->palavra = palavraAtual->pProx;
+                        } else {
+                            palavraAux->pProx = palavraAtual->pProx;
+                        }
+                        delete palavraAtual;
+                        cout << "Palavra removida com sucesso." << endl;
+                        salvarEmArquivo();
+                        return;
+                    } else {
+                        cout << "Ação cancelada." << endl;
+                        return;
+                    }
+                }
+                palavraAux = palavraAtual;
+                palavraAtual = palavraAtual->pProx;
+            }
+        }
+        dicionarioAtual = dicionarioAtual->pP;
+    }
+
+    cout << "Palavra não encontrada." << endl;
+}
+
+
+
+
+
+
 void exibir() {
     Dicionario* dicionarioAtual = inicio_dicionario.pP;
     int palavrasPorlinha = 10;
@@ -181,6 +235,7 @@ void exibir() {
         while (palavraAtual != nullptr) {
             cout << palavraAtual->nome << "\n";
             quebrarString(palavraAtual->descricao, palavrasPorlinha);
+            cout <<"\n";
             palavraAtual = palavraAtual->pProx;
         }
 
@@ -249,7 +304,8 @@ int main(){
         cout << "2 - Exibir todas as palavras.\n";
         cout << "3 - Pesquisar por palavra.\n";
         cout << "4 - Pesquisar por relevancia.\n";
-        cout << "5 - Fechar programa.\n\n";
+        cout << "5 - Excluir Palavra.\n";
+        cout << "6 - Fechar programa.\n\n";
         cout << "Informe qual campo deseja acessar, de acordo com o numero: ";
         cin >> opMenu;
 
@@ -274,9 +330,12 @@ int main(){
             case 4:
 
                 break;
+// EXCLUE A CIDADE PELA NOME
+            case 5:
+                excluirPalavra();
 
 // ENCERRAR
-            case 5:
+            case 6:
                 cout << "\n\nTem certeza que deseja fechar o programa?\n";
                 cout << "[1] sim    [2] nao";
                 cout << "\nopcao: ";
