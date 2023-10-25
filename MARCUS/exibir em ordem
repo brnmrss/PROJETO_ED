@@ -1,0 +1,47 @@
+void exibir() {
+    // armazenar as letras
+    char letras[26];
+    int numLetras = 0;
+
+    // Percorrer o dicionário e adicionar as letras ao array
+    Dicionario* dicionarioAtual = inicio_dicionario.pP;
+    while (dicionarioAtual != nullptr) {
+        letras[numLetras] = dicionarioAtual->letra;
+        numLetras++;
+        dicionarioAtual = dicionarioAtual->pP;
+    }
+
+    // Ordenar o array de letras em ordem alfabética
+    for (int i = 0; i < numLetras - 1; i++) {
+        for (int j = i + 1; j < numLetras; j++) {
+            if (letras[i] > letras[j]) {
+                // Trocar as letras
+                char temp = letras[i];
+                letras[i] = letras[j];
+                letras[j] = temp;
+            }
+        }
+    }
+
+    int palavrasPorlinha = 10;
+    for (int i = 0; i < numLetras; i++) {
+        char letra = letras[i];
+        dicionarioAtual = inicio_dicionario.pP;
+        while (dicionarioAtual != nullptr) {
+            if (dicionarioAtual->letra == letra) {
+                cout << "Letra: " << dicionarioAtual->letra << "\tQuantidade de palavras: " << dicionarioAtual->quantidade << "\n";
+
+                Palavra* palavraAtual = dicionarioAtual->palavra;
+                while (palavraAtual != nullptr) {
+                    cout << palavraAtual->nome << "\n";
+                    quebrarString(palavraAtual->descricao, palavrasPorlinha);
+                    cout <<"\n";
+                    palavraAtual = palavraAtual->pProx;
+                }
+            }
+            dicionarioAtual = dicionarioAtual->pP;
+        }
+    }
+
+    system("pause");
+}
