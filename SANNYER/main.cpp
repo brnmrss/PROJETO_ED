@@ -1,4 +1,4 @@
-// DICIONARIO (CIDADES).
+﻿// DICIONARIO (CIDADES).
 #include <iostream>
 #include <fstream>
 #include <string.h>
@@ -9,6 +9,7 @@
 #include <windows.h>
 #include <string>
 #include <sstream>
+#include <locale.h>
 
 #define PALAVRA_MAX 255
 #define DESCRICAO_MAX 255
@@ -34,7 +35,7 @@ Dicionario inicio_dicionario, *dicionarioAtual;
 Dicionario* encontrarOuCriarNo(char letra) {
     Dicionario* dicionarioAtual = inicio_dicionario.pP; // Comece no primeiro dicion�rio da lista
 
-    while (dicionarioAtual != nullptr) {
+    while (dicionarioAtual != NULL) {
         if (dicionarioAtual->letra == letra) {
             return dicionarioAtual; // O n� para a letra j� existe, retorne-o
         }
@@ -45,13 +46,13 @@ Dicionario* encontrarOuCriarNo(char letra) {
     Dicionario* novoNo = new Dicionario;
     novoNo->letra = letra;
     novoNo->quantidade = 0;
-    novoNo->palavra = nullptr;
-    novoNo->pP = nullptr;
-    novoNo->pA = nullptr; // N�o � necess�rio definir o n� anterior
+    novoNo->palavra = NULL;
+    novoNo->pP = NULL;
+    novoNo->pA = NULL; // N�o � necess�rio definir o n� anterior
 
     // Insira o novo n� no in�cio da lista
     novoNo->pP = inicio_dicionario.pP;
-    if (inicio_dicionario.pP != nullptr) {
+    if (inicio_dicionario.pP != NULL) {
         inicio_dicionario.pP->pA = novoNo;
     }
     inicio_dicionario.pP = novoNo;
@@ -63,13 +64,13 @@ void inserirPalavra(Dicionario* dicionario, const char nomeTemp[PALAVRA_MAX], co
     Palavra* novaPalavra = new Palavra;
     strcpy(novaPalavra->nome, nomeTemp);
     strcpy(novaPalavra->descricao, descriTemp);
-    novaPalavra->pProx = nullptr;
+    novaPalavra->pProx = NULL;
 
-    if (dicionario->palavra == nullptr) {
+    if (dicionario->palavra == NULL) {
         dicionario->palavra = novaPalavra;
     } else {
         Palavra* palavraAtual = dicionario->palavra;
-        while (palavraAtual->pProx != nullptr) {
+        while (palavraAtual->pProx != NULL) {
             palavraAtual = palavraAtual->pProx;
         }
         palavraAtual->pProx = novaPalavra;
@@ -88,10 +89,10 @@ void salvarEmArquivo() {
     FILE *arquivo = fopen("dicionario.txt", "w");
     Dicionario* dicionarioAtual = inicio_dicionario.pP; // Comece no primeiro dicion�rio
 
-    while (dicionarioAtual != nullptr) {
+    while (dicionarioAtual != NULL) {
         Palavra* palavraAtual = dicionarioAtual->palavra;
 
-        while (palavraAtual != nullptr) {
+        while (palavraAtual != NULL) {
             fprintf(arquivo, "%s\n", palavraAtual->nome);
             fprintf(arquivo, "%s\n", palavraAtual->descricao);
             palavraAtual = palavraAtual->pProx;
@@ -125,7 +126,7 @@ void carregarDeArquivo() {
         Palavra* palavraAtual = dicionario->palavra;
         bool palavraEncontrada = false;
 
-        while (palavraAtual != nullptr) {
+        while (palavraAtual != NULL) {
             if (strcmp(palavraAtual->nome, nomeTemp) == 0) {
                 palavraEncontrada = true;
                 break;
@@ -170,13 +171,30 @@ void quebrarString(const std::string& texto, int palavrasPorLinha) {
     }
 }
 
+void deleteLetra(Dicionario* dicionario) {
+    Dicionario* dicionarioNo = dicionario;
+    Dicionario* dicionarioAux = dicionarioNo->pA;
 
+    if (dicionarioAux != NULL) {
+        dicionarioAux->pP = dicionarioNo->pP;
+    }
+
+
+    if (dicionarioNo->pP != NULL) {
+        dicionarioAux = dicionarioNo->pP;
+        dicionarioAux->pA = dicionarioNo->pA;
+    }
+
+    dicionarioNo->pP = NULL;
+    dicionarioNo->pA = NULL;
+    delete dicionarioNo;
+}
 
 void excluirPalavra() {
     char nomeTemp[PALAVRA_MAX];
     char primeiraLetra;
-    Palavra* palavraAux = nullptr;
-    Palavra* palavraAtual = nullptr;
+    Palavra* palavraAux = NULL;
+    Palavra* palavraAtual = NULL;
 
     cout << " Insira a Palavra Desejada: ";
     cin.ignore();
@@ -185,23 +203,30 @@ void excluirPalavra() {
 
     Dicionario* dicionarioAtual = inicio_dicionario.pP;
 
-    while (dicionarioAtual != nullptr) {
+    while (dicionarioAtual != NULL) {
         if (dicionarioAtual->letra == primeiraLetra) {
             palavraAtual = dicionarioAtual->palavra;
-            while (palavraAtual != nullptr) {
+            while (palavraAtual != NULL) {
                 if (strcmp(nomeTemp, palavraAtual->nome) == 0) {
                     cout << "Remover " << palavraAtual->nome << "? Sim[S] Nao[outra tecla]----> ";
                     char resp;
                     cin.get(resp);
-                    cin.ignore();  // Adicionei esta linha para limpar o buffer.
+                    cin.ignore();
+
                     if (toupper(resp) == 'S') {
-                        if (palavraAux == nullptr) {
-                            // A palavra a ser removida é a primeira na lista.
+                        if (palavraAux == NULL) {
                             dicionarioAtual->palavra = palavraAtual->pProx;
                         } else {
                             palavraAux->pProx = palavraAtual->pProx;
                         }
                         delete palavraAtual;
+                        dicionarioAtual->quantidade--;
+
+                        // Verifique se não há mais palavras no dicionário e exclua a letra
+                        if (dicionarioAtual->quantidade == 0) {
+                            deleteLetra(dicionarioAtual);
+                        }
+
                         cout << "Palavra removida com sucesso." << endl;
                         salvarEmArquivo();
                         return;
@@ -220,19 +245,14 @@ void excluirPalavra() {
     cout << "Palavra não encontrada." << endl;
 }
 
-
-
-
-
-
 void exibir() {
     Dicionario* dicionarioAtual = inicio_dicionario.pP;
     int palavrasPorlinha = 10;
-    while (dicionarioAtual != nullptr) {
+    while (dicionarioAtual != NULL) {
         cout << "Letra: " << dicionarioAtual->letra << "\tQuantidade de palavras: " << dicionarioAtual->quantidade << "\n";
 
         Palavra* palavraAtual = dicionarioAtual->palavra;
-        while (palavraAtual != nullptr) {
+        while (palavraAtual != NULL) {
             cout << palavraAtual->nome << "\n";
             quebrarString(palavraAtual->descricao, palavrasPorlinha);
             cout <<"\n";
@@ -256,10 +276,10 @@ void gotoxy(int x, int y){
 Palavra* buscarPorNome(const char palavra[PALAVRA_MAX]) {
     Dicionario* dicionarioAtual = inicio_dicionario.pP;
 
-    while (dicionarioAtual != nullptr) {
+    while (dicionarioAtual != NULL) {
         Palavra* palavraAtual = dicionarioAtual->palavra;
 
-        while (palavraAtual != nullptr) {
+        while (palavraAtual != NULL) {
             if (strcmp(palavra, palavraAtual->nome) == 0) {
                 return palavraAtual;
             }
@@ -269,7 +289,7 @@ Palavra* buscarPorNome(const char palavra[PALAVRA_MAX]) {
         dicionarioAtual = dicionarioAtual->pP;
     }
 
-    return nullptr; // Retorna nullptr se a palavra não for encontrada
+    return NULL; // Retorna NULL se a palavra não for encontrada
 }
 
 void exibirBuscaPorNome() {
@@ -279,7 +299,7 @@ void exibirBuscaPorNome() {
     cin.getline(nomeTemp, PALAVRA_MAX);
     Palavra* palavraTemp = buscarPorNome(nomeTemp);
 
-    if (palavraTemp != nullptr) {
+    if (palavraTemp != NULL) {
         cout << "Nome: " << palavraTemp->nome << "\n";
         cout << "Descricao: " << palavraTemp->descricao << "\n";
     } else {
@@ -291,15 +311,14 @@ void exibirBuscaPorNome() {
 
 int main(){
     setlocale(LC_ALL, "Portuguese");
-
-    inicio_dicionario.pP = nullptr;
+    inicio_dicionario.pP = NULL;
     carregarDeArquivo();
 
 // MENU PRINCIPAL
     int opFechar, opMenu;
     while(opFechar != 1){
         system("cls");
-        cout << "\n*********************  DICIONARIO (CIDADES) ************************ \n\n";
+        cout << "\n*********************  DICIONÁRIO (CIDADES) ************************ \n\n";
         cout << "1 - Adicionar palavra. \n";
         cout << "2 - Exibir todas as palavras.\n";
         cout << "3 - Pesquisar por palavra.\n";
