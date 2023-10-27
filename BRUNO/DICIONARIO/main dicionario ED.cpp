@@ -318,6 +318,7 @@ void pesquisaPorRelevancia() {
             // Se a palavra-chave for encontrada, exiba a descrição e o número de ocorrências
             if (contagem > 0) {
                 encontrouRelevante = true;
+                cout << "Palavra: " << palavraAtual << endl;
                 cout << "Descrição: " << descricao << endl;
                 cout << "Ocorrências: " << contagem << endl;
                 cout << endl;
