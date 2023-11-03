@@ -1,0 +1,28 @@
+/*
+      Procedimento para inserir ordenado
+*/
+void inserir_ordenado(No **lista, int num){
+    No *aux, *novo = malloc(sizeof(No));
+
+    if(novo){
+        novo->valor = num;
+        
+        if(*lista == NULL){ // a lista está vazia?
+            novo->proximo = NULL;
+            *lista = novo;
+        }
+        else if(novo->valor < (*lista)->valor){ // é o menor?
+            novo->proximo = *lista;
+            *lista = novo;
+        }
+        else{ // inserção no meio ou no final da lista
+            aux = *lista;
+            while(aux->proximo && novo->valor > aux->proximo->valor)
+                aux = aux->proximo;
+            novo->proximo = aux->proximo;
+            aux->proximo = novo;
+        }
+    }
+    else
+        printf("Erro ao alocar memoria!\n");
+}
