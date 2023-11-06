@@ -1,3 +1,4 @@
+// DICIONARIO (CIDADES).
 #include <iostream>
 #include <fstream>
 #include <string.h>
@@ -8,7 +9,6 @@
 #include <windows.h>
 #include <string>
 #include <sstream>
-#include <algorithm>
 #include <locale.h>
 
 #define PALAVRA_MAX 255
@@ -32,23 +32,35 @@ struct Dicionario
     struct Dicionario* pA;
 };
 
+struct Ocorrencia
+{
+    string palavra;
+    string descricao;
+    int contagem;
+};
+
 HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
 COORD CursorPosition;
 
 void gotoxy(int x, int y)
 {
-    CursorPosition.X = x;
-    CursorPosition.Y = y;
-    SetConsoleCursorPosition(console,CursorPosition);
+    CursorPosition.X = x; // Locates column
+    CursorPosition.Y = y; // Locates Row
+    SetConsoleCursorPosition(console,CursorPosition); // Sets position for next thing to be printed
 }
 
 Dicionario inicio_dicionario, *dicionarioAtual;
+
+void clearScreen()
+{
+    system("cls");
+}
 
 Dicionario* encontrarOuCriarNo(char letra)
 {
     Dicionario* dicionarioAtual = inicio_dicionario.pP;
 
-    while (dicionarioAtual != nullptr)
+    while (dicionarioAtual != NULL)
     {
         if (dicionarioAtual->letra == letra)
         {
@@ -61,13 +73,13 @@ Dicionario* encontrarOuCriarNo(char letra)
     Dicionario* novoNo = new Dicionario;
     novoNo->letra = letra;
     novoNo->quantidade = 0;
-    novoNo->palavra = nullptr;
-    novoNo->pP = nullptr;
-    novoNo->pA = nullptr;
+    novoNo->palavra = NULL;
+    novoNo->pP = NULL;
+    novoNo->pA = NULL;
 
 
     novoNo->pP = inicio_dicionario.pP;
-    if (inicio_dicionario.pP != nullptr)
+    if (inicio_dicionario.pP != NULL)
     {
         inicio_dicionario.pP->pA = novoNo;
     }
@@ -81,16 +93,16 @@ void inserirPalavra(Dicionario* dicionario, const char nomeTemp[PALAVRA_MAX], co
     Palavra* novaPalavra = new Palavra;
     strcpy(novaPalavra->nome, nomeTemp);
     strcpy(novaPalavra->descricao, descriTemp);
-    novaPalavra->pProx = nullptr;
+    novaPalavra->pProx = NULL;
 
-    if (dicionario->palavra == nullptr)
+    if (dicionario->palavra == NULL)
     {
         dicionario->palavra = novaPalavra;
     }
     else
     {
         Palavra* palavraAtual = dicionario->palavra;
-        while (palavraAtual->pProx != nullptr)
+        while (palavraAtual->pProx != NULL)
         {
             palavraAtual = palavraAtual->pProx;
         }
@@ -99,6 +111,7 @@ void inserirPalavra(Dicionario* dicionario, const char nomeTemp[PALAVRA_MAX], co
 
     dicionario->quantidade++;
 }
+
 
 void inserir(char nomeTemp[PALAVRA_MAX], char descriTemp[DESCRICAO_MAX])
 {
@@ -109,14 +122,14 @@ void inserir(char nomeTemp[PALAVRA_MAX], char descriTemp[DESCRICAO_MAX])
 
 void salvarEmArquivo()
 {
-    FILE *arquivo = fopen("dicionario.txt", "w");
+    FILE* arquivo = fopen("dicionario.txt","w");
     Dicionario* dicionarioAtual = inicio_dicionario.pP;
 
-    while (dicionarioAtual != nullptr)
+    while (dicionarioAtual != NULL)
     {
         Palavra* palavraAtual = dicionarioAtual->palavra;
 
-        while (palavraAtual != nullptr)
+        while (palavraAtual != NULL)
         {
             fprintf(arquivo, "%s\n", palavraAtual->nome);
             fprintf(arquivo, "%s\n", palavraAtual->descricao);
@@ -135,6 +148,7 @@ void carregarDeArquivo()
     char descriTemp[DESCRICAO_MAX];
 
     FILE* arquivo = fopen("dicionario.txt", "r");
+
     if (arquivo == NULL)
     {
         cout << "Arquivo 'dicionario.txt' nao encontrado!" << endl;
@@ -154,7 +168,7 @@ void carregarDeArquivo()
         Palavra* palavraAtual = dicionario->palavra;
         bool palavraEncontrada = false;
 
-        while (palavraAtual != nullptr)
+        while (palavraAtual != NULL)
         {
             if (strcmp(palavraAtual->nome, nomeTemp) == 0)
             {
@@ -175,83 +189,114 @@ void carregarDeArquivo()
 
 void inserirManualmente()
 {
+
     char nomeTemp[PALAVRA_MAX], descrTemp[DESCRICAO_MAX];
-    cout << " Insira a Palavra Desejada: ";
+
+
+    gotoxy(25, 2);
+    cout << "-----------------------------------------------------------------";
+    gotoxy(25, 3);
+    cout << "                        ADICIONAR PALAVRA                        ";
+    gotoxy(25, 4);
+    cout << "-----------------------------------------------------------------";
+
+    gotoxy(25, 6);
+    cout << "Insira a Palavra Desejada:";
+    gotoxy(25, 8);
+    cout << "Insira a Descricao da Palavra: ";
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
     cin.ignore();
+    gotoxy(53, 6);
     cin.getline(nomeTemp, PALAVRA_MAX);
-    cout << " Insira a Descricao da Palavra: ";
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+    gotoxy(25, 9);
     cin.getline(descrTemp, DESCRICAO_MAX);
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
     inserir(nomeTemp, descrTemp);
     salvarEmArquivo();
 }
 
-void quebrarString(const std::string& texto, int palavrasPorLinha)
+void quebrarString(const string& texto, int palavrasPorLinha)
 {
-    std::istringstream stream(texto);
-    std::string palavra;
+    istringstream stream(texto);
+    string palavra;
     int contador = 0;
 
     while (stream >> palavra)
     {
-        std::cout << palavra << " ";
+        cout << palavra << " ";
         contador++;
 
         if (contador == palavrasPorLinha)
         {
-            std::cout << std::endl;
+            cout << std::endl;
             contador = 0;
         }
     }
+    cout << "\n";
 }
 
-void excluirPalavra()
+void deleteLetra(Dicionario* dicionario)
 {
-    char nomeTemp[PALAVRA_MAX];
-    char primeiraLetra;
-    Palavra* palavraAux = nullptr;
-    Palavra* palavraAtual = nullptr;
+    Dicionario* dicionarioNo = dicionario;
+    Dicionario* dicionarioAux = dicionarioNo->pA;
 
-    cout << " Insira a Palavra Desejada: ";
-    cin.ignore();
-    cin.getline(nomeTemp, PALAVRA_MAX);
-    primeiraLetra = toupper(nomeTemp[0]);
+    if (dicionarioAux != NULL)
+    {
+        dicionarioAux->pP = dicionarioNo->pP;
+    }
 
+
+    if (dicionarioNo->pP != NULL)
+    {
+        dicionarioAux = dicionarioNo->pP;
+        dicionarioAux->pA = dicionarioNo->pA;
+    }
+
+    dicionarioNo->pP = NULL;
+    dicionarioNo->pA = NULL;
+    delete dicionarioNo;
+}
+
+void excluirPalavra(const char nomeTemp[PALAVRA_MAX])
+{
+    char primeiraLetra = toupper(nomeTemp[0]);
     Dicionario* dicionarioAtual = inicio_dicionario.pP;
 
-    while (dicionarioAtual != nullptr)
+    while (dicionarioAtual != NULL)
     {
         if (dicionarioAtual->letra == primeiraLetra)
         {
-            palavraAtual = dicionarioAtual->palavra;
-            while (palavraAtual != nullptr)
+            Palavra* palavraAux = NULL;
+            Palavra* palavraAtual = dicionarioAtual->palavra;
+
+            while (palavraAtual != NULL)
             {
                 if (strcmp(nomeTemp, palavraAtual->nome) == 0)
                 {
-                    cout << "Remover " << palavraAtual->nome << "? Sim[S] Nao[outra tecla]----> ";
-                    char resp;
-                    cin.get(resp);
-                    cin.ignore();
-                    if (toupper(resp) == 'S')
+                    if (palavraAux == NULL)
                     {
-                        if (palavraAux == nullptr)
-                        {
-
-                            dicionarioAtual->palavra = palavraAtual->pProx;
-                        }
-                        else
-                        {
-                            palavraAux->pProx = palavraAtual->pProx;
-                        }
-                        delete palavraAtual;
-                        cout << "Palavra removida com sucesso." << endl;
-                        salvarEmArquivo();
-                        return;
+                        dicionarioAtual->palavra = palavraAtual->pProx;
                     }
                     else
                     {
-                        cout << "Ação cancelada." << endl;
-                        return;
+                        palavraAux->pProx = palavraAtual->pProx;
                     }
+                    delete palavraAtual;
+                    dicionarioAtual->quantidade--;
+
+
+
+                    if (dicionarioAtual->quantidade == 0)
+                    {
+
+                        deleteLetra(dicionarioAtual);
+                    }
+
+                    salvarEmArquivo();
+                    return;
                 }
                 palavraAux = palavraAtual;
                 palavraAtual = palavraAtual->pProx;
@@ -263,28 +308,53 @@ void excluirPalavra()
     cout << "Palavra não encontrada." << endl;
 }
 
+void excluirPalavraIn()
+{
+    char nomeTemp[PALAVRA_MAX];
 
+    gotoxy(25, 2);
+    cout << "-----------------------------------------------------------------";
+    gotoxy(25, 3);
+    cout << "                         EXCLUIR PALAVRA                         ";
+    gotoxy(25, 4);
+    cout << "-----------------------------------------------------------------";
+    gotoxy(25, 6);
+    cout << "Insira a palavra que deseja excluir: ";
 
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+    gotoxy(25, 8);
+    cin.ignore();
+    cin.getline(nomeTemp,PALAVRA_MAX);
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+    gotoxy(25, 11);
+    excluirPalavra(nomeTemp);
+    gotoxy(25, 12);
+    system("pause");
 
+}
 
-
-void exibir() {
+void exibir()
+{
     // armazenar as letras
     char letras[26];
     int numLetras = 0;
 
-    // Percorrer o dicionário e adicionar as letras ao array
+    // Percorrer o dicionario e adicionar as letras ao array
     Dicionario* dicionarioAtual = inicio_dicionario.pP;
-    while (dicionarioAtual != nullptr) {
+    while (dicionarioAtual != nullptr)
+    {
         letras[numLetras] = dicionarioAtual->letra;
         numLetras++;
         dicionarioAtual = dicionarioAtual->pP;
     }
 
-    // Ordenar o array de letras em ordem alfabética
-    for (int i = 0; i < numLetras - 1; i++) {
-        for (int j = i + 1; j < numLetras; j++) {
-            if (letras[i] > letras[j]) {
+    // Ordenar o array de letras em ordem alfabetica
+    for (int i = 0; i < numLetras - 1; i++)
+    {
+        for (int j = i + 1; j < numLetras; j++)
+        {
+            if (letras[i] > letras[j])
+            {
                 // Trocar as letras
                 char temp = letras[i];
                 letras[i] = letras[j];
@@ -294,16 +364,25 @@ void exibir() {
     }
 
     int palavrasPorlinha = 10;
-    for (int i = 0; i < numLetras; i++) {
+    for (int i = 0; i < numLetras; i++)
+    {
         char letra = letras[i];
         dicionarioAtual = inicio_dicionario.pP;
-        while (dicionarioAtual != nullptr) {
-            if (dicionarioAtual->letra == letra) {
-                cout << "Letra: " << dicionarioAtual->letra << "\tQuantidade de palavras: " << dicionarioAtual->quantidade << "\n";
-
+        while (dicionarioAtual != nullptr)
+        {
+            if (dicionarioAtual->letra == letra)
+            {
+                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+                cout << "Letra: " << dicionarioAtual->letra;
+                cout << "\t\t        Quantidade de palavras: " << dicionarioAtual->quantidade << "\n";
+                cout << "---------------------------------------------------------\n";
+                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
                 Palavra* palavraAtual = dicionarioAtual->palavra;
-                while (palavraAtual != nullptr) {
+                while (palavraAtual != nullptr)
+                {
+                    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 14);
                     cout << palavraAtual->nome << "\n";
+                    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
                     quebrarString(palavraAtual->descricao, palavrasPorlinha);
                     cout <<"\n";
                     palavraAtual = palavraAtual->pProx;
@@ -318,15 +397,15 @@ void exibir() {
 
 
 
-Palavra* buscarPorNome(const char palavra[PALAVRA_MAX])
+Palavra* buscarPorNome(char palavra[PALAVRA_MAX])
 {
     Dicionario* dicionarioAtual = inicio_dicionario.pP;
 
-    while (dicionarioAtual != nullptr)
+    while (dicionarioAtual != NULL)
     {
         Palavra* palavraAtual = dicionarioAtual->palavra;
 
-        while (palavraAtual != nullptr)
+        while (palavraAtual != NULL)
         {
             if (strcmp(palavra, palavraAtual->nome) == 0)
             {
@@ -338,180 +417,490 @@ Palavra* buscarPorNome(const char palavra[PALAVRA_MAX])
         dicionarioAtual = dicionarioAtual->pP;
     }
 
-    return nullptr;
+    return NULL;
 }
 
 void exibirBuscaPorNome()
 {
     char nomeTemp[PALAVRA_MAX];
+
+    gotoxy(25, 2);
+    cout << "-----------------------------------------------------------------";
+    gotoxy(25, 3);
+    cout << "                   BUSCA POR NOME DE PALAVRA                     ";
+    gotoxy(25, 4);
+    cout << "-----------------------------------------------------------------";
+
+    gotoxy(25, 6);
     cout << "Digite a palavra que deseja buscar: ";
+    gotoxy(25, 8);
+
     cin.ignore();
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
     cin.getline(nomeTemp, PALAVRA_MAX);
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+
     Palavra* palavraTemp = buscarPorNome(nomeTemp);
 
-    if (palavraTemp != nullptr)
+    if (palavraTemp != NULL)
     {
-        cout << "Nome: " << palavraTemp->nome << "\n";
-        cout << "Descricao: " << palavraTemp->descricao << "\n";
+        gotoxy(25, 10);
+        cout << "Nome: " << palavraTemp->nome;
+        gotoxy(25, 12);
+        cout << "Descricao: " << palavraTemp->descricao;
     }
     else
     {
-        cout << "Palavra nao encontrada.\n";
+        gotoxy(25, 10);
+        cout << "Palavra nao encontrada.";
     }
+    gotoxy(25,20);
     system("pause");
+}
+
+
+void alterarDescricao()
+{
+    clearScreen();
+    char nomeTemp[PALAVRA_MAX], descriNovo[DESCRICAO_MAX];
+
+    gotoxy(25, 2);
+    cout << "-----------------------------------------------------------------";
+    gotoxy(25, 3);
+    cout << "                       EDITAR DESCRIÇÃO                          ";
+    gotoxy(25, 4);
+    cout << "-----------------------------------------------------------------";
+
+    gotoxy(25, 6);
+    cout << "Insira a palavra que deseja alterar a descricao: ";
+    cin.ignore();
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+    gotoxy(25, 7);
+    cin.getline(nomeTemp, PALAVRA_MAX);
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+
+    Palavra* palavraAtual = buscarPorNome(nomeTemp);
+
+    if (palavraAtual != NULL)
+    {
+        gotoxy(25,9);
+        cout << "Insira a nova descricao da palavra: ";
+        gotoxy(25,10);
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+        cin.getline(descriNovo, DESCRICAO_MAX);
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+        strcpy(palavraAtual->descricao, descriNovo);
+        salvarEmArquivo();
+        gotoxy(25,15);
+        cout << "Descricao da palavra alterada!";
+        gotoxy(25,16);
+        system("pause");
+        system("cls");
+    }
+    else
+    {
+        gotoxy(25,15);
+        cout << "Palavra nao encontrada!";
+        gotoxy(25,16);
+        system("pause");
+        system("cls");
+    }
+
+
+}
+
+void alterarNome()
+{
+    clearScreen();
+    char nomeTemp[PALAVRA_MAX], nomeNovo[PALAVRA_MAX];
+    gotoxy(25, 2);
+    cout << "-----------------------------------------------------------------";
+    gotoxy(25, 3);
+    cout << "                          EDITAR NOME                            ";
+    gotoxy(25, 4);
+    cout << "-----------------------------------------------------------------";
+
+    gotoxy(25, 6);
+    cout << "Insira a palavra que deseja alterar o nome: ";
+    cin.ignore();
+    gotoxy(25, 8);
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+    cin.getline(nomeTemp, PALAVRA_MAX);
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+
+    Palavra* palavraAtual = buscarPorNome(nomeTemp);
+
+    if (palavraAtual != NULL)
+    {
+        gotoxy(25, 10);
+        cout << "Insira o novo nome: ";
+        gotoxy(25, 12);
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+        cin.getline(nomeNovo, PALAVRA_MAX);
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+        if (strlen(nomeNovo) == 0)
+        {
+            gotoxy(25, 15);
+            cout << "Nome nao pode ser vazio. Operaçao cancelada.";
+            gotoxy(25, 16);
+            system("pause");
+            system("cls");
+            return;
+        }
+
+        char descriTemp[DESCRICAO_MAX];
+        strcpy(descriTemp, palavraAtual->descricao);
+
+
+        if (nomeTemp[0] != nomeNovo[0])
+        {
+            inserir(nomeNovo, descriTemp);
+            excluirPalavra(nomeTemp);
+        }
+        else
+        {
+
+            strcpy(palavraAtual->nome, nomeNovo);
+            strcpy(palavraAtual->descricao, descriTemp);
+        }
+
+        salvarEmArquivo();
+        gotoxy(25, 15);
+        cout << "Nome da palavra alterado!";
+        gotoxy(25, 16);
+        system("pause");
+        system("cls");
+    }
+    else
+    {
+        gotoxy(25, 15);
+        cout << "Palavra nao encontrada!";
+        gotoxy(25, 16);
+        system("pause");
+        system("cls");
+    }
+}
+
+void alterarTudo()
+{
+    clearScreen();
+    char nomeTemp[PALAVRA_MAX], nomeNovo[PALAVRA_MAX], descriNovo[DESCRICAO_MAX];
+
+    gotoxy(25, 2);
+    cout << "-----------------------------------------------------------------";
+    gotoxy(25, 3);
+    cout << "                           EDITAR TUDO                           ";
+    gotoxy(25, 4);
+    cout << "-----------------------------------------------------------------";
+
+    gotoxy(25, 6);
+    cout << "Insira a palavra que deseja alterar: ";
+    cin.ignore();
+    gotoxy(25, 8);
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+    cin.getline(nomeTemp, PALAVRA_MAX);
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+
+    Palavra* palavraAtual = buscarPorNome(nomeTemp);
+
+    if (palavraAtual != NULL)
+    {
+        gotoxy(25, 10);
+        cout << "Insira o novo nome: ";
+        gotoxy(25, 13);
+        cout << "Insira a nova descricao: ";
+
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+        gotoxy(25, 11);
+        cin.getline(nomeNovo, PALAVRA_MAX);
+        gotoxy(25, 14);
+        cin.getline(descriNovo, DESCRICAO_MAX);
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+        inserir(nomeNovo, descriNovo);
+        excluirPalavra(nomeTemp);
+        salvarEmArquivo();
+        gotoxy(25, 18);
+        cout << "Palavra alterada!\n";
+        gotoxy(25, 19);
+        system("pause");
+        system("cls");
+
+    }
+    else
+    {
+        gotoxy(25, 18);
+        cout << "Palavra nao encontrada!\n";
+        gotoxy(25, 19);
+        system("pause");
+        system("cls");
+    }
+
+}
+
+void menuEditar()
+{
+    int opMenu;
+    system("cls");
+    do
+    {
+
+        gotoxy(25, 2);
+        cout << "-----------------------------------------------------------------";
+        gotoxy(25, 3);
+        cout << "                             EDITAR                              ";
+        gotoxy(25, 4);
+        cout << "-----------------------------------------------------------------";
+
+        gotoxy(25, 7);
+        cout << "1 - Editar Descricao.";
+        gotoxy(25, 8);
+        cout << "2 - Editar Nome.";
+        gotoxy(25, 9);
+        cout << "3 - Editar Tudo.";
+        gotoxy(25, 10);
+        cout << "4 - Voltar.";
+        gotoxy(25, 12);
+        cout << "Informe qual campo deseja acessar, de acordo com o numero: ";
+        gotoxy(25, 13);
+        cin >> opMenu;
+
+        switch(opMenu)
+        {
+
+        case 1:
+            alterarDescricao();
+            break;
+
+        case 2:
+            alterarNome();
+            break;
+
+        case 3:
+            alterarTudo();
+            break;
+
+        case 4:
+            return;
+            break;
+
+        default:
+            gotoxy(25, 15);
+            cout << "Opcao invalida, por favor tente novamente.";
+            gotoxy(25, 16);
+            system("pause");
+            system("cls");
+            menuEditar();
+        }
+    }
+    while(opMenu!=4);
 }
 
 void pesquisaPorRelevancia()
 {
 
+    gotoxy(25, 2);
+    cout << "-----------------------------------------------------------------";
+    gotoxy(25, 3);
+    cout << "                      BUSCA POR RELEVÂNCIA                       ";
+    gotoxy(25, 4);
+    cout << "-----------------------------------------------------------------";
+
+    gotoxy(25, 6);
+    cout << "Digite a palavra-chave para pesquisa de relevancia: ";
+    gotoxy(25, 8);
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
     cin.ignore();
     string palavraChave;
-    cout << "Digite a palavra-chave para pesquisa de relevância: ";
+    cout << endl;
+    gotoxy(25, 8);
     getline(cin, palavraChave);
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
 
-    bool encontrouRelevante = false;
+    int maxOcorrencias = 125;
+    Ocorrencia* ocorrencias = new Ocorrencia[maxOcorrencias];
 
+    int numOcorrencias = 0;
 
+    // Percorrer o dicionario e suas descricoes
     Dicionario* dicionarioAtual = inicio_dicionario.pP;
     while (dicionarioAtual != nullptr)
     {
         Palavra* palavraAtual = dicionarioAtual->palavra;
+
         while (palavraAtual != nullptr)
         {
 
+            // Verifica se a palavra-chave esta na descricao
             const string descricao = palavraAtual->descricao;
             int contagem = 0;
-            size_t pos = descricao.find(palavraChave);
-            while (pos != string::npos)
+            size_t posicao = descricao.find(palavraChave);
+            while (posicao != string::npos)
             {
                 contagem++;
-                pos = descricao.find(palavraChave, pos + 1);
+                posicao = descricao.find(palavraChave, posicao + 1);
             }
 
-
-            if (contagem > 0)
+            // Se a palavra-chave for encontrada e houver espaço armazene as informações
+            if (contagem > 0 && numOcorrencias < maxOcorrencias)
             {
-                encontrouRelevante = true;
-                cout << "Descrição: " << descricao << endl;
-                cout << "Ocorrências: " << contagem << endl;
-                cout << endl;
+                ocorrencias[numOcorrencias].palavra = palavraAtual->nome;
+                ocorrencias[numOcorrencias].descricao = descricao;
+                ocorrencias[numOcorrencias].contagem = contagem;
+                numOcorrencias++;
             }
             palavraAtual = palavraAtual->pProx;
         }
         dicionarioAtual = dicionarioAtual->pP;
     }
 
-    if (!encontrouRelevante)
+    // Ordena em decrescente
+    for (int i = 0; i < numOcorrencias - 1; i++)
+    {
+        for (int j = i + 1; j < numOcorrencias; j++)
+        {
+            if (ocorrencias[i].contagem < ocorrencias[j].contagem)
+            {
+                Ocorrencia temp = ocorrencias[i];
+                ocorrencias[i] = ocorrencias[j];
+                ocorrencias[j] = temp;
+            }
+        }
+    }
+
+    // Exibir o resultado
+    system("cls");
+    cout << "Pesquisa: " ;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 14);
+    cout << palavraChave << "\n\n";
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+    for (int i = 0; i < numOcorrencias; i++)
+    {
+
+        cout << "Palavra: ";
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 14);
+        cout << ocorrencias[i].palavra << endl;
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+
+        cout << "Descriçao: " ;
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+        cout<< ocorrencias[i].descricao << endl;
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+
+        cout << "Ocorrencias: ";
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+        cout<< ocorrencias[i].contagem << endl;
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+        cout << endl;
+    }
+
+    if (numOcorrencias == 0)
     {
         cout << "Nenhuma descrição relevante encontrada para '" << palavraChave << "'." << endl;
     }
+    delete[] ocorrencias;
+
     system("pause");
 }
 
-
-
 int main()
 {
-    system("mode con:cols=85 lines=30");
     setlocale(LC_ALL, "Portuguese");
-
-    inicio_dicionario.pP = nullptr;
+    inicio_dicionario.pP = NULL;
     carregarDeArquivo();
 
-
     int opFechar, opMenu;
-    while(opFechar != 1)
+    while (opFechar != 1)
     {
         system("cls");
-        gotoxy(0,0);
-        cout << "=====================================================================================";
-        gotoxy(0,1);
-        cout << "|";
-        gotoxy(30,1);
-        cout << "DICIONÁRIO (CIDADES)";
-        gotoxy(84,1);
-        cout << "|";
-        gotoxy(0,2);
-        cout << "=====================================================================================";
+        system("color 0A");
+
+        gotoxy(25, 2);
+        cout << "-----------------------------------------------------------------";
+        gotoxy(25, 3);
+        cout << "                       DICIONARIO (CIDADES)                      ";
+        gotoxy(25, 4);
+        cout << "-----------------------------------------------------------------";
 
 
-        gotoxy(15,4);
+
+        gotoxy(25, 7);
         cout << "1 - Adicionar palavra.";
-
-
-        gotoxy(15,5);
+        gotoxy(25, 8);
         cout << "2 - Exibir todas as palavras.";
-
-
-        gotoxy(15,6);
+        gotoxy(25, 9);
         cout << "3 - Pesquisar por palavra.";
-
-
-        gotoxy(15,7);
-        cout << "4 - Pesquisar por relevancia.";
-
-
-        gotoxy(15,8);
+        gotoxy(25, 10);
+        cout << "4 - Pesquisar por relevância.";
+        gotoxy(25, 11);
         cout << "5 - Excluir Palavra.";
-
-
-        gotoxy(15,9);
-        cout << "6 - Fechar programa.";
-
-
-        gotoxy(15,11);
-        cout << "Informe qual campo deseja acessar: ";
-
-
-
-
+        gotoxy(25, 12);
+        cout << "6 - Editar.";
+        gotoxy(25, 13);
+        cout << "7 - Fechar programa.";
+        gotoxy(25, 16);
+        cout << "Informe qual campo deseja acessar, de acordo com o número: ";
+        gotoxy(25, 17);
         cin >> opMenu;
 
         switch(opMenu)
         {
 
-
         case 1:
+            system("cls");
             inserirManualmente();
             break;
 
-
         case 2:
+            system("cls");
             exibir();
             break;
 
-
         case 3:
+            system("cls");
             exibirBuscaPorNome();
             break;
 
-
         case 4:
+            system("cls");
             pesquisaPorRelevancia();
             break;
 
         case 5:
-            excluirPalavra();
-
+            system("cls");
+            excluirPalavraIn();
+            break;
 
         case 6:
-            cout << "\n\nTem certeza que deseja fechar o programa?\n";
+            system("cls");
+            menuEditar();
+            break;
+
+        case 7:
+            system("cls");
+            gotoxy(32, 11);
+            cout << "Tem certeza que deseja fechar o programa?";
+            gotoxy(43, 13);
             cout << "[1] sim    [2] nao";
-            cout << "\nopcao: ";
+            gotoxy(32, 15);
+            cout << "opcao: ";
+            gotoxy(32, 16);
             cin >> opFechar;
 
             switch(opFechar)
             {
 
             case 1:
-                cout << "\nPrograma encerrado!\n";
+                gotoxy(43, 18);
+                cout << "Programa encerrado!";
                 break;
 
             case 2:
                 break;
 
             default:
-                cout << "\nOpcao invalida, por favor tente novamente.\n";
+                gotoxy(33, 18);
+                cout << "Opcao invalida, por favor tente novamente.";
+                gotoxy(33, 19);
                 system("pause");
             }
             break;
@@ -525,6 +914,6 @@ int main()
 
     }
     cout << "\n\n";
-    system("pause");
+
     return 0;
 }
