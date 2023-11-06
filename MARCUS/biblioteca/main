@@ -445,9 +445,15 @@ void exibirBuscaPorNome()
     if (palavraTemp != NULL)
     {
         gotoxy(25, 10);
-        cout << "Nome: " << palavraTemp->nome;
+        cout << "Nome: " ;
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+        cout<< palavraTemp->nome;
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
         gotoxy(25, 12);
-        cout << "Descricao: " << palavraTemp->descricao;
+        cout << "Descricao: " ;
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+        cout<< palavraTemp->descricao;
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
     }
     else
     {
