@@ -4,51 +4,48 @@
 #include <chrono>
 #include <thread>
 
+#define TAMANHO_PACOTE 1024 // pacotes de 1024 bytes
+
 using namespace std;
 
-const int TAMANHO_PACOTE = 1024; // Tamanho m·ximo de cada pacote em bytes
-
-// Estrutura para representar um pacote
 struct Pacote {
     int numero;
     int tamanho;
 };
 
-// FunÁ„o para simular a transferÍncia
 void simularTransferencia(int tamanhoArquivo) {
 
-    queue <Pacote> filaPacotes;
+    queue <Pacote> filaPacotes; // 'queue' √© usado para trabalhar com filas
 
     int numeroPacote = 1;
     int tamRestanteArquivo = tamanhoArquivo;
 
-    // Enfileira todos os pacotes
+
     while (tamRestanteArquivo > 0) {
         Pacote pacote;
         pacote.numero = numeroPacote++;
-        pacote.tamanho = min(TAMANHO_PACOTE, tamRestanteArquivo);
+        pacote.tamanho = min(TAMANHO_PACOTE, tamRestanteArquivo); // pega o m√≠nimo entre os dois, nesse caso 'tam_pacote' at√© que tamanho restante seja menor
 
-        filaPacotes.push(pacote);
+        filaPacotes.push(pacote);       // usa o 'push' pra add a fila os pacotes j√° definidos
 
-        tamRestanteArquivo -= pacote.tamanho;
+        tamRestanteArquivo -= pacote.tamanho;       // subtrai do restante o for adicionado a fila
     }
 
-    // Envia os pacotes sequencialmente
     while (!filaPacotes.empty()) {
-        Pacote pacoteEnviado = filaPacotes.front();
-        filaPacotes.pop();
+        Pacote pacoteEnviado = filaPacotes.front();     // retorna o primeiro pacote da fila no momento
+        filaPacotes.pop();      // retira o primeiro pacote da fila no momento
 
-        cout << "Enviando pacote " << pacoteEnviado.numero << " - Tamanho: " << pacoteEnviado.tamanho << " bytes\n";
+        cout << "\nEnviando pacote " << pacoteEnviado.numero << " - Tamanho: " << pacoteEnviado.tamanho << " bytes\n";
 
-        // Simula o tempo de envio (1 segundo)
-        this_thread::sleep_for(chrono::seconds(1));
+        this_thread::sleep_for(chrono::seconds(1));     // simula o tempo de envio (1 segundo)
     }
 
-    cout << "\nTransferÍncia concluÌda!\n";
+    cout << "\nTransfer√™ncia conclu√≠da!\n";
 }
 
 int main() {
     int tamanhoArquivo;
+    setlocale(LC_ALL, "Portuguese");
 
     cout << "Informe o tamanho do arquivo a ser transmitido (em bytes): ";
     cin >> tamanhoArquivo;
