@@ -73,7 +73,10 @@ void simulacao() {
 void dividirPacotes(int tamanhoArquivo){
 
     int qtePacotes;
-    if(tamanhoArquivo%MAX ==0){
+    if(tamanhoArquivo < MAX){
+        enqueue(tamanhoArquivo);
+        
+    }else if(tamanhoArquivo%MAX ==0 ){
         qtePacotes = tamanhoArquivo/MAX;
         while(qtePacotes!=0){
             enqueue(MAX);
@@ -96,7 +99,7 @@ void dividirPacotes(int tamanhoArquivo){
 
 int main() {
 
-    dividirPacotes(5604);
+    dividirPacotes(100);
     exibir();
 
 
