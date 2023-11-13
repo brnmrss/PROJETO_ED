@@ -1,7 +1,7 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
-
+#define MAX 1024
 using namespace std;
 
 struct Pacote {
@@ -70,21 +70,34 @@ void simulacao() {
     }
 }
 
-int main() {
-    enqueue(1);
-    enqueue(2);
-    enqueue(3);
-    enqueue(4);
-    exibir();
-    cout << "\n";
-    denqueue();
-    exibir();
-    denqueue();
-    cout << "\n";
-    exibir();
-    enqueue(5);
-    exibir();
+void dividirPacotes(int tamanhoArquivo){
 
+    int qtePacotes;
+    if(tamanhoArquivo%MAX ==0){
+        qtePacotes = tamanhoArquivo/MAX;
+        while(qtePacotes!=0){
+            enqueue(MAX);
+            qtePacotes--;
+        }
+    }else{
+        qtePacotes = (tamanhoArquivo/MAX) +1;
+        while(qtePacotes!=0){
+            if(qtePacotes == 1){
+                enqueue(tamanhoArquivo%MAX);
+                qtePacotes --;
+            }else{
+                enqueue(MAX);
+                qtePacotes--;
+                }
+          }
+    }
+
+}
+
+int main() {
+
+    dividirPacotes(5604);
+    exibir();
 
 
 
