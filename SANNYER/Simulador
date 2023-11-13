@@ -1,0 +1,72 @@
+#include <iostream>
+#include <thread>
+#include <chrono>
+
+using namespace std;
+
+struct Pacote {
+    int tamanho;
+    struct Pacote *prox;
+};
+
+Pacote *inicio = NULL;
+Pacote *fim = NULL;
+
+void enqueue(int tamanho) {
+    Pacote *no = new Pacote;
+    no->tamanho = tamanho;
+    no->prox = NULL;
+
+    if (inicio == NULL && fim == NULL) {
+        inicio = fim = no;
+    } else {
+        fim->prox = no;
+        fim = no;
+    }
+}
+
+void exibir() {
+    Pacote *no = inicio;
+    while (no != NULL) {
+        cout << no->tamanho << " ";
+        no = no->prox;
+    }
+    cout << endl;
+}
+
+void simulacao() {
+    const int largura = 40;
+    const int duracaoEsperaMillis = 100;
+    char figura1 = 223;
+    char figura2 = 175;
+
+    cout << "\n";
+
+    while (inicio != NULL) {
+        system("cls");
+        // Desenha a linha com o pacote
+        for (int j = 0; j < largura; ++j) {
+            if (j == 0) {
+                cout << figura1; // Representa o pacote de dados
+            } else {
+                cout << figura2; // Representa a linha de transferência
+            }
+        }
+
+
+        this_thread::sleep_for(chrono::milliseconds(duracaoEsperaMillis));
+    }
+}
+
+int main() {
+    enqueue(1);
+    enqueue(2);
+    enqueue(3);
+    enqueue(4);
+
+    exibir();
+
+
+
+    return 0;
+}
