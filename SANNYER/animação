@@ -1,0 +1,31 @@
+#include <iostream>
+#include <thread>
+#include <chrono>
+using namespace std;
+int main() {
+    const int largura = 40;
+    const int duracaoEsperaMillis = 100;
+    char figura1= 223;
+    char figura2 = 175;
+
+
+    std::cout <<"\n";
+    for (int i = 0; i <= largura; ++i) {
+
+        system("cls");
+        // Desenha a linha com o pacote
+        for (int j = 0; j < largura; ++j) {
+            if (j == i) {
+
+                cout << figura1; // Representa o pacote de dados
+            } else {
+                cout << figura2; // Representa a linha de transferência
+            }
+        }
+        char figura3 = 205;
+        cout << std::endl;
+        this_thread::sleep_for(std::chrono::milliseconds(duracaoEsperaMillis));
+    }
+
+    return 0;
+}
