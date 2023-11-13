@@ -18,11 +18,23 @@ void enqueue(int tamanho) {
     no->prox = NULL;
 
     if (inicio == NULL && fim == NULL) {
-        inicio = fim = no;
+        inicio = no;
+        fim = no;
     } else {
         fim->prox = no;
         fim = no;
     }
+}
+
+int denqueue() {
+    int numeroTemp;
+    Pacote* no, * aux;
+    no = inicio;
+    numeroTemp = no->tamanho;
+    aux = no->prox;
+    inicio = aux;
+    delete no;
+    return numeroTemp;
 }
 
 void exibir() {
@@ -63,8 +75,16 @@ int main() {
     enqueue(2);
     enqueue(3);
     enqueue(4);
-
     exibir();
+    cout << "\n";
+    denqueue();
+    exibir();
+    denqueue();
+    cout << "\n";
+    exibir();
+    enqueue(5);
+    exibir();
+
 
 
 
