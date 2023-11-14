@@ -1,0 +1,380 @@
+#include <iostream>
+#include <fstream>
+#include <string.h>
+#include <cstring>
+#include <stdlib.h>
+#include <stdio.h>
+#include <cstdlib>
+#include <windows.h>
+#include <string>
+#include <sstream>
+#include <locale.h>
+#include <stack>
+#define MAX 8
+using namespace std;
+
+struct Numero {
+    int numero;
+    struct Numero* prox;
+};
+
+Numero topo_1, topo_2, topo_resultado;
+
+char temp1 [MAX], temp2[MAX];
+
+HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+COORD CursorPosition;
+
+void gotoxy(int x, int y)
+{
+    CursorPosition.X = x; // Locates column
+    CursorPosition.Y = y; // Locates Row
+    SetConsoleCursorPosition(console,CursorPosition); // Sets position for next thing to be printed
+}
+
+void push(int numero, Numero& pilha) {
+    Numero* no;
+    no = new Numero;
+
+    if (no == NULL) {
+        cout << "Erro ao alocar memória.\n";
+        return;
+    }
+
+    no->numero = numero;
+    no->prox = pilha.prox;
+    pilha.prox = no;
+    no = NULL;
+}
+
+
+int pop(Numero& topo) {
+    int numeroTemp;
+    Numero* no, * aux;
+    no = topo.prox;
+    numeroTemp = no->numero;
+    aux = no->prox;
+    topo.prox = aux;
+    delete no;
+    return numeroTemp;
+}
+
+void limparPilha(Numero &pilha){
+    Numero *no;
+    no = pilha.prox;
+    while(no != NULL){
+        pop(pilha);
+        no = no->prox;
+    }
+
+}
+void inserirNaPilha(char numero[MAX], Numero& pilha) {
+    int numeroTemp, i = 0;
+    while (numero[i] != '\0') {
+        numeroTemp = int(numero[i] - '0'); // convertendo char para int
+        push(numeroTemp, pilha);
+        i++;
+    }
+}
+
+void exibir() {
+    system("cls");
+    Numero* no;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+    gotoxy(25, 2);
+    cout << "-----------------------------------------------------------------";
+    gotoxy(25, 3);
+    cout << "                           RESULTADO                             ";
+    gotoxy(25, 4);
+    cout << "-----------------------------------------------------------------";
+    gotoxy(25, 9);
+    cout << "-----------------------------------------------------------------";
+
+    gotoxy(30, 6);
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+    cout << temp1;
+    gotoxy(38,6);
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+    cout <<"+";
+    gotoxy(40, 6);
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+    cout << temp2;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+    gotoxy(48, 6);
+    cout << "=";
+
+    no = topo_resultado.prox;
+    gotoxy(50,6);
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 14);
+    while (no != NULL) {
+        cout << no->numero;
+        no = no->prox;
+    }
+    limparPilha(topo_resultado);
+    gotoxy(25,10);
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+    system("pause");
+}
+
+void exibirPilhas() {
+    system("cls");
+    Numero* no;
+    no = topo_1.prox;
+    cout << "Pilha 1\n";
+    while (no != NULL) {
+        cout << no->numero << "\n";
+        no = no->prox;
+    }
+    no = topo_2.prox;
+    cout << "Pilha 2\n";
+    while (no != NULL) {
+        cout << no->numero << "\n";
+        no = no->prox;
+    }
+    cout << "\n";
+    system("pause");
+}
+
+void soma() {
+    int num_1, num_2, resultado, digitoSig = 0;
+
+    while (topo_1.prox != NULL || topo_2.prox != NULL || digitoSig != 0) {
+        num_1 = (topo_1.prox != NULL) ? pop(topo_1) : 0;
+        num_2 = (topo_2.prox != NULL) ? pop(topo_2) : 0;
+        resultado = num_1 + num_2 + digitoSig;
+        if (resultado < 10) {
+            push(resultado, topo_resultado);
+            digitoSig = 0;
+        } else {
+            resultado = resultado - 10;
+            push(resultado, topo_resultado);
+            digitoSig = 1;
+        }
+    }
+}
+
+void mostrarFuncionamento(char num_1[MAX], char num_2[MAX]) {
+    system("cls");
+
+    stack<int> pilha_1, pilha_2, resultado;
+
+    // Convertendo os caracteres para inteiros e empilhando
+    for (int i = strlen(num_1) - 1; i >= 0; i--) {
+        pilha_1.push(num_1[i] - '0');
+    }
+
+    for (int i = strlen(num_2) - 1; i >= 0; i--) {
+        pilha_2.push(num_2[i] - '0');
+    }
+
+    int carry = 0;
+    int carry_anterior = 0;
+    int passo = 1;
+
+    // Deslocando pilhas para a direita (inverter ordem)
+    stack<int> pilha_1_reversa, pilha_2_reversa;
+
+    while (!pilha_1.empty()) {
+        pilha_1_reversa.push(pilha_1.top());
+        pilha_1.pop();
+    }
+
+    while (!pilha_2.empty()) {
+        pilha_2_reversa.push(pilha_2.top());
+        pilha_2.pop();
+    }
+
+    while (!pilha_1_reversa.empty() || !pilha_2_reversa.empty() || carry) {
+        int digito_1 = 0, digito_2 = 0;
+
+        if (!pilha_1_reversa.empty()) {
+            digito_1 = pilha_1_reversa.top();
+            pilha_1_reversa.pop();
+        }
+
+        if (!pilha_2_reversa.empty()) {
+            digito_2 = pilha_2_reversa.top();
+            pilha_2_reversa.pop();
+        }
+
+        int soma = digito_1 + digito_2 + carry;
+        resultado.push(soma % 10);
+        carry_anterior = carry;
+        carry = soma / 10;
+
+        // Exibindo o passo a passo
+        gotoxy(25, 2);
+        cout << "-----------------------------------------------------------------";
+        gotoxy(25, 3);
+        cout << "                            Passo " << passo++;
+        gotoxy(25, 4);
+        cout << "-----------------------------------------------------------------";
+        gotoxy(25, 5);
+        cout << "Carry Anterior: " << carry_anterior;
+
+        gotoxy(42, 9);
+        cout << "   " << digito_1;
+
+        gotoxy(42, 11);
+        cout << "+";
+
+        gotoxy(42, 13);
+        cout << "   " << digito_2;
+
+        gotoxy(42, 15);
+        cout << "------";
+
+        gotoxy(42, 17);
+        cout << "   " << resultado.top();
+
+        gotoxy(42, 19);
+        cout << "Carry Atual: " << carry;
+
+
+
+
+        cin.ignore();
+        system("cls");
+    }
+
+    // Exibindo o resultado final
+    gotoxy(42, 7);
+    cout << "Resultado final:";
+
+    int linha = 9;
+    while (!resultado.empty()) {
+        gotoxy(42, linha);
+        cout << "   " << resultado.top();
+        resultado.pop();
+        linha += 2;
+    }
+
+    cin.ignore();
+    gotoxy(25, linha + 3);
+    system("pause");
+}
+
+void inserirManualmente() {
+    char num_1[MAX], num_2[MAX];
+
+    system("cls");
+    gotoxy(25, 2);
+    cout << "-----------------------------------------------------------------";
+    gotoxy(25, 3);
+    cout << "                                SOMA                             ";
+    gotoxy(25, 4);
+    cout << "-----------------------------------------------------------------";
+    gotoxy(25, 9);
+    cout << "-----------------------------------------------------------------";
+
+
+    gotoxy(38,6);
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+    cout <<"+";
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+    gotoxy(48, 6);
+    cout << "=";
+    cin.ignore();
+    gotoxy(30, 6);
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+    cin.getline(num_1, MAX);
+    gotoxy(40, 6);
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+    cin.getline(num_2, MAX);
+
+    strcpy(temp1, num_1);
+    strcpy(temp2, num_2);
+    inserirNaPilha(num_1, topo_1);
+    inserirNaPilha(num_2, topo_2);
+
+    soma();
+    exibir();
+    mostrarFuncionamento(num_1, num_2);
+
+}
+
+
+
+int main() {
+    topo_1.prox = NULL;
+    topo_2.prox = NULL;
+    topo_resultado.prox = NULL;
+    int opFechar, opMenu;
+    setlocale(LC_ALL, "Portuguese");
+
+
+
+    while (opFechar != 1)
+    {
+        system("cls");
+        system("color 0A");
+
+        gotoxy(25, 2);
+        cout << "-----------------------------------------------------------------";
+        gotoxy(25, 3);
+        cout << "                              SOMA                         ";
+        gotoxy(25, 4);
+        cout << "-----------------------------------------------------------------";
+
+
+
+        gotoxy(25, 7);
+        cout << "1 - Realizar Nova Soma.";
+        gotoxy(25, 8);
+        cout << "2 - Sair.";
+        gotoxy(25, 9);
+        cout << "Informe qual campo deseja acessar, de acordo com o número: ";
+        gotoxy(25, 10);
+        cin >> opMenu;
+
+        switch(opMenu)
+        {
+
+        case 1:
+            inserirManualmente();
+
+            break;
+
+        case 2:
+            system("cls");
+            gotoxy(32, 11);
+            cout << "Tem certeza que deseja fechar o programa?";
+            gotoxy(43, 13);
+            cout << "[1] sim    [2] nao";
+            gotoxy(32, 15);
+            cout << "opcao: ";
+            gotoxy(32, 16);
+            cin >> opFechar;
+
+            switch(opFechar)
+            {
+
+            case 1:
+                gotoxy(43, 18);
+                cout << "Programa encerrado!";
+                break;
+
+            case 2:
+                break;
+
+            default:
+                gotoxy(33, 18);
+                cout << "Opcao invalida, por favor tente novamente.";
+                gotoxy(33, 19);
+                system("pause");
+            }
+            break;
+
+
+
+        default:
+            cout << "\nOpcao invalida, por favor tente novamente.\n";
+            system("pause");
+
+        }
+
+    }
+    cout << "\n\n";
+
+    return 0;
+}
