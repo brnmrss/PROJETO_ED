@@ -1,0 +1,113 @@
+void mostrarFuncionamento(char num_1[MAX], char num_2[MAX]) {
+    // Limpa a tela do console
+    system("cls");
+
+    // Cria três pilhas utilizando a classe stack da STL para armazenar os dígitos
+    stack<int> pilha_1, pilha_2, resultado;
+
+    // Convertendo os caracteres para inteiros e empilhando na pilha_1
+    for (int i = strlen(num_1) - 1; i >= 0; i--) {
+        pilha_1.push(num_1[i] - '0');
+    }
+
+    // Convertendo os caracteres para inteiros e empilhando na pilha_2
+    for (int i = strlen(num_2) - 1; i >= 0; i--) {
+        pilha_2.push(num_2[i] - '0');
+    }
+
+    // Inicializa variáveis para controlar o carry (vai para a próxima casa decimal)
+    int carry = 0;
+    int carry_anterior = 0;
+    int passo = 1;
+
+    // Desloca as pilhas para a direita (inverte a ordem)
+    stack<int> pilha_1_reversa, pilha_2_reversa;
+
+    // Desloca pilha_1 para pilha_1_reversa
+    while (!pilha_1.empty()) {
+        pilha_1_reversa.push(pilha_1.top());
+        pilha_1.pop();
+    }
+
+    // Desloca pilha_2 para pilha_2_reversa
+    while (!pilha_2.empty()) {
+        pilha_2_reversa.push(pilha_2.top());
+        pilha_2.pop();
+    }
+
+    // Loop para realizar a soma com carry
+    while (!pilha_1_reversa.empty() || !pilha_2_reversa.empty() || carry) {
+        int digito_1 = 0, digito_2 = 0;
+
+        // Pega o próximo dígito de pilha_1_reversa
+        if (!pilha_1_reversa.empty()) {
+            digito_1 = pilha_1_reversa.top();
+            pilha_1_reversa.pop();
+        }
+
+        // Pega o próximo dígito de pilha_2_reversa
+        if (!pilha_2_reversa.empty()) {
+            digito_2 = pilha_2_reversa.top();
+            pilha_2_reversa.pop();
+        }
+
+        // Realiza a soma dos dígitos e carry
+        int soma = digito_1 + digito_2 + carry;
+
+        // Armazena o dígito resultante na pilha resultado
+        resultado.push(soma % 10);
+
+        // Atualiza o carry para a próxima iteração
+        carry_anterior = carry;
+        carry = soma / 10;
+
+        // Exibindo o passo a passo
+        gotoxy(25, 2);
+        cout << "-----------------------------------------------------------------";
+        gotoxy(25, 3);
+        cout << "                            Passo " << passo++;
+        gotoxy(25, 4);
+        cout << "-----------------------------------------------------------------";
+        gotoxy(25, 5);
+        cout << "Carry Anterior: " << carry_anterior;
+
+        gotoxy(42, 9);
+        cout << "   " << digito_1;
+
+        gotoxy(42, 11);
+        cout << "+";
+
+        gotoxy(42, 13);
+        cout << "   " << digito_2;
+
+        gotoxy(42, 15);
+        cout << "------";
+
+        gotoxy(42, 17);
+        cout << "   " << resultado.top();
+
+        gotoxy(42, 19);
+        cout << "Carry Atual: " << carry;
+
+        // Aguarda entrada do usuário para mostrar o próximo passo
+        cin.ignore();
+        system("cls");
+    }
+
+    // Exibindo o resultado final
+    gotoxy(42, 7);
+    cout << "Resultado final:";
+
+    int linha = 9;
+    while (!resultado.empty()) {
+        gotoxy(42, linha);
+        cout << "   " << resultado.top();
+        resultado.pop();
+        linha += 2;
+    }
+
+    // Aguarda entrada do usuário antes de encerrar a função
+    cin.ignore();
+    gotoxy(25, linha + 3);
+    system("pause");
+}
