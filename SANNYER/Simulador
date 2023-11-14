@@ -46,7 +46,7 @@ void exibir() {
     cout << endl;
 }
 
-void simulacao() {
+void animacao() {
     const int largura = 40;
     const int duracaoEsperaMillis = 100;
     char figura1 = 223;
