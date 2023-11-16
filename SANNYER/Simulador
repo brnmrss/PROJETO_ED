@@ -6,15 +6,17 @@ using namespace std;
 
 struct Pacote {
     int tamanho;
+    int numero;
     struct Pacote *prox;
 };
 
 Pacote *inicio = NULL;
 Pacote *fim = NULL;
 
-void enqueue(int tamanho) {
+void enqueue(int tamanho, int numero) {
     Pacote *no = new Pacote;
     no->tamanho = tamanho;
+    no->numero = numero;
     no->prox = NULL;
 
     if (inicio == NULL && fim == NULL) {
@@ -23,6 +25,7 @@ void enqueue(int tamanho) {
     } else {
         fim->prox = no;
         fim = no;
+        no= NULL;
     }
 }
 
@@ -45,64 +48,113 @@ void exibir() {
     }
     cout << endl;
 }
+void limparPilha() {
+    Pacote *no = inicio;
 
+    while (no != NULL) {
+        denqueue();
+        no = inicio;
+    }
+    inicio = NULL;
+    fim = NULL;
+}
 void animacao() {
     const int largura = 40;
     const int duracaoEsperaMillis = 100;
     char figura1 = 223;
     char figura2 = 175;
 
-    cout << "\n";
+    Pacote *no = inicio;
 
-    while (inicio != NULL) {
-        system("cls");
-        // Desenha a linha com o pacote
-        for (int j = 0; j < largura; ++j) {
-            if (j == 0) {
-                cout << figura1; // Representa o pacote de dados
-            } else {
-                cout << figura2; // Representa a linha de transferência
+    while (no != NULL) {
+        cout << "Enviando pacote: " << no->numero << "\n";
+        cout << "Tamanho: " << no->tamanho << "\n";
+        this_thread::sleep_for(chrono::milliseconds(500));
+
+        for (int i = 0; i < largura; ++i) {
+            // Desenha a linha com o pacote
+            for (int j = 0; j < largura; ++j) {
+                if (j == i) {
+                    cout << figura1; // Representa o pacote de dados
+                } else {
+                    cout << figura2; // Representa a linha de transferência
+                }
             }
+
+            cout << endl;
+            this_thread::sleep_for(chrono::milliseconds(duracaoEsperaMillis));
+            system("cls");  // Limpa a tela para redesenhar a linha com o pacote na próxima posição
         }
 
-
-        this_thread::sleep_for(chrono::milliseconds(duracaoEsperaMillis));
+        no = no->prox;
     }
+
+    cout << "Arquivo enviado com sucesso \n!";
+    system("pause");
 }
 
-void dividirPacotes(int tamanhoArquivo){
-
+void dividirPacotes(int tamanhoArquivo) {
     int qtePacotes;
-    if(tamanhoArquivo < MAX){
-        enqueue(tamanhoArquivo);
-        
-    }else if(tamanhoArquivo%MAX ==0 ){
-        qtePacotes = tamanhoArquivo/MAX;
-        while(qtePacotes!=0){
-            enqueue(MAX);
+    int numeroPacote = 1;
+
+
+    if(tamanhoArquivo < MAX) {
+        enqueue(tamanhoArquivo, numeroPacote);
+    } else if(tamanhoArquivo % MAX == 0) {
+        qtePacotes = tamanhoArquivo / MAX;
+        while(qtePacotes != 0) {
+            enqueue(MAX, numeroPacote);
+            numeroPacote++;
             qtePacotes--;
         }
-    }else{
-        qtePacotes = (tamanhoArquivo/MAX) +1;
-        while(qtePacotes!=0){
-            if(qtePacotes == 1){
-                enqueue(tamanhoArquivo%MAX);
+    } else {
+        qtePacotes = (tamanhoArquivo / MAX) + 1;
+        while(qtePacotes != 0) {
+            if(qtePacotes == 1) {
+                enqueue(tamanhoArquivo % MAX, numeroPacote);
+                numeroPacote++;
                 qtePacotes --;
-            }else{
-                enqueue(MAX);
+            } else {
+                enqueue(MAX, numeroPacote);
+                numeroPacote++;
                 qtePacotes--;
-                }
-          }
+            }
+        }
     }
-
 }
 
+
+
+void realizarEnvio() {
+    int tamanho;
+    cout << "Insira o tamanho do arquivo em Kb: ";
+    cin >> tamanho;
+    dividirPacotes(tamanho);
+    animacao();
+}
+
+
 int main() {
+    int opcao;
 
-    dividirPacotes(100);
-    exibir();
+    do {
 
+        cout << "[1]....Realizar envio de arquivo\n";
+        cout << "[2]....Sair\n";
+        cout << "Selecione uma opcao: ";
+        cin >> opcao;
 
+        switch(opcao) {
+            case 1:
+                realizarEnvio();
+                limparPilha();
+                break;
+            case 2:
+                cout << "Saindo....";
+                break;
+        }
+
+    } while(opcao != 2);
 
     return 0;
 }
