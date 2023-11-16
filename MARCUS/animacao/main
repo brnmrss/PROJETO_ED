@@ -1,0 +1,268 @@
+#include <iostream>
+#include <thread>
+#include <chrono>
+#include <windows.h>
+
+#define MAX 1024
+
+using namespace std;
+
+HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+COORD CursorPosition;
+
+void gotoxy(int x, int y){
+  CursorPosition.X = x; // Locates column
+  CursorPosition.Y = y; // Locates Row
+  SetConsoleCursorPosition(console,CursorPosition); // Sets position for next thing to be printed
+}
+
+struct Pacote {
+    int tamanho;
+    int numero;
+    struct Pacote *prox;
+};
+
+Pacote *inicio = NULL;
+Pacote *fim = NULL;
+
+int totalPacotesEnviados = 0;
+int tamanhoTotalEnviado = 0;
+
+void enqueue(int tamanho, int numero) {
+    Pacote *no = new Pacote;
+    no->tamanho = tamanho;
+    no->numero = numero;
+    no->prox = NULL;
+
+    if (inicio == NULL && fim == NULL) {
+        inicio = no;
+        fim = no;
+    } else {
+        fim->prox = no;
+        fim = no;
+        no= NULL;
+    }
+}
+
+int denqueue() {
+    int numeroTemp;
+    Pacote* no, * aux;
+    no = inicio;
+    numeroTemp = no->tamanho;
+    aux = no->prox;
+    inicio = aux;
+    delete no;
+    return numeroTemp;
+}
+
+void exibir() {
+    Pacote *no = inicio;
+    while (no != NULL) {
+        cout << no->tamanho << " ";
+        no = no->prox;
+    }
+    cout << endl;
+}
+void limparPilha() {
+    Pacote *no = inicio;
+
+    while (no != NULL) {
+        denqueue();
+        no = inicio;
+    }
+    inicio = NULL;
+    fim = NULL;
+
+    totalPacotesEnviados = 0;  // Reinicia o contador
+    tamanhoTotalEnviado = 0;  // Reinicia o contador
+}
+void animacao() {
+    const int largura = 40;
+    const int duracaoEsperaMillis = 75;
+    char figura1 = 176; // Espaço vazio
+    char figura2 = 219; // Bloco sólido
+
+    gotoxy(25, 2);
+    cout << "-----------------------------------------------------------------";
+
+    gotoxy(25, 12);
+    cout << "-----------------------------------------------------------------";
+
+    Pacote *no = inicio;
+
+    while (no != NULL) {
+
+        //this_thread::sleep_for(chrono::milliseconds(500));
+
+
+        for (int i = 0; i < largura; ++i) {
+            // Desenha a linha com o pacote
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+            gotoxy(25, 2);
+            cout << "-----------------------------------------------------------------";
+
+            gotoxy(25, 12);
+            cout << "-----------------------------------------------------------------";
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 14);
+            gotoxy(38, 9);
+            for (int j = 0; j < largura; ++j) {
+                // Verifica se a posição j está dentro do intervalo do pacote
+                if (j >= i && j < i + largura) {
+                    cout << figura1;
+                } else {
+                    cout << figura2;
+                }
+            }
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+            gotoxy(25, 5);
+            cout << "Pacote: " ;
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 14);
+            cout << no->numero;
+            gotoxy(25, 6);
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+            cout << "Tamanho: " ;
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 14);
+            cout << no->tamanho << " Kb";
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+            gotoxy(52, 3);
+            cout << "Enviando...";
+
+
+            cout << endl;
+            this_thread::sleep_for(chrono::milliseconds(duracaoEsperaMillis));
+            system("cls");  // Limpa a tela para redesenhar a linha com o pacote na próxima posição
+
+
+        }
+
+        // Adiciona uma pausa para exibir o pacote totalmente preenchido por um momento
+
+
+        //this_thread::sleep_for(chrono::milliseconds(800));
+        totalPacotesEnviados++;
+        system("cls");
+
+        no = no->prox;
+    }
+
+    gotoxy(25, 2);
+    cout << "-----------------------------------------------------------------";
+
+    gotoxy(25, 12);
+    cout << "-----------------------------------------------------------------";
+    gotoxy(45, 4);
+    cout << "Arquivo enviado com sucesso \n";
+    gotoxy(25, 6);
+    cout << "Total de pacotes enviados: " ;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 14);
+    cout << totalPacotesEnviados ;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+    gotoxy(25, 7);
+    cout << "Tamanho total do arquivo: " ;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 14);
+    cout << tamanhoTotalEnviado << " Kb";
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+    gotoxy(36, 11);
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 14);
+    system("pause");
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+    system("cls");
+}
+
+
+void dividirPacotes(int tamanhoArquivo) {
+    int qtePacotes;
+    int numeroPacote = 1;
+
+
+    if(tamanhoArquivo < MAX) {
+        enqueue(tamanhoArquivo, numeroPacote);
+    } else if(tamanhoArquivo % MAX == 0) {
+        qtePacotes = tamanhoArquivo / MAX;
+        while(qtePacotes != 0) {
+            enqueue(MAX, numeroPacote);
+            numeroPacote++;
+            qtePacotes--;
+        }
+    } else {
+        qtePacotes = (tamanhoArquivo / MAX) + 1;
+        while(qtePacotes != 0) {
+            if(qtePacotes == 1) {
+                enqueue(tamanhoArquivo % MAX, numeroPacote);
+                numeroPacote++;
+                qtePacotes --;
+            } else {
+                enqueue(MAX, numeroPacote);
+                numeroPacote++;
+                qtePacotes--;
+            }
+        }
+    }
+}
+
+
+
+void realizarEnvio() {
+    int tamanho;
+
+    gotoxy(25, 2);
+    cout << "-----------------------------------------------------------------";
+    gotoxy(25, 4);
+    cout << "Insira o tamanho do arquivo em Kb: ";
+    gotoxy(25, 12);
+    cout << "-----------------------------------------------------------------";
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 14);
+    gotoxy(61, 4);
+    cin >> tamanho;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+    tamanhoTotalEnviado = tamanho;
+
+    dividirPacotes(tamanho);
+    animacao();
+}
+
+
+int main() {
+    int opcao;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+
+    do {
+        gotoxy(25, 2);
+        cout << "-----------------------------------------------------------------";
+
+        gotoxy(25, 4);
+        cout << "-----------------------------------------------------------------";
+
+        gotoxy(25, 3);
+        cout << "                       ENVIO DE ARQUIVOS                      ";
+        gotoxy(25, 6);
+        cout << "[1] Realizar envio de arquivo";
+        gotoxy(25, 7);
+        cout << "[2] Sair";
+
+        gotoxy(25, 9);
+        cout << "Selecione uma opcao: ";
+
+        gotoxy(25, 12);
+        cout << "-----------------------------------------------------------------";
+
+        gotoxy(25, 10);
+        cin >> opcao;
+
+
+
+        switch(opcao) {
+            case 1:
+                system("cls");
+                realizarEnvio();
+                limparPilha();
+                break;
+            case 2:
+                cout << "Saindo....";
+                break;
+        }
+
+    } while(opcao != 2);
+
+    return 0;
+}
